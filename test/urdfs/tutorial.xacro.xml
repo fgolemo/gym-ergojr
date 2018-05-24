@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<robot name="myfirst" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="bodyRadius" value="0.2"/>
+    <xacro:property name="bodyHeight" value="0.6"/>
+    <xacro:property name="pi" value="3.14159265359"/>
+    <xacro:property name="pihalf" value="${pi/2}"/>
+
+    <material name="blue">
+        <color rgba="0 0 0.8 1"/>
+    </material>
+
+    <material name="white">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
+
+    <xacro:macro name="cylinder2" params="orientation length radius color">
+            <visual>
+                <origin rpy="${orientation} 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <cylinder length="${length}" radius="${radius}"/>
+                </geometry>
+                <material name="${color}"/>
+            </visual>
+            <collision>
+                <origin rpy="${orientation} 0 0" xyz="0 0 0"/>
+                <geometry>
+                    <cylinder length="${length}" radius="${radius}"/>
+                </geometry>
+            </collision>
+    </xacro:macro>
+
+    <xacro:macro name="wheel" params="legprefix wheelprefix reflect">
+        <link name="${legprefix}_${wheelprefix}_wheel">
+            <xacro:cylinder2 color="black" orientation="${pihalf}" length="0.1" radius="0.035"/>
+        </link>
+
+        <joint name="${legprefix}_${wheelprefix}_wheel_joint" type="continuous">
+            <parent link="${legprefix}_base"/>
+            <child link="${legprefix}_${wheelprefix}_wheel"/>
+            <origin rpy="0 0 0" xyz="${reflect*0.133333333333} 0 -0.085"/>
+            <axis xyz="0 1 0"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="leg" params="prefix reflect">
+        <link name="${prefix}_leg">
+            <visual>
+                <geometry>
+                    <box size="${bodyHeight} 0.1 0.2"/>
+                </geometry>
+                <origin rpy="0 ${pihalf} 0" xyz="0 0 -0.3"/>
+                <material name="white"/>
+            </visual>
+        </link>
+
+        <joint name="base_to_${prefix}_leg" type="fixed">
+            <parent link="base_link"/>
+            <child link="${prefix}_leg"/>
+            <origin xyz="0 ${reflect*(bodyRadius + 0.02)} 0.25"/>
+        </joint>
+
+        <link name="${prefix}_base">
+            <visual>
+                <geometry>
+                    <box size="0.4 0.1 0.1"/>
+                </geometry>
+                <material name="white"/>
+            </visual>
+        </link>
+
+        <joint name="${prefix}_base_joint" type="fixed">
+            <parent link="${prefix}_leg"/>
+            <child link="${prefix}_base"/>
+            <origin xyz="0 0 -${bodyHeight}"/>
+        </joint>
+
+        <xacro:wheel legprefix="${prefix}" wheelprefix="front" reflect="1"/>
+        <xacro:wheel legprefix="${prefix}" wheelprefix="back" reflect="-1"/>
+
+    </xacro:macro>
+
+    <link name="base_link">
+        <xacro:cylinder2 color="blue" orientation="0" length="${bodyHeight}" radius="${bodyRadius}"/>
+    </link>
+
+    <xacro:leg prefix="right" reflect="-1"/>
+    <xacro:leg prefix="left" reflect="1"/>
+
+
+</robot>

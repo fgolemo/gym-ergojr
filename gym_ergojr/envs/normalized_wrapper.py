@@ -1,9 +1,6 @@
 import gym
 import numpy as np
 
-from gym_ergojr.envs.constants import JOINT_LIMITS
-
-
 class NormalizedObsWrapper(gym.ObservationWrapper):
     def _observation(self, observation):
         positions = np.sin(observation[:6])
