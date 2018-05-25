@@ -31,11 +31,11 @@ for i in range(p.getNumJoints(robot)):
     print(p.getJointInfo(robot, i))
 
 # leftWheels = [6,7]
-motors = [2, 3, 5, 7]
+motors = [2, 3, 5, 7, 9]
 
 debugParams = []
 
-for i in range(4):
+for i in range(len(motors)):
     motor = p.addUserDebugParameter("motor{}".format(i + 1), -1, 1, 0)
     debugParams.append(motor)
 
@@ -45,7 +45,7 @@ start = time.time()
 
 for i in range(frequency * 30):
     motorPos = []
-    for i in range(4):
+    for i in range(len(motors)):
         pos = (math.pi / 2) * p.readUserDebugParameter(debugParams[i])
         motorPos.append(pos)
         p.setJointMotorControl2(robot, motors[i], p.POSITION_CONTROL, targetPosition=pos)
