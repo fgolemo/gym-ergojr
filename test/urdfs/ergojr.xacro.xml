@@ -10,6 +10,9 @@
     <material name="black">
         <color rgba="0 0 0 1"/>
     </material>
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
 
     <xacro:macro name="cylinder2" params="length radius color:=white
                                         rotx:=0 roty:=0 rotz:=0
@@ -131,7 +134,7 @@
     <link name="link1_bottom">
         <xacro:box2 sizex=".034" sizey=".02" sizez=".002" posz="0.001"/>
         <xacro:box2 sizex=".002" sizey=".02" sizez=".0345" posz="0.01725" posx="-0.016"/>
-        <xacro:box2 sizex=".005" sizey=".02" sizez=".0345" posz="0.01725" posx="0.015"/>
+        <xacro:box2 sizex=".005" sizey=".02" sizez=".0345" posz="0.01725" posx="0.0145"/>
 
         <!--<inertial>-->
         <!--<mass value="10"/>-->
@@ -148,7 +151,61 @@
     </joint>
 
     <link name="motor2link">
-        <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.001" posz="0.0085"/>
+        <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.0015" posz="0.0095"/>
+    </link>
+
+    <joint name="motor2link_to_motor2bridge3" type="fixed">
+        <parent link="motor2link"/>
+        <child link="motor2bridge3"/>
+        <origin xyz="0 0 .019"/>
+    </joint>
+
+    <link name="motor2bridge3">
+        <xacro:box2 sizex=".002" sizey=".02" sizez=".045" posx="-0.016" posz="0.0225"/>
+        <xacro:box2 sizex=".005" sizey=".02" sizez=".045" posx="0.0145" posz="0.0225"/>
+        <!--<inertial>-->
+        <!--<mass value="10"/>-->
+        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        <!--</inertial>-->
+    </link>
+
+    <joint name="motor3joint" type="revolute">
+        <parent link="motor2bridge3"/>
+        <child link="motor3link"/>
+        <origin xyz="0 0 .035"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <link name="motor3link">
+        <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.0015" posz="0.0095"/>
+    </link>
+
+    <joint name="motor3link_to_motor2bridge3" type="fixed">
+        <parent link="motor3link"/>
+        <child link="motor3bridge4"/>
+        <origin xyz="0 0 .026"/>
+    </joint>
+
+    <link name="motor3bridge4">
+        <xacro:box2 sizex=".027" sizey=".02" sizez=".002" posz="0.002" posx="-0.0015"/>
+        <!--<inertial>-->
+        <!--<mass value="10"/>-->
+        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        <!--</inertial>-->
+    </link>
+
+    <joint name="motor4joint" type="revolute">
+        <parent link="motor3bridge4"/>
+        <child link="motor4link"/>
+        <origin xyz="0 0 .002"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="motor4link">
+        <xacro:motor rotx="${pi}" posy=".0095" posz=".0145"/>
+        <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
     </link>
 
 </robot>

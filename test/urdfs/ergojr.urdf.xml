@@ -6,6 +6,9 @@
   <material name="black">
     <color rgba="0 0 0 1"/>
   </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
   <link name="base">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0.0025"/>
@@ -108,14 +111,14 @@
       </geometry>
     </collision>
     <visual>
-      <origin rpy="0 0 0" xyz="0.015 0 0.01725"/>
+      <origin rpy="0 0 0" xyz="0.0145 0 0.01725"/>
       <geometry>
         <box size="0.005 0.02 0.0345"/>
       </geometry>
       <material name="white"/>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0.015 0 0.01725"/>
+      <origin rpy="0 0 0" xyz="0.0145 0 0.01725"/>
       <geometry>
         <box size="0.005 0.02 0.0345"/>
       </geometry>
@@ -134,14 +137,14 @@
   </joint>
   <link name="motor2link">
     <visual>
-      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.001 0 0.0085"/>
+      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
       <geometry>
         <box size=".024 .035 .027"/>
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
-      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.001 0 0.0085"/>
+      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
       <geometry>
         <box size=".024 .035 .027"/>
       </geometry>
@@ -150,5 +153,119 @@
       <mass value=".017"/>
       <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
     </inertial>
+  </link>
+  <joint name="motor2link_to_motor2bridge3" type="fixed">
+    <parent link="motor2link"/>
+    <child link="motor2bridge3"/>
+    <origin xyz="0 0 .019"/>
+  </joint>
+  <link name="motor2bridge3">
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.016 0 0.0225"/>
+      <geometry>
+        <box size="0.002 0.02 0.045"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.016 0 0.0225"/>
+      <geometry>
+        <box size="0.002 0.02 0.045"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0145 0 0.0225"/>
+      <geometry>
+        <box size="0.005 0.02 0.045"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0145 0 0.0225"/>
+      <geometry>
+        <box size="0.005 0.02 0.045"/>
+      </geometry>
+    </collision>
+    <!--<inertial>-->
+    <!--<mass value="10"/>-->
+    <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    <!--</inertial>-->
+  </link>
+  <joint name="motor3joint" type="revolute">
+    <parent link="motor2bridge3"/>
+    <child link="motor3link"/>
+    <origin xyz="0 0 .035"/>
+    <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+  <link name="motor3link">
+    <visual>
+      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value=".017"/>
+      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+    </inertial>
+  </link>
+  <joint name="motor3link_to_motor2bridge3" type="fixed">
+    <parent link="motor3link"/>
+    <child link="motor3bridge4"/>
+    <origin xyz="0 0 .026"/>
+  </joint>
+  <link name="motor3bridge4">
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.0015 0 0.002"/>
+      <geometry>
+        <box size="0.027 0.02 0.002"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.0015 0 0.002"/>
+      <geometry>
+        <box size="0.027 0.02 0.002"/>
+      </geometry>
+    </collision>
+    <!--<inertial>-->
+    <!--<mass value="10"/>-->
+    <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    <!--</inertial>-->
+  </link>
+  <joint name="motor4joint" type="revolute">
+    <parent link="motor3bridge4"/>
+    <child link="motor4link"/>
+    <origin xyz="0 0 .002"/>
+    <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="motor4link">
+    <visual>
+      <origin rpy="3.14159265359 0 0" xyz="0 0.0095 0.0145"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="3.14159265359 0 0" xyz="0 0.0095 0.0145"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value=".017"/>
+      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+    </inertial>
+    <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
   </link>
 </robot>
