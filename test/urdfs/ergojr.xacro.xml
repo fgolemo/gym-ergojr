@@ -230,7 +230,32 @@
 
     <link name="motor5link">
         <xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095"/>
+    </link>
+
+
+    <joint name="motor5link_to_motor5bridge6" type="fixed">
+        <parent link="motor5link"/>
+        <child link="motor5bridge6"/>
+        <origin xyz=".0 .019 .0"/>
+    </joint>
+
+    <link name="motor5bridge6">
+
+        <xacro:box2 sizex=".002" sizey=".045" sizez=".02" posx="-.016" posy=".0225"/>
+        <xacro:box2 sizex=".004" sizey=".045" sizez=".02" posx=".014" posy=".0225"/>
+    </link>
+
+    <joint name="motor6joint" type="revolute">
+        <parent link="motor5bridge6"/>
+        <child link="motor6link"/>
+        <origin xyz="0 0.035 0"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <link name="motor6link">
         <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
+        <xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095"/>
     </link>
 
 </robot>

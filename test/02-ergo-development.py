@@ -31,7 +31,7 @@ for i in range(p.getNumJoints(robot)):
     print(p.getJointInfo(robot, i))
 
 # leftWheels = [6,7]
-motors = [2, 3, 5, 7, 9]
+motors = [2, 3, 5, 7, 9, 11]
 
 debugParams = []
 
