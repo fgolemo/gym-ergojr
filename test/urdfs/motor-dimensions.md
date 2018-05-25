@@ -10,12 +10,21 @@
 - depth mass: 24mm
 - weight: 17g
 - rotation center: 27mm on height
+- i_h = 1/12 * 0.017 * (0.02^2 + 0.024^2) = 0.0000013826
+- i_w = 1/12 * 0.017 * (0.03^2 + 0.024^2) = 0.000002091
+- i_d = 1/12 * 0.017 * (0.02^2 + 0.03^2) = 0.00000184166
 
 ### Base
 
-- diameter:15mm
+- diameter: 15mm
 - height: 5mm
 - first motor starts: 5mm off plate
+- first motor center: 35mm off center
+
+### Static First Link
+
+- diameter: 55mm
+- height: 3mm
 
 ### LongU Link
 

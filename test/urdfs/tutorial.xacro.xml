@@ -18,24 +18,28 @@
     </material>
 
     <xacro:macro name="cylinder2" params="orientation length radius color">
-            <visual>
-                <origin rpy="${orientation} 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder length="${length}" radius="${radius}"/>
-                </geometry>
-                <material name="${color}"/>
-            </visual>
-            <collision>
-                <origin rpy="${orientation} 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder length="${length}" radius="${radius}"/>
-                </geometry>
-            </collision>
+        <visual>
+            <origin rpy="${orientation} 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+        <collision>
+            <origin rpy="${orientation} 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+        </collision>
     </xacro:macro>
 
     <xacro:macro name="wheel" params="legprefix wheelprefix reflect">
         <link name="${legprefix}_${wheelprefix}_wheel">
             <xacro:cylinder2 color="black" orientation="${pihalf}" length="0.1" radius="0.035"/>
+            <inertial>
+                <mass value="0.01"/>
+                <inertia ixx="0.04" ixy="0.0" ixz="0.0" iyy="0.04" iyz="0.0" izz="0.02"/>
+            </inertial>
         </link>
 
         <joint name="${legprefix}_${wheelprefix}_wheel_joint" type="continuous">
@@ -85,6 +89,10 @@
 
     <link name="base_link">
         <xacro:cylinder2 color="blue" orientation="0" length="${bodyHeight}" radius="${bodyRadius}"/>
+        <inertial>
+            <mass value="10"/>
+            <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+        </inertial>
     </link>
 
     <xacro:leg prefix="right" reflect="-1"/>

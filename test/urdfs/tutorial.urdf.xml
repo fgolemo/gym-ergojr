@@ -23,6 +23,10 @@
         <cylinder length="0.6" radius="0.2"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="10"/>
+      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+    </inertial>
   </link>
   <link name="right_leg">
     <visual>
@@ -65,6 +69,10 @@
         <cylinder length="0.1" radius="0.035"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.04" ixy="0.0" ixz="0.0" iyy="0.04" iyz="0.0" izz="0.02"/>
+    </inertial>
   </link>
   <joint name="right_front_wheel_joint" type="continuous">
     <parent link="right_base"/>
@@ -86,6 +94,10 @@
         <cylinder length="0.1" radius="0.035"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.04" ixy="0.0" ixz="0.0" iyy="0.04" iyz="0.0" izz="0.02"/>
+    </inertial>
   </link>
   <joint name="right_back_wheel_joint" type="continuous">
     <parent link="right_base"/>
@@ -134,6 +146,10 @@
         <cylinder length="0.1" radius="0.035"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.04" ixy="0.0" ixz="0.0" iyy="0.04" iyz="0.0" izz="0.02"/>
+    </inertial>
   </link>
   <joint name="left_front_wheel_joint" type="continuous">
     <parent link="left_base"/>
@@ -155,6 +171,10 @@
         <cylinder length="0.1" radius="0.035"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.04" ixy="0.0" ixz="0.0" iyy="0.04" iyz="0.0" izz="0.02"/>
+    </inertial>
   </link>
   <joint name="left_back_wheel_joint" type="continuous">
     <parent link="left_base"/>

@@ -1,0 +1,154 @@
+<?xml version="1.0" ?>
+<robot name="myfirst" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="pi" value="3.14159265359"/>
+    <xacro:property name="pihalf" value="${pi/2}"/>
+
+    <material name="white">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
+
+    <xacro:macro name="cylinder2" params="length radius color:=white
+                                        rotx:=0 roty:=0 rotz:=0
+                                        posx:=0 posy:=0 posz:=0 ">
+        <visual>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+        <collision>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+        </collision>
+    </xacro:macro>
+
+
+    <xacro:macro name="motor" params="rotx:=0 roty:=0 rotz:=0
+                                    posx:=0 posy:=0 posz:=0">
+        <visual>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <box size=".024 .035 .027"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <box size=".024 .035 .027"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value=".017"/>
+            <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="box2" params="sizex sizey sizez color:=white
+                                    rotx:=0 roty:=0 rotz:=0
+                                    posx:=0 posy:=0 posz:=0 ">
+        <visual>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <box size="${sizex} ${sizey} ${sizez}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+        <collision>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <box size="${sizex} ${sizey} ${sizez}"/>
+            </geometry>
+        </collision>
+    </xacro:macro>
+
+    <xacro:macro name="wheel" params="legprefix wheelprefix reflect">
+        <link name="${legprefix}_${wheelprefix}_wheel">
+            <xacro:cylinder2 color="black" orientation="${pihalf}" length="0.1" radius="0.035"/>
+            <inertial>
+                <mass value="0.01"/>
+                <inertia ixx="0.04" ixy="0.0" ixz="0.0" iyy="0.04" iyz="0.0" izz="0.02"/>
+            </inertial>
+        </link>
+
+        <joint name="${legprefix}_${wheelprefix}_wheel_joint" type="continuous">
+            <parent link="${legprefix}_base"/>
+            <child link="${legprefix}_${wheelprefix}_wheel"/>
+            <origin rpy="0 0 0" xyz="${reflect*0.133333333333} 0 -0.085"/>
+            <axis xyz="0 1 0"/>
+        </joint>
+    </xacro:macro>
+
+
+    <link name="base">
+        <xacro:cylinder2 length="0.005" radius="0.075" posz=".0025"/>
+        <!--<inertial>-->
+        <!--<mass value="10"/>-->
+        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        <!--</inertial>-->
+    </link>
+
+
+    <joint name="base_to_static" type="fixed">
+        <parent link="base"/>
+        <child link="static_first_link"/>
+        <origin xyz="0 .038 0.005"/>
+    </joint>
+
+    <link name="static_first_link">
+        <xacro:cylinder2 length="0.003" radius="0.0275" posz=".0015"/>
+        <!--<inertial>-->
+        <!--<mass value="10"/>-->
+        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        <!--</inertial>-->
+    </link>
+
+    <joint name="motor1_to_static" type="fixed">
+        <parent link="static_first_link"/>
+        <child link="motor1link"/>
+        <origin xyz="0 -.010 .003"/>
+    </joint>
+
+    <link name="motor1link">
+        <xacro:motor posz="0.0135"/>
+    </link>
+
+    <joint name="motor1joint" type="revolute">
+        <parent link="motor1link"/>
+        <child link="link1_bottom"/>
+        <origin rpy="0 0 0" xyz="0 .0095 .027"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="link1_bottom">
+        <xacro:box2 sizex=".034" sizey=".02" sizez=".002" posz="0.001"/>
+        <xacro:box2 sizex=".002" sizey=".02" sizez=".0345" posz="0.01725" posx="-0.016"/>
+        <xacro:box2 sizex=".005" sizey=".02" sizez=".0345" posz="0.01725" posx="0.015"/>
+
+        <!--<inertial>-->
+        <!--<mass value="10"/>-->
+        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        <!--</inertial>-->
+    </link>
+
+    <joint name="motor2joint" type="revolute">
+        <parent link="link1_bottom"/>
+        <child link="motor2link"/>
+        <origin xyz="0 0 .024"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <link name="motor2link">
+        <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.001" posz="0.0085"/>
+    </link>
+
+</robot>

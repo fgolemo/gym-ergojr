@@ -16,7 +16,7 @@ cubeStartPos = [0, 0, 0.5]  # RGB = xyz
 cubeStartOrientation = p.getQuaternionFromEuler([0, 0, 0])  # rotated around which axis? # np.deg2rad(90)
 # rotating a standing cylinder around the y axis, puts it flat onto the x axis
 
-robot_file = URDF("urdfs/tutorial", force_recompile=True).get_path()
+robot_file = URDF("urdfs/tutorial2.urdf", force_recompile=True).get_path()
 robot = p.loadURDF(robot_file, cubeStartPos, cubeStartOrientation)
 
 for i in range(p.getNumJoints(robot)):
