@@ -49,12 +49,17 @@
             </geometry>
         </collision>
         <inertial>
-            <mass value=".017"/>
-            <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+            <!--ACTUAL MASS-->
+            <!--<mass value=".017"/>-->
+
+            <!--WORKING MASS-->
+            <mass value=".1"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+            <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
         </inertial>
     </xacro:macro>
 
-    <xacro:macro name="box2" params="sizex sizey sizez color:=white
+    <xacro:macro name="box2" params="sizex sizey sizez color:=white nocoll:=0
                                     rotx:=0 roty:=0 rotz:=0
                                     posx:=0 posy:=0 posz:=0 ">
         <visual>
@@ -64,40 +69,25 @@
             </geometry>
             <material name="${color}"/>
         </visual>
-        <collision>
-            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
-            <geometry>
-                <box size="${sizex} ${sizey} ${sizez}"/>
-            </geometry>
-        </collision>
+
+        <xacro:unless value="${nocoll == 1}">
+            <collision>
+                <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+                <geometry>
+                    <box size="${sizex} ${sizey} ${sizez}"/>
+                </geometry>
+            </collision>
+        </xacro:unless>
     </xacro:macro>
-
-    <xacro:macro name="wheel" params="legprefix wheelprefix reflect">
-        <link name="${legprefix}_${wheelprefix}_wheel">
-            <xacro:cylinder2 color="black" orientation="${pihalf}" length="0.1" radius="0.035"/>
-            <inertial>
-                <mass value="0.01"/>
-                <inertia ixx="0.04" ixy="0.0" ixz="0.0" iyy="0.04" iyz="0.0" izz="0.02"/>
-            </inertial>
-        </link>
-
-        <joint name="${legprefix}_${wheelprefix}_wheel_joint" type="continuous">
-            <parent link="${legprefix}_base"/>
-            <child link="${legprefix}_${wheelprefix}_wheel"/>
-            <origin rpy="0 0 0" xyz="${reflect*0.133333333333} 0 -0.085"/>
-            <axis xyz="0 1 0"/>
-        </joint>
-    </xacro:macro>
-
 
     <link name="base">
         <xacro:cylinder2 length="0.005" radius="0.075" posz=".0025"/>
-        <!--<inertial>-->
-        <!--<mass value="10"/>-->
-        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-        <!--</inertial>-->
+        <inertial>
+            <mass value=".038"/>
+            <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
     </link>
-
 
     <joint name="base_to_static" type="fixed">
         <parent link="base"/>
@@ -105,12 +95,22 @@
         <origin xyz="0 .038 0.005"/>
     </joint>
 
+    <!--<joint name="base_to_measure" type="fixed">-->
+    <!--<parent link="base"/>-->
+    <!--<child link="ruler"/>-->
+    <!--</joint>-->
+
+    <!--<link name="ruler">-->
+    <!--<xacro:box2 nocoll="1" sizex=".02" sizey=".02" sizez=".17" color="red" posz=".085"/>-->
+    <!--</link>-->
+
     <link name="static_first_link">
         <xacro:cylinder2 length="0.003" radius="0.0275" posz=".0015"/>
-        <!--<inertial>-->
-        <!--<mass value="10"/>-->
-        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-        <!--</inertial>-->
+        <inertial>
+            <mass value="0.011"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
     </link>
 
     <joint name="motor1_to_static" type="fixed">
@@ -136,10 +136,11 @@
         <xacro:box2 sizex=".002" sizey=".02" sizez=".0345" posz="0.01725" posx="-0.016"/>
         <xacro:box2 sizex=".005" sizey=".02" sizez=".0345" posz="0.01725" posx="0.0145"/>
 
-        <!--<inertial>-->
-        <!--<mass value="10"/>-->
-        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-        <!--</inertial>-->
+        <inertial>
+            <mass value=".005"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
     </link>
 
     <joint name="motor2joint" type="revolute">
@@ -163,10 +164,11 @@
     <link name="motor2bridge3">
         <xacro:box2 sizex=".002" sizey=".02" sizez=".045" posx="-0.016" posz="0.0225"/>
         <xacro:box2 sizex=".005" sizey=".02" sizez=".045" posx="0.0145" posz="0.0225"/>
-        <!--<inertial>-->
-        <!--<mass value="10"/>-->
-        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-        <!--</inertial>-->
+        <inertial>
+            <mass value=".0045"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
     </link>
 
     <joint name="motor3joint" type="revolute">
@@ -189,10 +191,11 @@
 
     <link name="motor3bridge4">
         <xacro:box2 sizex=".027" sizey=".02" sizez=".002" posz="0.002" posx="-0.0015"/>
-        <!--<inertial>-->
-        <!--<mass value="10"/>-->
-        <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-        <!--</inertial>-->
+        <inertial>
+            <mass value=".001"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
     </link>
 
     <joint name="motor4joint" type="revolute">
@@ -218,6 +221,11 @@
         <xacro:box2 sizex=".002" sizey=".045" sizez=".02" posx="-.016" posy=".0225"/>
         <xacro:box2 sizex=".003" sizey=".005" sizez=".02" posx="-.0135" posy=".0025"/>
         <xacro:box2 sizex=".004" sizey=".045" sizez=".02" posx=".014" posy=".0225"/>
+        <inertial>
+            <mass value=".0045"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
     </link>
 
     <joint name="motor5joint" type="revolute">
@@ -240,9 +248,13 @@
     </joint>
 
     <link name="motor5bridge6">
-
         <xacro:box2 sizex=".002" sizey=".045" sizez=".02" posx="-.016" posy=".0225"/>
         <xacro:box2 sizex=".004" sizey=".045" sizez=".02" posx=".014" posy=".0225"/>
+        <inertial>
+            <mass value=".0045"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
     </link>
 
     <joint name="motor6joint" type="revolute">
@@ -256,6 +268,51 @@
     <link name="motor6link">
         <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
         <xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095"/>
+    </link>
+
+    <joint name="motor6link_to_penholder" type="fixed">
+        <parent link="motor6link"/>
+        <child link="penholder"/>
+        <origin xyz=".0 .030 .0"/>
+    </joint>
+
+    <link name="penholder">
+        <xacro:box2 sizex=".024" sizey=".004" sizez=".02" posy="-0.001"/>
+        <xacro:cylinder2 length="0.02" radius="0.007" posy=".007"/>
+        <inertial>
+            <mass value=".004"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="penholder_to_upperpen" type="fixed">
+        <parent link="penholder"/>
+        <child link="upperpen"/>
+        <origin xyz=".0 .007 .01"/>
+    </joint>
+
+    <link name="upperpen">
+        <xacro:cylinder2 length="0.135" radius="0.0035" posz=".0675" color="red"/>
+        <inertial>
+            <mass value=".003"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="penholder_to_lowerpen" type="fixed">
+        <parent link="penholder"/>
+        <child link="lowerpen"/>
+        <origin xyz=".0 .007 -.01"/>
+    </joint>
+
+    <link name="lowerpen">
+        <xacro:cylinder2 length="0.015" radius="0.0035" posz="-.0075" color="red"/>
+        <inertial>
+            <mass value=".002"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+        </inertial>
     </link>
 
 </robot>

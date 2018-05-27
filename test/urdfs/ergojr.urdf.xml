@@ -23,16 +23,24 @@
         <cylinder length="0.005" radius="0.075"/>
       </geometry>
     </collision>
-    <!--<inertial>-->
-    <!--<mass value="10"/>-->
-    <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-    <!--</inertial>-->
+    <inertial>
+      <mass value=".038"/>
+      <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
   </link>
   <joint name="base_to_static" type="fixed">
     <parent link="base"/>
     <child link="static_first_link"/>
     <origin xyz="0 .038 0.005"/>
   </joint>
+  <!--<joint name="base_to_measure" type="fixed">-->
+  <!--<parent link="base"/>-->
+  <!--<child link="ruler"/>-->
+  <!--</joint>-->
+  <!--<link name="ruler">-->
+  <!--<xacro:box2 nocoll="1" sizex=".02" sizey=".02" sizez=".17" color="red" posz=".085"/>-->
+  <!--</link>-->
   <link name="static_first_link">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0.0015"/>
@@ -47,10 +55,11 @@
         <cylinder length="0.003" radius="0.0275"/>
       </geometry>
     </collision>
-    <!--<inertial>-->
-    <!--<mass value="10"/>-->
-    <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-    <!--</inertial>-->
+    <inertial>
+      <mass value="0.011"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
   </link>
   <joint name="motor1_to_static" type="fixed">
     <parent link="static_first_link"/>
@@ -72,8 +81,12 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value=".017"/>
-      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+      <!--ACTUAL MASS-->
+      <!--<mass value=".017"/>-->
+      <!--WORKING MASS-->
+      <mass value=".1"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+      <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
   <joint name="motor1joint" type="revolute">
@@ -123,10 +136,11 @@
         <box size="0.005 0.02 0.0345"/>
       </geometry>
     </collision>
-    <!--<inertial>-->
-    <!--<mass value="10"/>-->
-    <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-    <!--</inertial>-->
+    <inertial>
+      <mass value=".005"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
   </link>
   <joint name="motor2joint" type="revolute">
     <parent link="link1_bottom"/>
@@ -150,8 +164,12 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value=".017"/>
-      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+      <!--ACTUAL MASS-->
+      <!--<mass value=".017"/>-->
+      <!--WORKING MASS-->
+      <mass value=".1"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+      <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
   <joint name="motor2link_to_motor2bridge3" type="fixed">
@@ -186,10 +204,11 @@
         <box size="0.005 0.02 0.045"/>
       </geometry>
     </collision>
-    <!--<inertial>-->
-    <!--<mass value="10"/>-->
-    <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-    <!--</inertial>-->
+    <inertial>
+      <mass value=".0045"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
   </link>
   <joint name="motor3joint" type="revolute">
     <parent link="motor2bridge3"/>
@@ -213,8 +232,12 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value=".017"/>
-      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+      <!--ACTUAL MASS-->
+      <!--<mass value=".017"/>-->
+      <!--WORKING MASS-->
+      <mass value=".1"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+      <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
   <joint name="motor3link_to_motor2bridge3" type="fixed">
@@ -236,10 +259,11 @@
         <box size="0.027 0.02 0.002"/>
       </geometry>
     </collision>
-    <!--<inertial>-->
-    <!--<mass value="10"/>-->
-    <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-    <!--</inertial>-->
+    <inertial>
+      <mass value=".001"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
   </link>
   <joint name="motor4joint" type="revolute">
     <parent link="motor3bridge4"/>
@@ -263,8 +287,12 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value=".017"/>
-      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+      <!--ACTUAL MASS-->
+      <!--<mass value=".017"/>-->
+      <!--WORKING MASS-->
+      <mass value=".1"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+      <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
     <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
   </link>
@@ -313,6 +341,11 @@
         <box size="0.004 0.045 0.02"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value=".0045"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
   </link>
   <joint name="motor5joint" type="revolute">
     <parent link="motor4bridge5"/>
@@ -336,8 +369,12 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value=".017"/>
-      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+      <!--ACTUAL MASS-->
+      <!--<mass value=".017"/>-->
+      <!--WORKING MASS-->
+      <mass value=".1"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+      <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
   <joint name="motor5link_to_motor5bridge6" type="fixed">
@@ -372,6 +409,11 @@
         <box size="0.004 0.045 0.02"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value=".0045"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
   </link>
   <joint name="motor6joint" type="revolute">
     <parent link="motor5bridge6"/>
@@ -396,8 +438,99 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value=".017"/>
-      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+      <!--ACTUAL MASS-->
+      <!--<mass value=".017"/>-->
+      <!--WORKING MASS-->
+      <mass value=".1"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+      <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+    </inertial>
+  </link>
+  <joint name="motor6link_to_penholder" type="fixed">
+    <parent link="motor6link"/>
+    <child link="penholder"/>
+    <origin xyz=".0 .030 .0"/>
+  </joint>
+  <link name="penholder">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 -0.001 0"/>
+      <geometry>
+        <box size="0.024 0.004 0.02"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.001 0"/>
+      <geometry>
+        <box size="0.024 0.004 0.02"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0.007 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.007"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0.007 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.007"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value=".004"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
+  </link>
+  <joint name="penholder_to_upperpen" type="fixed">
+    <parent link="penholder"/>
+    <child link="upperpen"/>
+    <origin xyz=".0 .007 .01"/>
+  </joint>
+  <link name="upperpen">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0675"/>
+      <geometry>
+        <cylinder length="0.135" radius="0.0035"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0675"/>
+      <geometry>
+        <cylinder length="0.135" radius="0.0035"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value=".003"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
+  </link>
+  <joint name="penholder_to_lowerpen" type="fixed">
+    <parent link="penholder"/>
+    <child link="lowerpen"/>
+    <origin xyz=".0 .007 -.01"/>
+  </joint>
+  <link name="lowerpen">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.0075"/>
+      <geometry>
+        <cylinder length="0.015" radius="0.0035"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.0075"/>
+      <geometry>
+        <cylinder length="0.015" radius="0.0035"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value=".002"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
     </inertial>
   </link>
 </robot>
