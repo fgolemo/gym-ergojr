@@ -4,6 +4,7 @@ import time
 import pybullet_data
 import numpy as np
 
+from gym_ergojr import get_scene
 from gym_ergojr.utils.urdf_helper import URDF
 
 physicsClient = p.connect(p.GUI)  # or p.DIRECT for non-graphical version
@@ -24,7 +25,9 @@ startPos = [0, 0, 0]  # RGB = xyz
 startOrientation = p.getQuaternionFromEuler([0, 0, 0])  # rotated around which axis? # np.deg2rad(90)
 # rotating a standing cylinder around the y axis, puts it flat onto the x axis
 
-robot_file = URDF("urdfs/ergojr-sword", force_recompile=True).get_path()
+xml_path = get_scene("ergojr-sword")
+
+robot_file = URDF(xml_path, force_recompile=True).get_path()
 robot = p.loadURDF(robot_file, startPos, startOrientation, useFixedBase=1)
 
 for i in range(p.getNumJoints(robot)):
