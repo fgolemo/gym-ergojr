@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<robot name="ergojr" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="ergojr-penholder" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <material name="white">
     <color rgba="1 1 1 1"/>
   </material>
@@ -22,7 +22,7 @@
   <joint name="1_anchor_to_base" type="fixed">
     <parent link="1_anchor"/>
     <child link="1_base"/>
-    <origin rpy="0 0 1.570796326795" xyz="0.3 0 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
   <link name="1_base">
     <visual>
