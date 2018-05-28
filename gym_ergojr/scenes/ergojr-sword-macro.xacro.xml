@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<robot name="ergojr-sword" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="ergojr-macros.xacro.xml"/>
+    <xacro:include filename="ergojr-base.xacro.xml"/>
+
+    <xacro:macro name="ergojr-sword" params="prefix:=1 rotx_base:=0 roty_base:=0 rotz_base:=0
+                                        posx_base:=0 posy_base:=0 posz_base:=0 ">
+
+        <xacro:ergojr prefix="${prefix}" rotx_base="${rotx_base}"
+                      roty_base="${roty_base}" rotz_base="${rotz_base}"
+                      posx_base="${posx_base}" posy_base="${posy_base}"
+                      posz_base="${posz_base}"/>
+
+        <joint name="${prefix}_motor6link_to_penholder" type="fixed">
+            <parent link="${prefix}_motor6link"/>
+            <child link="${prefix}_penholder"/>
+            <origin xyz=".0 .030 .0"/>
+        </joint>
+
+        <link name="${prefix}_penholder">
+            <xacro:box2 sizex=".024" sizey=".004" sizez=".02" posy="-0.001"/>
+            <xacro:cylinder2 length="0.02" radius="0.007" posy=".007"/>
+            <inertial>
+                <mass value=".004"/>
+                <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+                <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+            </inertial>
+        </link>
+
+        <joint name="${prefix}_penholder_to_upperpen" type="fixed">
+            <parent link="${prefix}_penholder"/>
+            <child link="${prefix}_upperpen"/>
+            <origin xyz=".0 .007 .01"/>
+        </joint>
+
+        <link name="${prefix}_upperpen">
+            <xacro:cylinder2 length="0.135" radius="0.0035" posz=".0675" color="red"/>
+            <inertial>
+                <mass value=".003"/>
+                <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+                <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+            </inertial>
+        </link>
+
+        <joint name="${prefix}_penholder_to_lowerpen" type="fixed">
+            <parent link="${prefix}_penholder"/>
+            <child link="${prefix}_lowerpen"/>
+            <origin xyz=".0 .007 -.01"/>
+        </joint>
+
+        <link name="${prefix}_lowerpen">
+            <xacro:cylinder2 length="0.015" radius="0.0035" posz="-.0075" color="red"/>
+            <inertial>
+                <mass value=".002"/>
+                <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            </inertial>
+        </link>
+    </xacro:macro>
+</robot>

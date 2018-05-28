@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<robot name="ergojr-sword" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="ergojr-shield" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <material name="white">
     <color rgba="1 1 1 1"/>
   </material>
@@ -479,91 +479,55 @@
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
-  <joint name="1_motor6link_to_penholder" type="fixed">
+  <joint name="1_motor6link_to_shieldholder" type="fixed">
     <parent link="1_motor6link"/>
-    <child link="1_penholder"/>
-    <origin xyz=".0 .030 .0"/>
+    <child link="1_shieldholder"/>
+    <origin xyz=".0 .03 .0"/>
   </joint>
-  <link name="1_penholder">
+  <link name="1_shieldholder">
     <visual>
-      <origin rpy="0 0 0" xyz="0 -0.001 0"/>
+      <origin rpy="0 0 0" xyz="0 0.003 0"/>
       <geometry>
-        <box size="0.024 0.004 0.02"/>
+        <box size="0.024 0.012 0.02"/>
       </geometry>
       <material name="white"/>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 -0.001 0"/>
+      <origin rpy="0 0 0" xyz="0 0.003 0"/>
       <geometry>
-        <box size="0.024 0.004 0.02"/>
+        <box size="0.024 0.012 0.02"/>
       </geometry>
     </collision>
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0.007 0"/>
-      <geometry>
-        <cylinder length="0.02" radius="0.007"/>
-      </geometry>
-      <material name="white"/>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0.007 0"/>
-      <geometry>
-        <cylinder length="0.02" radius="0.007"/>
-      </geometry>
-    </collision>
+    <!--<xacro:cylinder2 length="0.02" radius="0.007" posy=".007"/>-->
     <inertial>
       <mass value=".004"/>
       <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
     </inertial>
   </link>
-  <joint name="1_penholder_to_upperpen" type="fixed">
-    <parent link="1_penholder"/>
-    <child link="1_upperpen"/>
-    <origin xyz=".0 .007 .01"/>
+  <joint name="1_shieldholder_to_shield" type="fixed">
+    <parent link="1_shieldholder"/>
+    <child link="1_shield"/>
+    <origin xyz=".0 .0129 .0"/>
   </joint>
-  <link name="1_upperpen">
+  <link name="1_shield">
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0.0675"/>
+      <origin rpy="1.570796326795 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.135" radius="0.0035"/>
+        <cylinder length="0.005" radius="0.0235"/>
       </geometry>
       <material name="red"/>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0.0675"/>
+      <origin rpy="1.570796326795 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.135" radius="0.0035"/>
+        <cylinder length="0.005" radius="0.0235"/>
       </geometry>
     </collision>
     <inertial>
       <mass value=".003"/>
       <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
-    </inertial>
-  </link>
-  <joint name="1_penholder_to_lowerpen" type="fixed">
-    <parent link="1_penholder"/>
-    <child link="1_lowerpen"/>
-    <origin xyz=".0 .007 -.01"/>
-  </joint>
-  <link name="1_lowerpen">
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 -0.0075"/>
-      <geometry>
-        <cylinder length="0.015" radius="0.0035"/>
-      </geometry>
-      <material name="red"/>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 -0.0075"/>
-      <geometry>
-        <cylinder length="0.015" radius="0.0035"/>
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value=".002"/>
-      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
     </inertial>
   </link>
 </robot>

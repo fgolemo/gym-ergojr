@@ -9,7 +9,7 @@ from gym_ergojr.utils.urdf_helper import URDF
 
 physicsClient = p.connect(p.GUI)  # or p.DIRECT for non-graphical version
 p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
-p.resetDebugVisualizerCamera(cameraDistance=0.4,
+p.resetDebugVisualizerCamera(cameraDistance=0.45,
                              cameraYaw=135,
                              cameraPitch=-45,
                              cameraTargetPosition=[0, 0, 0])

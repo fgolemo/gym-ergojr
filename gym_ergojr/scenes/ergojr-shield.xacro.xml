@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
-<robot name="ergojr-sword" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="ergojr-shield" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <xacro:include filename="ergojr-macros.xacro.xml"/>
     <xacro:include filename="ergojr-base.xacro.xml"/>
-    <xacro:include filename="ergojr-sword-macro.xacro.xml"/>
+    <xacro:include filename="ergojr-shield-macro.xacro.xml"/>
 
-    <xacro:ergojr-sword prefix="1"
+    <xacro:ergojr-shield prefix="1"
                          rotx_base="0" roty_base="0" rotz_base="0"
                          posx_base="0" posy_base="0" posz_base="0"/>
 </robot>
