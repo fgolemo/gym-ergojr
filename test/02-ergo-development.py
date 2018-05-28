@@ -24,14 +24,14 @@ startPos = [0, 0, 0]  # RGB = xyz
 startOrientation = p.getQuaternionFromEuler([0, 0, 0])  # rotated around which axis? # np.deg2rad(90)
 # rotating a standing cylinder around the y axis, puts it flat onto the x axis
 
-robot_file = URDF("urdfs/ergojr", force_recompile=True).get_path()
+robot_file = URDF("urdfs/ergojr-sword", force_recompile=True).get_path()
 robot = p.loadURDF(robot_file, startPos, startOrientation, useFixedBase=1)
 
 for i in range(p.getNumJoints(robot)):
     print(p.getJointInfo(robot, i))
 
 # leftWheels = [6,7]
-motors = [2, 3, 5, 7, 9, 11]
+motors = [3, 4, 6, 8, 10, 12]
 
 debugParams = []
 

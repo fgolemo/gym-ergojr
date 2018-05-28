@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<robot name="ergojr-penholder" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="ergojr-macros.xacro.xml"/>
+    <xacro:include filename="ergojr-base.xacro.xml"/>
+
+    <xacro:ergojr prefix="1" rotx_base="0" roty_base="0" rotz_base="0"
+                  posx_base="0" posy_base="0" posz_base="0"/>
+
+    <joint name="motor6link_to_penholder" type="fixed">
+        <parent link="1_motor6link"/>
+        <child link="penholder"/>
+        <origin xyz=".0 .030 .0"/>
+    </joint>
+
+    <link name="penholder">
+        <xacro:box2 sizex=".024" sizey=".004" sizez=".02" posy="-0.001"/>
+        <xacro:cylinder2 length="0.02" radius="0.007" posy=".007"/>
+        <inertial>
+            <mass value=".004"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+</robot>

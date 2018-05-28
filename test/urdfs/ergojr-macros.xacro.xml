@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<robot name="macros" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="pi" value="3.14159265359"/>
+    <xacro:property name="pihalf" value="${pi/2}"/>
+
+    <material name="white">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
+
+    <xacro:macro name="cylinder2" params="length radius color:=white
+                                        rotx:=0 roty:=0 rotz:=0
+                                        posx:=0 posy:=0 posz:=0 ">
+        <visual>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+        <collision>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+        </collision>
+    </xacro:macro>
+
+
+    <xacro:macro name="motor" params="rotx:=0 roty:=0 rotz:=0
+                                    posx:=0 posy:=0 posz:=0">
+        <visual>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <box size=".024 .035 .027"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <box size=".024 .035 .027"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <!--ACTUAL MASS-->
+            <!--<mass value=".017"/>-->
+
+            <!--WORKING MASS-->
+            <mass value=".1"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+            <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="box2" params="sizex sizey sizez color:=white nocoll:=0
+                                    rotx:=0 roty:=0 rotz:=0
+                                    posx:=0 posy:=0 posz:=0 ">
+        <visual>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <box size="${sizex} ${sizey} ${sizez}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+
+        <xacro:unless value="${nocoll == 1}">
+            <collision>
+                <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+                <geometry>
+                    <box size="${sizex} ${sizey} ${sizez}"/>
+                </geometry>
+            </collision>
+        </xacro:unless>
+    </xacro:macro>
+</robot>
