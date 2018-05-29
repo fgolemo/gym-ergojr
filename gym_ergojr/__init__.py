@@ -10,7 +10,7 @@ def get_scene(name):
 
 
 register(
-    id='ErgoFightStatic-Graphical-Shield-Move-HalfRand-v0',
+    id='ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0',
     entry_point='gym_ergojr.envs:ErgoFightStaticEnv',
     timestep_limit=1000,
     reward_threshold=150,
@@ -18,7 +18,7 @@ register(
 )
 
 register(
-    id='ErgoFightStatic-Headless-Shield-Move-HalfRand-v0',
+    id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0',
     entry_point='gym_ergojr.envs:ErgoFightStaticEnv',
     timestep_limit=1000,
     reward_threshold=150,

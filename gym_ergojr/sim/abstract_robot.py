@@ -31,8 +31,8 @@ class AbstractRobot():
 
         p.loadURDF("plane.urdf")
 
-        self.robots =[]
-        self.motor_ids = [3, 4, 6, 8, 10, 12] # this is consistent across different robots
+        self.robots = []
+        self.motor_ids = [3, 4, 6, 8, 10, 12]  # this is consistent across different robots
 
         # self.addModel(robot_model1)
 
@@ -49,11 +49,9 @@ class AbstractRobot():
         self.robots.append(robot_id)
 
         if self.debug:
-            print (robot_model)
+            print(robot_model)
             for i in range(p.getNumJoints(robot_id)):
                 print(p.getJointInfo(robot_id, i))
-
-
 
     def act(self, actions, robot_id):
         actions_clipped = np.pi / 2 * np.clip(actions, -1, 1)
@@ -93,9 +91,13 @@ class AbstractRobot():
         p.stepSimulation()
 
     def set(self, posvel, robot_id):
+        # !IMPORTANT set != act2... if you want the robot to stay in place
+        # you also have to call act2 to set the target position
+
         assert len(posvel) == 12
-        posvel_clipped = np.clip(posvel, -1, 1)
+        posvel_clipped = np.array(np.clip(posvel, -1, 1)).astype(np.float64)
         posvel_clipped[:6] *= np.pi / 2
+
         for i in range(6):
             p.resetJointState(
                 self.robots[robot_id],
@@ -112,3 +114,7 @@ class AbstractRobot():
             assert len(links) == 2
             hits = p.getContactPoints(robot1, robot2, links[0], links[1])
         return hits
+
+    def rest(self):
+        for i in range(len(self.robots)):
+            self.set([0] * 12, i)
