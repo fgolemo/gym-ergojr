@@ -48,15 +48,15 @@ class ErgoFightPlusWrapper(gym.Wrapper):
 
         obs_real_t2 = obs_sim_t2[:12].copy() + obs_real_t2_delta
 
-        self.unwrapped.set_state(obs_real_t2)
+        new_obs = self.unwrapped.set_state(obs_real_t2)
 
-        print("real t1:", obs_real_t1[:12].round(2))
-        print("sim_ t2:", obs_sim_t2[:12].round(2))
-        print("action_:", action.round(2))
-        print("real t2:", obs_real_t2[:12].round(2))
-        print("===")
+        # print("real t1:", obs_real_t1[:12].round(2))
+        # print("sim_ t2:", obs_sim_t2[:12].round(2))
+        # print("action_:", action.round(2))
+        # print("real t2:", obs_real_t2[:12].round(2))
+        # print("===")
 
-        return self.unwrapped._self_observe(), self.unwrapped._getReward(), self.unwrapped.done, info
+        return new_obs, self.unwrapped._getReward(), self.unwrapped.done, info
 
     def reset(self):
         self.net.zero_hidden()  # !important
@@ -72,13 +72,15 @@ def ErgoFightPlusEnv(base_env_id):
 
 if __name__ == '__main__':
     import gym_ergojr
+    import time
 
     env = gym.make("ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-Plus-v0")
 
     env.reset()
 
     for episode in range(10):
-        for step in range(10):
+        for step in range(100):
             action = env.action_space.sample()
             env.step(action)
+            time.sleep(0.1)
         env.reset()

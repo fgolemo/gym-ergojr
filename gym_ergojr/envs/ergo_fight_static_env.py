@@ -100,6 +100,10 @@ class ErgoFightStaticEnv(gym.Env):
 
     def set_state(self, posvel):
         self.robots.set(posvel, robot_id=0)
+        self.robots.act2(posvel[:6], robot_id=0)
+        obs = self.robots.observe_both() # obs needs to be taken before stepping
+        self.robots.step() # this is only there to calculate the rewards/ collisions
+        return obs
 
     def close(self):
         self.robots.close()
