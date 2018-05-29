@@ -4,7 +4,7 @@
     <xacro:include filename="ergojr-base.xacro.xml"/>
     <xacro:include filename="ergojr-shield-macro.xacro.xml"/>
 
-    <xacro:ergojr-shield prefix="1"
+    <xacro:ergojr-shield prefix="2"
                          rotx_base="0" roty_base="0" rotz_base="0"
                          posx_base="0" posy_base="0" posz_base="0"/>
 </robot>

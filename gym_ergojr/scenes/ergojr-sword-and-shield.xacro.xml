@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<robot name="ergojr-shield" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="ergojr-macros.xacro.xml"/>
+    <xacro:include filename="ergojr-base.xacro.xml"/>
+    <xacro:include filename="ergojr-shield-macro.xacro.xml"/>
+    <xacro:include filename="ergojr-sword-macro.xacro.xml"/>
+
+    <link name="root"/>
+
+    <joint name="root_to_achor1" type="fixed">
+        <parent link="root"/>
+        <child link="1_anchor"/>
+    </joint>
+
+    <joint name="root_to_achor2" type="fixed">
+        <parent link="root"/>
+        <child link="2_anchor"/>
+    </joint>
+
+    <xacro:ergojr-sword prefix="1"
+                         rotx_base="0" roty_base="0" rotz_base="0"
+                         posx_base="0" posy_base="0" posz_base="0"/>
+
+    <xacro:ergojr-shield prefix="2"
+                         rotx_base="0" roty_base="0" rotz_base="${pi}"
+                         posx_base="0" posy_base=".37" posz_base="0"/>
+</robot>

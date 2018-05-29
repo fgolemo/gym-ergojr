@@ -36,13 +36,13 @@
   <material name="red">
     <color rgba="1 0 0 1"/>
   </material>
-  <link name="1_anchor"/>
-  <joint name="1_anchor_to_base" type="fixed">
-    <parent link="1_anchor"/>
-    <child link="1_base"/>
+  <link name="2_anchor"/>
+  <joint name="2_anchor_to_base" type="fixed">
+    <parent link="2_anchor"/>
+    <child link="2_base"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="1_base">
+  <link name="2_base">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0.0025"/>
       <geometry>
@@ -62,9 +62,9 @@
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
     </inertial>
   </link>
-  <joint name="1_base_to_static" type="fixed">
-    <parent link="1_base"/>
-    <child link="1_static_first_link"/>
+  <joint name="2_base_to_static" type="fixed">
+    <parent link="2_base"/>
+    <child link="2_static_first_link"/>
     <origin xyz="0 .038 0.005"/>
   </joint>
   <!--<joint name="base_to_measure" type="fixed">-->
@@ -74,7 +74,7 @@
   <!--<link name="ruler">-->
   <!--<xacro:box2 nocoll="1" sizex=".02" sizey=".02" sizez=".17" color="red" posz=".085"/>-->
   <!--</link>-->
-  <link name="1_static_first_link">
+  <link name="2_static_first_link">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0.0015"/>
       <geometry>
@@ -94,12 +94,12 @@
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
     </inertial>
   </link>
-  <joint name="1_motor1_to_static" type="fixed">
-    <parent link="1_static_first_link"/>
-    <child link="1_motor1link"/>
+  <joint name="2_motor1_to_static" type="fixed">
+    <parent link="2_static_first_link"/>
+    <child link="2_motor1link"/>
     <origin xyz="0 -.010 .003"/>
   </joint>
-  <link name="1_motor1link">
+  <link name="2_motor1link">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0.0135"/>
       <geometry>
@@ -122,14 +122,14 @@
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
-  <joint name="1_motor1joint" type="revolute">
-    <parent link="1_motor1link"/>
-    <child link="1_link1_bottom"/>
+  <joint name="2_motor1joint" type="revolute">
+    <parent link="2_motor1link"/>
+    <child link="2_link1_bottom"/>
     <origin rpy="0 0 0" xyz="0 .0095 .027"/>
     <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <link name="1_link1_bottom">
+  <link name="2_link1_bottom">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0.001"/>
       <geometry>
@@ -175,14 +175,14 @@
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
     </inertial>
   </link>
-  <joint name="1_motor2joint" type="revolute">
-    <parent link="1_link1_bottom"/>
-    <child link="1_motor2link"/>
+  <joint name="2_motor2joint" type="revolute">
+    <parent link="2_link1_bottom"/>
+    <child link="2_motor2link"/>
     <origin xyz="0 0 .024"/>
     <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
     <axis xyz="1 0 0"/>
   </joint>
-  <link name="1_motor2link">
+  <link name="2_motor2link">
     <visual>
       <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
       <geometry>
@@ -205,12 +205,12 @@
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
-  <joint name="1_motor2link_to_motor2bridge3" type="fixed">
-    <parent link="1_motor2link"/>
-    <child link="1_motor2bridge3"/>
+  <joint name="2_motor2link_to_motor2bridge3" type="fixed">
+    <parent link="2_motor2link"/>
+    <child link="2_motor2bridge3"/>
     <origin xyz="0 0 .019"/>
   </joint>
-  <link name="1_motor2bridge3">
+  <link name="2_motor2bridge3">
     <visual>
       <origin rpy="0 0 0" xyz="-0.016 0 0.0225"/>
       <geometry>
@@ -243,14 +243,14 @@
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
     </inertial>
   </link>
-  <joint name="1_motor3joint" type="revolute">
-    <parent link="1_motor2bridge3"/>
-    <child link="1_motor3link"/>
+  <joint name="2_motor3joint" type="revolute">
+    <parent link="2_motor2bridge3"/>
+    <child link="2_motor3link"/>
     <origin xyz="0 0 .035"/>
     <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
     <axis xyz="1 0 0"/>
   </joint>
-  <link name="1_motor3link">
+  <link name="2_motor3link">
     <visual>
       <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
       <geometry>
@@ -273,12 +273,12 @@
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
-  <joint name="1_motor3link_to_motor2bridge3" type="fixed">
-    <parent link="1_motor3link"/>
-    <child link="1_motor3bridge4"/>
+  <joint name="2_motor3link_to_motor2bridge3" type="fixed">
+    <parent link="2_motor3link"/>
+    <child link="2_motor3bridge4"/>
     <origin xyz="0 0 .026"/>
   </joint>
-  <link name="1_motor3bridge4">
+  <link name="2_motor3bridge4">
     <visual>
       <origin rpy="0 0 0" xyz="-0.0015 0 0.002"/>
       <geometry>
@@ -298,14 +298,14 @@
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
     </inertial>
   </link>
-  <joint name="1_motor4joint" type="revolute">
-    <parent link="1_motor3bridge4"/>
-    <child link="1_motor4link"/>
+  <joint name="2_motor4joint" type="revolute">
+    <parent link="2_motor3bridge4"/>
+    <child link="2_motor4link"/>
     <origin xyz="0 0 .002"/>
     <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <link name="1_motor4link">
+  <link name="2_motor4link">
     <visual>
       <origin rpy="3.14159265359 0 0" xyz="0 0.0095 0.0145"/>
       <geometry>
@@ -329,12 +329,12 @@
     </inertial>
     <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
   </link>
-  <joint name="1_motor4link_to_motor4bridge5" type="fixed">
-    <parent link="1_motor4link"/>
-    <child link="1_motor4bridge5"/>
+  <joint name="2_motor4link_to_motor4bridge5" type="fixed">
+    <parent link="2_motor4link"/>
+    <child link="2_motor4bridge5"/>
     <origin xyz="0 .013 .015"/>
   </joint>
-  <link name="1_motor4bridge5">
+  <link name="2_motor4bridge5">
     <visual>
       <origin rpy="0 0 0" xyz="-0.016 0.0225 0"/>
       <geometry>
@@ -380,14 +380,14 @@
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
     </inertial>
   </link>
-  <joint name="1_motor5joint" type="revolute">
-    <parent link="1_motor4bridge5"/>
-    <child link="1_motor5link"/>
+  <joint name="2_motor5joint" type="revolute">
+    <parent link="2_motor4bridge5"/>
+    <child link="2_motor5link"/>
     <origin xyz="0 0.035 0"/>
     <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
     <axis xyz="1 0 0"/>
   </joint>
-  <link name="1_motor5link">
+  <link name="2_motor5link">
     <visual>
       <origin rpy="3.14159265359 1.570796326795 0" xyz="-0.0015 0.0095 0"/>
       <geometry>
@@ -410,12 +410,12 @@
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
-  <joint name="1_motor5link_to_motor5bridge6" type="fixed">
-    <parent link="1_motor5link"/>
-    <child link="1_motor5bridge6"/>
+  <joint name="2_motor5link_to_motor5bridge6" type="fixed">
+    <parent link="2_motor5link"/>
+    <child link="2_motor5bridge6"/>
     <origin xyz=".0 .019 .0"/>
   </joint>
-  <link name="1_motor5bridge6">
+  <link name="2_motor5bridge6">
     <visual>
       <origin rpy="0 0 0" xyz="-0.016 0.0225 0"/>
       <geometry>
@@ -448,14 +448,14 @@
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
     </inertial>
   </link>
-  <joint name="1_motor6joint" type="revolute">
-    <parent link="1_motor5bridge6"/>
-    <child link="1_motor6link"/>
+  <joint name="2_motor6joint" type="revolute">
+    <parent link="2_motor5bridge6"/>
+    <child link="2_motor6link"/>
     <origin xyz="0 0.035 0"/>
     <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
     <axis xyz="1 0 0"/>
   </joint>
-  <link name="1_motor6link">
+  <link name="2_motor6link">
     <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
     <visual>
       <origin rpy="3.14159265359 1.570796326795 0" xyz="-0.0015 0.0095 0"/>
@@ -479,12 +479,12 @@
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
-  <joint name="1_motor6link_to_shieldholder" type="fixed">
-    <parent link="1_motor6link"/>
-    <child link="1_shieldholder"/>
+  <joint name="2_motor6link_to_shieldholder" type="fixed">
+    <parent link="2_motor6link"/>
+    <child link="2_shieldholder"/>
     <origin xyz=".0 .03 .0"/>
   </joint>
-  <link name="1_shieldholder">
+  <link name="2_shieldholder">
     <visual>
       <origin rpy="0 0 0" xyz="0 0.003 0"/>
       <geometry>
@@ -505,12 +505,12 @@
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
     </inertial>
   </link>
-  <joint name="1_shieldholder_to_shield" type="fixed">
-    <parent link="1_shieldholder"/>
-    <child link="1_shield"/>
+  <joint name="2_shieldholder_to_shield" type="fixed">
+    <parent link="2_shieldholder"/>
+    <child link="2_shield"/>
     <origin xyz=".0 .0129 .0"/>
   </joint>
-  <link name="1_shield">
+  <link name="2_shield">
     <visual>
       <origin rpy="1.570796326795 0 0" xyz="0 0 0"/>
       <geometry>
