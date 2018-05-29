@@ -1,10 +1,6 @@
-import os
-import time
 import gym
 import numpy as np
 from gym import spaces
-import logging
-from tqdm import tqdm
 
 from gym_ergojr.sim.double_robot import DoubleRobot
 
@@ -70,7 +66,7 @@ class ErgoFightStaticEnv(gym.Env):
 
     def _getReward(self):
         reward = 0
-        
+
         if self.step_in_episode > 0:
             hits = self.robots.get_hits(links=(14, 14))
             if len(hits) > 0:
@@ -83,7 +79,7 @@ class ErgoFightStaticEnv(gym.Env):
         self.observation = self.robots.observe_both()
         return self.observation
 
-    def step(self, actions):
+    def step(self, actions, dry_run = False):
         self.step_in_episode += 1
 
         robot = 0
@@ -95,7 +91,15 @@ class ErgoFightStaticEnv(gym.Env):
         if self.step_in_episode % MOVE_EVERY_N_STEPS == 0:
             self.randomize(1, scaling=self.scaling)
 
-        return self._self_observe(), self._getReward(), self.done, {}
+        rew = 0
+
+        if not dry_run:
+            rew = self._getReward()
+
+        return self._self_observe(), rew, self.done, {}
+
+    def set_state(self, posvel):
+        self.robots.set(posvel, robot_id=0)
 
     def close(self):
         self.robots.close()
