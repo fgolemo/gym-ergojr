@@ -65,6 +65,10 @@ for i in range(frequency * 30):
             p.setJointMotorControl2(robots[r-1], motors[i], p.POSITION_CONTROL, targetPosition=pos)
 
     # maxForce = p.readUserDebugParameter(forceSlider)
+    hits = p.getContactPoints(robots[0], robots[1], 14, 14)
+    if len(hits) > 0:
+        print ("hit","."*np.random.randint(1,10))
+
 
     p.stepSimulation()
     time.sleep(1. / frequency)

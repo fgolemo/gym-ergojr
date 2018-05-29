@@ -103,3 +103,12 @@ class AbstractRobot():
                 targetValue=posvel_clipped[i],
                 targetVelocity=posvel_clipped[i + 6]
             )
+
+    def get_hits(self, robot1=0, robot2=1, links=None):
+        # links=(14,14) for sword+shield
+        if links is None:
+            hits = p.getContactPoints(robot1, robot2)
+        else:
+            assert len(links) == 2
+            hits = p.getContactPoints(robot1, robot2, links[0], links[1])
+        return hits
