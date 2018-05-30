@@ -9,6 +9,7 @@ from gym_ergojr.utils.urdf_helper import URDF
 
 MAX_VEL = 5  # not measured, but looks about right
 MAX_FORCE = 1  # idk, seems to work
+MOTOR_DIRECTIONS = [1, -1, -1, 1, -1, -1]  # how do the motors turn on real robot
 
 
 class AbstractRobot():
@@ -53,15 +54,21 @@ class AbstractRobot():
             for i in range(p.getNumJoints(robot_id)):
                 print(p.getJointInfo(robot_id, i))
 
+    def clip_action(self, actions):
+        return np.multiply(
+            np.pi / 2 * np.clip(actions, -1, 1),
+            MOTOR_DIRECTIONS
+        )
+
     def act(self, actions, robot_id):
-        actions_clipped = np.pi / 2 * np.clip(actions, -1, 1)
+        actions_clipped = self.clip_action(actions)
         p.setJointMotorControlArray(self.robots[robot_id], self.motor_ids,
                                     p.POSITION_CONTROL,
                                     targetPositions=actions_clipped,
                                     forces=[MAX_FORCE] * 6)
 
     def act2(self, actions, robot_id):
-        actions_clipped = np.pi / 2 * np.clip(actions, -1, 1)
+        actions_clipped = self.clip_action(actions)
         for idx, act in enumerate(actions_clipped):
             p.setJointMotorControl2(self.robots[robot_id], self.motor_ids[idx],
                                     p.POSITION_CONTROL,
@@ -81,6 +88,7 @@ class AbstractRobot():
         vel_norm = (posvel[6:] + MAX_VEL) / (MAX_VEL * 2)
         posvel_norm = np.hstack((pos_norm, vel_norm))
         posvel_shifted = posvel_norm * 2 - 1
+        posvel_shifted[:6] = np.multiply(posvel_shifted[:6], MOTOR_DIRECTIONS)
 
         return posvel_shifted
 
@@ -97,6 +105,7 @@ class AbstractRobot():
         assert len(posvel) == 12
         posvel_clipped = np.array(np.clip(posvel, -1, 1)).astype(np.float64)
         posvel_clipped[:6] *= np.pi / 2
+        posvel_clipped[:6] = np.multiply(posvel_clipped[:6], MOTOR_DIRECTIONS)
 
         for i in range(6):
             p.resetJointState(
