@@ -25,7 +25,6 @@ register(
     kwargs={'headless': True, 'scaling': 0.5},
 )
 
-
 register(
     id='ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-Plus-v0',
     entry_point='gym_ergojr.envs:ErgoFightPlusEnv',

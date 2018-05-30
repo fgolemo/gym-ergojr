@@ -15,6 +15,7 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         model = "../trained_lstms/lstm_real_v3_exp7_l3_n256.pt"
         full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), model)
         self.load_model(LstmNetRealv3(nodes=256, layers=3, cuda=False), full_path)
+        self.step_counter = 0
 
     def load_model(self, net, modelPath):
         self.net = net
@@ -39,6 +40,7 @@ class ErgoFightPlusWrapper(gym.Wrapper):
                  torch.from_numpy(action).float()], dim=0)), volatile=True)
 
     def step(self, action):
+        self.step_counter += 1
         obs_real_t1 = self.unwrapped._self_observe()
         obs_sim_t2, _, _, info = self.unwrapped.step(action, dry_run=True)
 
@@ -56,9 +58,15 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         # print("real t2:", obs_real_t2[:12].round(2))
         # print("===")
 
-        return new_obs, self.unwrapped._getReward(), self.unwrapped.done, info
+        done = False
+        if self.step_counter >= self.env._max_episode_steps:
+            _ = self.reset()  # automatically reset the env
+            done = True # this is nasty but IDK how else to do it
+
+        return new_obs, self.unwrapped._getReward(), done, info
 
     def reset(self):
+        self.step_counter = 0
         self.net.zero_hidden()  # !important
         self.net.hidden[0].detach_()  # !important
         self.net.hidden[1].detach_()  # !important
@@ -78,9 +86,10 @@ if __name__ == '__main__':
 
     env.reset()
 
-    for episode in range(10):
-        for step in range(100):
-            action = env.action_space.sample()
-            env.step(action)
-            time.sleep(0.1)
-        env.reset()
+    # for episode in range(10):
+    for step in range(1005):
+        action = env.action_space.sample()
+        obs, rew, done, info = env.step(action)
+        # time.sleep(0.01)
+        print (step, rew, done, info)
+    # env.reset()
