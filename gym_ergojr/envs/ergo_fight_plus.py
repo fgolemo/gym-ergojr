@@ -12,9 +12,9 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         super(ErgoFightPlusWrapper, self).__init__(env)
         self.env = env
 
-        model = "../trained_lstms/lstm_real_v3_exp7_l3_n256.pt"
+        model = "../trained_lstms/lstm_real_v3_exp9_l3_n128.pt"
         full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), model)
-        self.load_model(LstmNetRealv3(nodes=256, layers=3, cuda=False), full_path)
+        self.load_model(LstmNetRealv3(nodes=128, layers=3, cuda=False), full_path)
         self.step_counter = 0
 
     def load_model(self, net, modelPath):
