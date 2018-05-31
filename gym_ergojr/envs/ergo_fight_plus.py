@@ -54,7 +54,7 @@ class ErgoFightPlusWrapper(gym.Wrapper):
 
         # print("real t1:", obs_real_t1[:12].round(2))
         # print("sim_ t2:", obs_sim_t2[:12].round(2))
-        # print("action_:", action.round(2))
+        # print("action_:", np.around(action,2))
         # print("real t2:", obs_real_t2[:12].round(2))
         # print("===")
 
