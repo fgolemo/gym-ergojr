@@ -12,9 +12,9 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         super(ErgoFightPlusWrapper, self).__init__(env)
         self.env = env
 
-        model = "../trained_lstms/lstm_real_v4_exp4_l5_n256.pt"
+        model = "../trained_lstms/lstm_real_v5_exp1_l3_n128.pt"
         full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), model)
-        self.load_model(LstmNetRealv3(nodes=256, layers=5, cuda=False), full_path)
+        self.load_model(LstmNetRealv3(nodes=128, layers=3, cuda=False), full_path)
         self.step_counter = 0
 
     def load_model(self, net, modelPath):
@@ -48,15 +48,15 @@ class ErgoFightPlusWrapper(gym.Wrapper):
 
         obs_real_t2_delta = self.double_squeeze(self.net.forward(variable))
 
-        obs_real_t2 = obs_sim_t2[:12].copy() + obs_real_t2_delta
+        obs_real_t2 = obs_sim_t2[:12].copy() + 0.0*obs_real_t2_delta
 
         new_obs = self.unwrapped.set_state(obs_real_t2)
 
-        # print("real t1:", obs_real_t1[:12].round(2))
-        # print("sim_ t2:", obs_sim_t2[:12].round(2))
-        # print("action_:", np.around(action,2))
-        # print("real t2:", obs_real_t2[:12].round(2))
-        # print("===")
+        print("real t1:", obs_real_t1[:12].round(2))
+        print("sim_ t2:", obs_sim_t2[:12].round(2))
+        print("action_:", np.around(action,2))
+        print("real t2:", obs_real_t2[:12].round(2))
+        print("===")
 
         done = False
         if self.step_counter >= self.env._max_episode_steps:

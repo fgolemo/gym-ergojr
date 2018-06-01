@@ -3,6 +3,8 @@ import gym
 import gym_ergojr
 import numpy as np
 
+master = Tk()
+
 env = gym.make("ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-Plus-v0")
 env.reset()
 
@@ -37,7 +39,6 @@ def reset():
         m.set(0)
 
 
-master = Tk()
 
 motors = []
 for i in range(6):
