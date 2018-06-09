@@ -8,13 +8,20 @@ from torch.autograd import Variable
 
 
 class ErgoFightPlusWrapper(gym.Wrapper):
-    def __init__(self, env):
+    def __init__(self, env, noSim=False):
         super(ErgoFightPlusWrapper, self).__init__(env)
         self.env = env
+        self.noSim = noSim
 
-        model = "../trained_lstms/lstm_real_v5_exp1_l3_n128.pt"
-        full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), model)
-        self.load_model(LstmNetRealv3(nodes=128, layers=3, cuda=False), full_path)
+        if not noSim:  # standard Sim+
+            modelFile = "../trained_lstms/lstm_real_v5_exp1_l3_n128.pt"
+            modelArch = LstmNetRealv3(nodes=128, layers=3, cuda=False)
+        else:
+            modelFile = "../trained_lstms/lstm_real_nosim_v1_exp6_l3_n128.pt"
+            modelArch = LstmNetRealv3(nodes=128, layers=3, cuda=False, n_input_state_sim=0)
+
+        full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), modelFile)
+        self.load_model(modelArch, full_path)
         self.step_counter = 0
 
     def load_model(self, net, modelPath):
@@ -39,16 +46,26 @@ class ErgoFightPlusWrapper(gym.Wrapper):
                  torch.from_numpy(real_t1).float(),
                  torch.from_numpy(action).float()], dim=0)), volatile=True)
 
+    def data_to_var_nosim(self, real_t1, action):
+        return Variable(
+            self.double_unsqueeze(torch.cat(
+                [torch.from_numpy(real_t1).float(),
+                 torch.from_numpy(action).float()], dim=0)), volatile=True)
+
     def step(self, action):
         self.step_counter += 1
         obs_real_t1 = self.unwrapped._self_observe()
-        obs_sim_t2, _, _, info = self.unwrapped.step(action, dry_run=True)
 
-        variable = self.data_to_var(obs_sim_t2[:12].copy(), obs_real_t1[:12].copy(), np.array(action).copy())
+        if not self.noSim:
+            obs_sim_t2, _, _, info = self.unwrapped.step(action, dry_run=True)
+            variable = self.data_to_var(obs_sim_t2[:12].copy(), obs_real_t1[:12].copy(), np.array(action).copy())
+        else:
+            variable = self.data_to_var(obs_real_t1[:12].copy(), np.array(action).copy())
+
 
         obs_real_t2_delta = self.double_squeeze(self.net.forward(variable))
 
-        obs_real_t2 = obs_sim_t2[:12].copy() + 0.0*obs_real_t2_delta
+        obs_real_t2 = obs_sim_t2[:12].copy() + 0.0 * obs_real_t2_delta
 
         new_obs = self.unwrapped.set_state(obs_real_t2)
 
@@ -61,7 +78,7 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         done = False
         if self.step_counter >= self.env._max_episode_steps:
             _ = self.reset()  # automatically reset the env
-            done = True # this is nasty but IDK how else to do it
+            done = True  # this is nasty but IDK how else to do it
 
         return new_obs, self.unwrapped._getReward(), done, info
 
@@ -91,5 +108,5 @@ if __name__ == '__main__':
         action = env.action_space.sample()
         obs, rew, done, info = env.step(action)
         # time.sleep(0.01)
-        print (step, rew, done, info)
+        print(step, rew, done, info)
     # env.reset()
