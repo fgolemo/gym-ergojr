@@ -52,11 +52,11 @@ class ErgoFightPlusWrapper(gym.Wrapper):
 
         new_obs = self.unwrapped.set_state(obs_real_t2)
 
-        print("real t1:", obs_real_t1[:12].round(2))
-        print("sim_ t2:", obs_sim_t2[:12].round(2))
-        print("action_:", np.around(action,2))
-        print("real t2:", obs_real_t2[:12].round(2))
-        print("===")
+#        print("real t1:", obs_real_t1[:12].round(2))
+#        print("sim_ t2:", obs_sim_t2[:12].round(2))
+#        print("action_:", np.around(action,2))
+#        print("real t2:", obs_real_t2[:12].round(2))
+#        print("===")
 
         done = False
         if self.step_counter >= self.env._max_episode_steps:
