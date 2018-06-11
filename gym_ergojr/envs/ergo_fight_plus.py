@@ -13,13 +13,8 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         self.env = env
         self.noSim = noSim
 
-<<<<<<< HEAD
-        model = "../trained_lstms/lstm_real_v7_exp1_l3_n128.pt"
-        full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), model)
-        self.load_model(LstmNetRealv3(nodes=128, layers=3, cuda=False), full_path)
-=======
         if not noSim:  # standard Sim+
-            modelFile = "../trained_lstms/lstm_real_v5_exp1_l3_n128.pt"
+            modelFile = "../trained_lstms/lstm_real_v7_exp1_l3_n128.pt"
             modelArch = LstmNetRealv3(nodes=128, layers=3, cuda=False)
         else:
             modelFile = "../trained_lstms/lstm_real_nosim_v1_exp6_l3_n128.pt"
@@ -27,7 +22,6 @@ class ErgoFightPlusWrapper(gym.Wrapper):
 
         full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), modelFile)
         self.load_model(modelArch, full_path)
->>>>>>> 0a4d26672b9845568d1b4de5ac2d354cf1eda73e
         self.step_counter = 0
 
     def load_model(self, net, modelPath):
