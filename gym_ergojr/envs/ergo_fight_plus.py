@@ -12,7 +12,7 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         super(ErgoFightPlusWrapper, self).__init__(env)
         self.env = env
 
-        model = "../trained_lstms/lstm_real_v5_exp1_l3_n128.pt"
+        model = "../trained_lstms/lstm_real_v7_exp1_l3_n128.pt"
         full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), model)
         self.load_model(LstmNetRealv3(nodes=128, layers=3, cuda=False), full_path)
         self.step_counter = 0
@@ -52,11 +52,11 @@ class ErgoFightPlusWrapper(gym.Wrapper):
 
         new_obs = self.unwrapped.set_state(obs_real_t2)
 
-#        print("real t1:", obs_real_t1[:12].round(2))
-#        print("sim_ t2:", obs_sim_t2[:12].round(2))
-#        print("action_:", np.around(action,2))
-#        print("real t2:", obs_real_t2[:12].round(2))
-#        print("===")
+        print("real t1:", obs_real_t1[:12].round(2))
+        print("sim_ t2:", obs_sim_t2[:12].round(2))
+        print("action_:", np.around(action,2))
+        print("real t2:", obs_real_t2[:12].round(2))
+        print("===")
 
         done = False
         if self.step_counter >= self.env._max_episode_steps:
