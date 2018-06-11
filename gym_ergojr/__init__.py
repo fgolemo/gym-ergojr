@@ -38,6 +38,12 @@ register(
 )
 
 register(
+    id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-Plus-Training-v0',
+    entry_point='gym_ergojr.envs:ErgoFightPlusTrainingEnv',
+    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0'},
+)
+
+register(
     id='ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-NoSim-v0',
     entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
     kwargs={'base_env_id': 'ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0', "noSim":True},
