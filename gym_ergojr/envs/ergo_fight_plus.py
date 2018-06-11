@@ -65,15 +65,15 @@ class ErgoFightPlusWrapper(gym.Wrapper):
 
         obs_real_t2_delta = self.double_squeeze(self.net.forward(variable))
 
-        obs_real_t2 = obs_sim_t2[:12].copy() + 0.0 * obs_real_t2_delta
+        obs_real_t2 = obs_sim_t2[:12].copy() + obs_real_t2_delta #omfg
 
         new_obs = self.unwrapped.set_state(obs_real_t2)
 
-#        print("real t1:", obs_real_t1[:12].round(2))
-#        print("sim_ t2:", obs_sim_t2[:12].round(2))
-#        print("action_:", np.around(action,2))
-#        print("real t2:", obs_real_t2[:12].round(2))
-#        print("===")
+        # print("real t1:", obs_real_t1[:12].round(2))
+        # print("sim_ t2:", obs_sim_t2[:12].round(2))
+        # print("action_:", np.around(action,2))
+        # print("real t2:", obs_real_t2[:12].round(2))
+        # print("===")
 
         done = False
         if self.step_counter >= self.env._max_episode_steps:
@@ -89,6 +89,9 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         self.net.hidden[1].detach_()  # !important
         self.net.zero_grad()
         return self.env.reset()
+
+    def set_state(self, state):
+        self.unwrapped.set_state(state)
 
 
 def ErgoFightPlusEnv(base_env_id):
