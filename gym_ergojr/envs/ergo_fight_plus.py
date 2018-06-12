@@ -94,8 +94,8 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         self.unwrapped.set_state(state)
 
 
-def ErgoFightPlusEnv(base_env_id):
-    return ErgoFightPlusWrapper(gym.make(base_env_id))
+def ErgoFightPlusEnv(base_env_id, model="X"):
+    return ErgoFightPlusWrapper(gym.make(base_env_id),model=model)
 
 
 if __name__ == '__main__':

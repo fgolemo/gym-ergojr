@@ -5,7 +5,7 @@ import numpy as np
 
 master = Tk()
 
-env = gym.make("ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-Plus-v0")
+env = gym.make("ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-Plus-xii-v0")
 env.reset()
 
 
