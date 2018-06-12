@@ -8,13 +8,13 @@ from torch.autograd import Variable
 
 
 class ErgoFightPlusWrapper(gym.Wrapper):
-    def __init__(self, env, noSim=False):
+    def __init__(self, env, noSim=False, model="X"):
         super(ErgoFightPlusWrapper, self).__init__(env)
         self.env = env
         self.noSim = noSim
 
         if not noSim:  # standard Sim+
-            modelFile = "../trained_lstms/lstm_real_v5_exp1_l3_n128.pt"
+            modelFile = "../trained_lstms/lstm_real_v{}_exp1_l3_n128.pt".format(model)
             modelArch = LstmNetRealv3(nodes=128, layers=3, cuda=False)
         else:
             modelFile = "../trained_lstms/lstm_real_nosim_v1_exp6_l3_n128.pt"

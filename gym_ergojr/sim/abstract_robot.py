@@ -92,6 +92,11 @@ class AbstractRobot():
 
         return posvel_shifted
 
+    def normalize_orn(self, orn):
+        orn_norm = (np.array(orn) + np.pi / 2) / np.pi
+        orn_shifted = orn_norm * 2 - 1
+        return orn_shifted
+
     def close(self):
         p.disconnect()
 
@@ -116,8 +121,14 @@ class AbstractRobot():
             )
 
     def get_hits(self, robot1=0, robot2=1, links=None):
+        if robot1 is None:
+            hits = p.getContactPoints()
+
+        elif robot2 is None:
+            hits = p.getContactPoints(robot1)
+
         # links=(14,14) for sword+shield
-        if links is None:
+        elif links is None:
             hits = p.getContactPoints(robot1, robot2)
         else:
             assert len(links) == 2
@@ -127,3 +138,10 @@ class AbstractRobot():
     def rest(self):
         for i in range(len(self.robots)):
             self.set([0] * 12, i)
+
+    def get_tip(self, robot_id):
+        tip = 13  # TODO: might wanna check this in multi-robot setups
+        state = p.getLinkState(self.robots[robot_id], tip)
+        pos = state[0]
+        orn = self.normalize_orn(p.getEulerFromQuaternion(state[1]))
+        return (pos, orn)

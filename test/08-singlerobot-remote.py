@@ -1,12 +1,9 @@
 from tkinter import *
-import gym
-import gym_ergojr
-import numpy as np
+from gym_ergojr.sim.single_robot import SingleRobot
 
 master = Tk()
 
-env = gym.make("ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-Plus-v0")
-env.reset()
+robot = SingleRobot(debug=True)
 
 
 def getActions():
@@ -15,10 +12,11 @@ def getActions():
 
 def stepN(N):
     action = getActions()
-    print("action\n", action)
+    print("action", action)
+    robot.act2(action)
     for i in range(N):
-        obs, _, _, _ = env.step(action)
-    print(np.around(obs[:6], 2))
+        robot.step()
+    print("tip", robot.get_tip())
 
 
 def step1():
@@ -34,10 +32,10 @@ def step100():
 
 
 def reset():
-    env.reset()
-    for m in motors:
-        m.set(0)
-
+    robot.reset()
+    robot.step()
+    robot.reset()
+    robot.step()
 
 
 motors = []
