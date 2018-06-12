@@ -8,7 +8,7 @@ class LstmNetRealv3(nn.Module):
 
         self.nodes = nodes
         self.layers = layers
-        self.cuda = cuda
+        self.on_cuda = cuda
 
         self.linear1 = nn.Linear(n_input_state_sim + n_input_state_real + n_input_actions, nodes)
         self.lstm1 = nn.LSTM(nodes, nodes, layers)
@@ -25,7 +25,7 @@ class LstmNetRealv3(nn.Module):
         h = autograd.Variable(torch.zeros(self.layers, 1, self.nodes))
         c = autograd.Variable(torch.zeros(self.layers, 1, self.nodes))
 
-        if self.cuda:
+        if self.on_cuda:
             h = h.cuda()
             c = c.cuda()
 

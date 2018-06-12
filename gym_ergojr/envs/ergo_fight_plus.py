@@ -52,6 +52,9 @@ class ErgoFightPlusWrapper(gym.Wrapper):
                 [torch.from_numpy(real_t1).float(),
                  torch.from_numpy(action).float()], dim=0)), volatile=True)
 
+    def get_parameters(self):
+        return self.net.parameters()
+
     def step(self, action):
         self.step_counter += 1
         obs_real_t1 = self.unwrapped._self_observe()
@@ -60,12 +63,12 @@ class ErgoFightPlusWrapper(gym.Wrapper):
             obs_sim_t2, _, _, info = self.unwrapped.step(action, dry_run=True)
             variable = self.data_to_var(obs_sim_t2[:12].copy(), obs_real_t1[:12].copy(), np.array(action).copy())
         else:
-            variable = self.data_to_var(obs_real_t1[:12].copy(), np.array(action).copy())
+            variable = self.data_to_var_nosim(obs_real_t1[:12].copy(), np.array(action).copy())
 
 
         obs_real_t2_delta = self.double_squeeze(self.net.forward(variable))
 
-        obs_real_t2 = obs_sim_t2[:12].copy() + obs_real_t2_delta #omfg
+        obs_real_t2 = obs_sim_t2[:12].copy() + obs_real_t2_delta
 
         new_obs = self.unwrapped.set_state(obs_real_t2)
 
