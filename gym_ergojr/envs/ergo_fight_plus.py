@@ -66,7 +66,6 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         else:
             variable = self.data_to_var_nosim(obs_real_t1[:12].copy(), np.array(action).copy())
 
-
         obs_real_t2_delta = self.double_squeeze(self.net.forward(variable))
 
         obs_real_t2 = obs_sim_t2[:12].copy() + self.scaling * obs_real_t2_delta
@@ -98,8 +97,8 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         return self.unwrapped.set_state(state)
 
 
-def ErgoFightPlusEnv(base_env_id, model="X"):
-    return ErgoFightPlusWrapper(gym.make(base_env_id),model=model)
+def ErgoFightPlusEnv(base_env_id, model="X4", noSim=False, scaling=0.7):
+    return ErgoFightPlusWrapper(gym.make(base_env_id), model=model, scaling=scaling, noSim=noSim)
 
 
 if __name__ == '__main__':
