@@ -8,10 +8,11 @@ from torch.autograd import Variable
 
 
 class ErgoFightPlusWrapper(gym.Wrapper):
-    def __init__(self, env, noSim=False, model="X"):
+    def __init__(self, env, noSim=False, model="X4", scaling=0.7):
         super(ErgoFightPlusWrapper, self).__init__(env)
         self.env = env
         self.noSim = noSim
+        self.scaling = scaling
 
         if not noSim:  # standard Sim+
             modelFile = "../trained_lstms/lstm_real_v{}_exp1_l3_n128.pt".format(model)
@@ -68,7 +69,7 @@ class ErgoFightPlusWrapper(gym.Wrapper):
 
         obs_real_t2_delta = self.double_squeeze(self.net.forward(variable))
 
-        obs_real_t2 = obs_sim_t2[:12].copy() + obs_real_t2_delta
+        obs_real_t2 = obs_sim_t2[:12].copy() + self.scaling * obs_real_t2_delta
 
         new_obs = self.unwrapped.set_state(obs_real_t2)
 
@@ -94,7 +95,7 @@ class ErgoFightPlusWrapper(gym.Wrapper):
         return self.env.reset()
 
     def set_state(self, state):
-        self.unwrapped.set_state(state)
+        return self.unwrapped.set_state(state)
 
 
 def ErgoFightPlusEnv(base_env_id, model="X"):

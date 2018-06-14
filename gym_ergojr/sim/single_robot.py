@@ -26,3 +26,11 @@ class SingleRobot(AbstractRobot):
         return super().get_tip(0)
 
 
+if __name__ == '__main__':
+    import numpy as np
+    r = SingleRobot(debug=True)
+    r.act2([0,0,0,1,0,0])
+
+    for i in range(300):
+        r.step()
+        print(np.around(r.observe()[:6],2))

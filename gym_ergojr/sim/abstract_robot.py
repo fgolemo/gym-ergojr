@@ -7,7 +7,7 @@ import numpy as np
 from gym_ergojr import get_scene
 from gym_ergojr.utils.urdf_helper import URDF
 
-MAX_VEL = 5  # not measured, but looks about right
+MAX_VEL = 18  # not measured, but looks about right
 MAX_FORCE = 1  # idk, seems to work
 MOTOR_DIRECTIONS = [1, -1, -1, 1, -1, -1]  # how do the motors turn on real robot
 
