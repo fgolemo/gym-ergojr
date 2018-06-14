@@ -18,7 +18,7 @@ class ErgoFightPlusWrapper(gym.Wrapper):
             modelFile = "../trained_lstms/lstm_real_v{}_exp1_l3_n128.pt".format(model)
             modelArch = LstmNetRealv3(nodes=128, layers=3, cuda=False)
         else:
-            modelFile = "../trained_lstms/lstm_real_nosim_v1_exp6_l3_n128.pt"
+            modelFile = "../trained_lstms/lstm_real_nosim_vX4_exp1_l3_n128.pt"
             modelArch = LstmNetRealv3(nodes=128, layers=3, cuda=False, n_input_state_sim=0)
 
         full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), modelFile)
@@ -64,7 +64,9 @@ class ErgoFightPlusWrapper(gym.Wrapper):
             obs_sim_t2, _, _, info = self.unwrapped.step(action, dry_run=True)
             variable = self.data_to_var(obs_sim_t2[:12].copy(), obs_real_t1[:12].copy(), np.array(action).copy())
         else:
+            info = None
             variable = self.data_to_var_nosim(obs_real_t1[:12].copy(), np.array(action).copy())
+            obs_sim_t2 = obs_real_t1
 
         obs_real_t2_delta = self.double_squeeze(self.net.forward(variable))
 
@@ -105,7 +107,7 @@ if __name__ == '__main__':
     import gym_ergojr
     import time
 
-    env = gym.make("ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-Plus-v0")
+    env = gym.make("ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-NoSim-v0")
 
     env.reset()
 
