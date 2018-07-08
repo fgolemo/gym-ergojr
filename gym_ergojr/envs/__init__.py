@@ -1,5 +1,6 @@
 from gym_ergojr.envs.ergo_fight_static_env import ErgoFightStaticEnv
 from gym_ergojr.envs.ergo_fight_plus import ErgoFightPlusEnv
+from gym_ergojr.envs.ergo_fight_plus_gp import ErgoFightPlusGPEnv
 from gym_ergojr.envs.ergo_fight_plus_training import ErgoFightPlusTrainingEnv
 
 
