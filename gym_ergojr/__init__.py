@@ -40,7 +40,7 @@ register(
 register(
     id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-Plus-Half-v0',
     entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0',"scaling":0.5},
+    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0', "scaling": 0.5},
 )
 
 register(
@@ -53,13 +53,13 @@ register(
 register(
     id='ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-NoSim-v0',
     entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0', "noSim":True},
+    kwargs={'base_env_id': 'ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0', "noSim": True},
 )
 
 register(
     id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-NoSim-v0',
     entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0', "noSim":True},
+    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0', "noSim": True},
 )
 
 register(
@@ -74,5 +74,18 @@ register(
     kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0'},
 )
 
+register(
+    id='ErgoReacher-Headless-v0',
+    entry_point='gym_ergojr.envs:ErgoReacherEnv',
+    timestep_limit=100,
+    reward_threshold=0,
+    kwargs={'headless': True}
+)
 
-
+register(
+    id='ErgoReacher-Graphical-v0',
+    entry_point='gym_ergojr.envs:ErgoReacherEnv',
+    timestep_limit=100,
+    reward_threshold=0,
+    kwargs={'headless': False}
+)

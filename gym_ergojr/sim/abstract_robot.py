@@ -54,6 +54,8 @@ class AbstractRobot():
             for i in range(p.getNumJoints(robot_id)):
                 print(p.getJointInfo(robot_id, i))
 
+        return robot_id
+
     def clip_action(self, actions):
         return np.multiply(
             np.pi / 2 * np.clip(actions, -1, 1),

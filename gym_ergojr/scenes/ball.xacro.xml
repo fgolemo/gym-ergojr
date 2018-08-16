@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<robot name="ball" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <sphere radius="1.0"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <sphere radius="1.0"/>
+            </geometry>
+        </collision>
+    </link>
+</robot>

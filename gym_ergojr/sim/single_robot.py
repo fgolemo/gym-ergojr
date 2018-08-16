@@ -5,7 +5,7 @@ class SingleRobot(AbstractRobot):
 
     def __init__(self, robot_model="ergojr-penholder", debug=False, frequency=100):
         super().__init__(debug, frequency)
-        self.addModel(robot_model)
+        self.id = self.addModel(robot_model)
 
     def act(self, actions, **kwargs):
         super().act(actions, 0)
