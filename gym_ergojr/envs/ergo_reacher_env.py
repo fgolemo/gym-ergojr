@@ -11,7 +11,7 @@ from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 
 
 class ErgoReacherEnv(gym.Env):
-    def __init__(self, headless=False):
+    def __init__(self, headless=False, simple=False):
         self.robot = SingleRobot(debug=not headless)
         self.ball = Ball()
         self.rhis = RandomPointInHalfSphere(0.0, 0.0369, 0.0437,
@@ -67,7 +67,7 @@ class ErgoReacherEnv(gym.Env):
             self.goal
         ])
 
-    def render(self):
+    def render(self, mode='human', close=False):
         pass
 
     def close(self):
