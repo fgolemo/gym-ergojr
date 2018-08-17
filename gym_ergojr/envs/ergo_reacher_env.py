@@ -41,8 +41,13 @@ class ErgoReacherEnv(gym.Env):
         self.robot.step()
         done = False
 
-        reward = - self.dist.query()
-        if reward > 0.01:
+        reward = self.dist.query()
+        if reward is None: # then summin is wrong
+            reward = -99
+        else:
+            reward *= -1 # the reward is the inverse distance
+
+        if reward > -0.01:
             done = True
 
         obs = self._get_obs()
