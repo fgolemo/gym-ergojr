@@ -89,3 +89,19 @@ register(
     reward_threshold=0,
     kwargs={'headless': False}
 )
+
+register(
+    id='ErgoReacher-Headless-Simple-v0',
+    entry_point='gym_ergojr.envs:ErgoReacherEnv',
+    timestep_limit=100,
+    reward_threshold=0,
+    kwargs={'headless': True, 'simple': True}
+)
+
+register(
+    id='ErgoReacher-Graphical-Simple-v0',
+    entry_point='gym_ergojr.envs:ErgoReacherEnv',
+    timestep_limit=100,
+    reward_threshold=0,
+    kwargs={'headless': False, 'simple': True}
+)

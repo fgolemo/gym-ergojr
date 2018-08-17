@@ -1,4 +1,5 @@
 import time
+from ipdb import launch_ipdb_on_exception
 
 import gym
 import numpy as np
@@ -12,6 +13,8 @@ from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 
 class ErgoReacherEnv(gym.Env):
     def __init__(self, headless=False, simple=False):
+        self.simple = simple
+
         self.robot = SingleRobot(debug=not headless)
         self.ball = Ball()
         self.rhis = RandomPointInHalfSphere(0.0, 0.0369, 0.0437,
@@ -25,11 +28,17 @@ class ErgoReacherEnv(gym.Env):
             'render.modes': ['human']
         }
 
-        # observation = 6 joints + 3 coordinates for target
-        self.observation_space = spaces.Box(low=-1, high=1, shape=(6 + 3,)) # , dtype=np.float32
+        if not simple:
+            # observation = 6 joints + 3 coordinates for target
+            self.observation_space = spaces.Box(low=-1, high=1, shape=(6 + 3,), dtype=np.float32)  #
+            # action = 6 joint angles
+            self.action_space = spaces.Box(low=-1, high=1, shape=(6,), dtype=np.float32)  #
 
-        # action = 6 joint angles
-        self.action_space = spaces.Box(low=-1, high=1, shape=(6,)) # , dtype=np.float32
+        else:
+            # observation = 4 joints + 2 coordinates for target
+            self.observation_space = spaces.Box(low=-1, high=1, shape=(4 + 2,), dtype=np.float32)  #
+            # action = 4 joint angles
+            self.action_space = spaces.Box(low=-1, high=1, shape=(4,), dtype=np.float32)  #
 
         super().__init__()
 
@@ -37,15 +46,19 @@ class ErgoReacherEnv(gym.Env):
         return [np.random.seed(seed)]
 
     def step(self, action):
+        if self.simple:
+            action_ = np.zeros(6,np.float32)
+            action_[[1,2,4,5]] = action
+            action = action_
+
         self.robot.act2(action)
         self.robot.step()
         done = False
 
-        reward = self.dist.query()
-        if reward is None: # then summin is wrong
-            reward = -99
-        else:
-            reward *= -1 # the reward is the inverse distance
+        with launch_ipdb_on_exception():
+            reward = self.dist.query()
+
+        reward *= -1  # the reward is the inverse distance
 
         if reward > -0.01:
             done = True
@@ -54,23 +67,37 @@ class ErgoReacherEnv(gym.Env):
         return obs, reward, done, {}
 
     def reset(self):
+        if self.simple:
+            self.goal = self.rhis.sampleSimplePoint()
+        else:
+            self.goal = self.rhis.samplePoint()
+
+        # this extra step is to move the ball away from the arm, to prevent
+        # the ball pushing the arm away
+        self.ball.changePos([1,0,0])
+        for _ in range(10):
+            self.robot.step()  # we need this to move the ball
+
+        self.ball.changePos(self.goal)
+        for _ in range(30):
+            self.robot.step()  # we need this to move the ball
+
         qpos = np.random.uniform(low=-0.1, high=0.1, size=6)
         self.robot.reset()
         self.robot.set(np.hstack((qpos, [0] * 6)))
         self.robot.act2(np.hstack((qpos)))
-
-        self.goal = self.rhis.samplePoint()
-        self.ball.changePos(self.goal)
-        for _ in range(15):
-            self.robot.step()  # we need this to move the ball
+        self.robot.step()
 
         return self._get_obs()
 
     def _get_obs(self):
-        return np.hstack([
+        obs = np.hstack([
             self.robot.observe()[:6],
-            self.goal
+            self.rhis.normalize(self.goal)
         ])
+        if self.simple:
+            obs = obs[[1,2,4,5,7,8]]
+        return obs
 
     def render(self, mode='human', close=False):
         pass
@@ -78,11 +105,12 @@ class ErgoReacherEnv(gym.Env):
     def close(self):
         self.robot.close()
 
+
 if __name__ == '__main__':
     import gym
     import gym_ergojr
 
-    env = gym.make("ErgoReacher-Graphical-v0")
+    env = gym.make("ErgoReacher-Graphical-Simple-v0")
     env.reset()
 
     for i in range(10):
@@ -90,7 +118,7 @@ if __name__ == '__main__':
             action = env.action_space.sample()
             obs, rew, done, misc = env.step(action)
 
-            print ("act {}, obs {}, rew {}, done {}".format(
+            print("act {}, obs {}, rew {}, done {}".format(
                 action,
                 obs,
                 rew,
@@ -102,4 +130,3 @@ if __name__ == '__main__':
             if done:
                 env.reset()
                 break
-
