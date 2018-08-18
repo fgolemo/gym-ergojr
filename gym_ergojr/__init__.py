@@ -91,7 +91,7 @@ register(
 )
 
 register(
-    id='ErgoReacher-Headless-Simple-v0',
+    id='ErgoReacher-Headless-Simple-v1',
     entry_point='gym_ergojr.envs:ErgoReacherEnv',
     timestep_limit=100,
     reward_threshold=0,
@@ -99,7 +99,7 @@ register(
 )
 
 register(
-    id='ErgoReacher-Graphical-Simple-v0',
+    id='ErgoReacher-Graphical-Simple-v1',
     entry_point='gym_ergojr.envs:ErgoReacherEnv',
     timestep_limit=100,
     reward_threshold=0,

@@ -4,6 +4,7 @@ from ipdb import launch_ipdb_on_exception
 import gym
 import numpy as np
 from gym import spaces
+from tqdm import tqdm
 
 from gym_ergojr.sim.ball import Ball
 from gym_ergojr.sim.single_robot import SingleRobot
@@ -62,6 +63,7 @@ class ErgoReacherEnv(gym.Env):
 
         if reward > -0.01:
             done = True
+            reward = 1
 
         obs = self._get_obs()
         return obs, reward, done, {}
@@ -109,24 +111,40 @@ class ErgoReacherEnv(gym.Env):
 if __name__ == '__main__':
     import gym
     import gym_ergojr
+    import time
 
-    env = gym.make("ErgoReacher-Graphical-Simple-v0")
+    env = gym.make("ErgoReacher-Headless-Simple-v1")
     env.reset()
 
-    for i in range(10):
+    timings = []
+    ep_count = 0
+
+    start = time.time()
+
+    for _ in tqdm(range(100000)):
+
         while True:
             action = env.action_space.sample()
             obs, rew, done, misc = env.step(action)
 
-            print("act {}, obs {}, rew {}, done {}".format(
-                action,
-                obs,
-                rew,
-                done
-            ))
+            # print("act {}, obs {}, rew {}, done {}".format(
+            #     action,
+            #     obs,
+            #     rew,
+            #     done
+            # ))
 
-            time.sleep(0.01)
+            ep_count += 1
+            if ep_count >= 10000:
+                diff = time.time() - start
+                print ("avg. fps: {}".format(np.around(10000/diff,3)))
+                np.savez("timings.npz",time=np.around(10000/diff,3))
+                ep_count = 0
+                start = time.time()
+
+            # time.sleep(0.01)
 
             if done:
                 env.reset()
                 break
+

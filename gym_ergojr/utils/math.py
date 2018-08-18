@@ -32,7 +32,7 @@ class RandomPointInHalfSphere(object):
 
     def sampleSimplePoint(self):
         while True:
-            point_y = np.random.uniform(low=-self.radius, high=self.radius, size=1)
+            point_y = np.random.uniform(low=0, high=self.radius, size=1)
             point_z = np.random.uniform(low=0, high=self.height, size=1)
             point = np.hstack(([0],point_y, point_z))
 
