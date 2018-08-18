@@ -20,10 +20,12 @@ class ErgoReacherEnv(gym.Env):
         self.ball = Ball()
         self.rhis = RandomPointInHalfSphere(0.0, 0.0369, 0.0437,
                                             radius=0.2022, height=0.2610,
-                                            min_dist=0.0477)
+                                            min_dist=0.1)
         self.goal = None
         self.dist = DistanceBetweenObjects(bodyA=self.robot.id, bodyB=self.ball.id,
                                            linkA=13, linkB=-1)
+        self.episodes = 0  # used for resetting the sim every so often
+        self.restart_every_n_episodes = 1000
 
         self.metadata = {
             'render.modes': ['human']
@@ -48,8 +50,8 @@ class ErgoReacherEnv(gym.Env):
 
     def step(self, action):
         if self.simple:
-            action_ = np.zeros(6,np.float32)
-            action_[[1,2,4,5]] = action
+            action_ = np.zeros(6, np.float32)
+            action_[[1, 2, 4, 5]] = action
             action = action_
 
         self.robot.act2(action)
@@ -69,6 +71,12 @@ class ErgoReacherEnv(gym.Env):
         return obs, reward, done, {}
 
     def reset(self):
+        self.episodes += 1
+        if self.episodes >= self.restart_every_n_episodes:
+            self.robot.hard_reset()  # this always has to go first
+            self.ball.hard_reset()
+            self.episodes = 0
+
         if self.simple:
             self.goal = self.rhis.sampleSimplePoint()
         else:
@@ -76,7 +84,7 @@ class ErgoReacherEnv(gym.Env):
 
         # this extra step is to move the ball away from the arm, to prevent
         # the ball pushing the arm away
-        self.ball.changePos([1,0,0])
+        self.ball.changePos([1, 0, 0])
         for _ in range(10):
             self.robot.step()  # we need this to move the ball
 
@@ -98,7 +106,7 @@ class ErgoReacherEnv(gym.Env):
             self.rhis.normalize(self.goal)
         ])
         if self.simple:
-            obs = obs[[1,2,4,5,7,8]]
+            obs = obs[[1, 2, 4, 5, 7, 8]]
         return obs
 
     def render(self, mode='human', close=False):
@@ -113,7 +121,10 @@ if __name__ == '__main__':
     import gym_ergojr
     import time
 
-    env = gym.make("ErgoReacher-Headless-Simple-v1")
+    # MODE = "manual"
+    MODE = "timings"
+
+    env = gym.make("ErgoReacher-Graphical-Simple-v1")
     env.reset()
 
     timings = []
@@ -121,30 +132,34 @@ if __name__ == '__main__':
 
     start = time.time()
 
-    for _ in tqdm(range(100000)):
+    if MODE == "manual":
+        r = range(100)
+    else:
+        r = tqdm(range(10000))
 
+    for _ in r:
         while True:
             action = env.action_space.sample()
             obs, rew, done, misc = env.step(action)
 
-            # print("act {}, obs {}, rew {}, done {}".format(
-            #     action,
-            #     obs,
-            #     rew,
-            #     done
-            # ))
+            if MODE == "manual":
+                print("act {}, obs {}, rew {}, done {}".format(
+                    action,
+                    obs,
+                    rew,
+                    done
+                ))
+                time.sleep(0.01)
 
-            ep_count += 1
-            if ep_count >= 10000:
-                diff = time.time() - start
-                print ("avg. fps: {}".format(np.around(10000/diff,3)))
-                np.savez("timings.npz",time=np.around(10000/diff,3))
-                ep_count = 0
-                start = time.time()
-
-            # time.sleep(0.01)
+            if MODE == "timings":
+                ep_count += 1
+                if ep_count >= 10000:
+                    diff = time.time() - start
+                    print("avg. fps: {}".format(np.around(10000 / diff, 3)))
+                    np.savez("timings.npz", time=np.around(10000 / diff, 3))
+                    ep_count = 0
+                    start = time.time()
 
             if done:
                 env.reset()
                 break
-

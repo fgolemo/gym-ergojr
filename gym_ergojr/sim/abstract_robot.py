@@ -16,6 +16,7 @@ class AbstractRobot():
 
     def __init__(self, debug=False, frequency=100):
         self.debug = debug
+        self.frequency = frequency
         if debug:
             p.connect(p.GUI)  # or p.DIRECT for non-graphical version
             p.resetDebugVisualizerCamera(cameraDistance=0.7,
@@ -26,16 +27,9 @@ class AbstractRobot():
             p.connect(p.DIRECT)
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optional for ground
-        p.setGravity(0, 0, -10)
-        p.setTimeStep(1 / frequency)
-        p.setRealTimeSimulation(0)
-
-        p.loadURDF("plane.urdf")
 
         self.robots = []
         self.motor_ids = [3, 4, 6, 8, 10, 12]  # this is consistent across different robots
-
-        # self.addModel(robot_model1)
 
     def addModel(self, robot_model, pose=None):
         if pose is None:
@@ -147,3 +141,10 @@ class AbstractRobot():
         pos = state[0]
         orn = self.normalize_orn(p.getEulerFromQuaternion(state[1]))
         return (pos, orn)
+
+    def hard_reset(self):
+        p.resetSimulation()
+        p.setGravity(0, 0, -10)
+        p.setTimeStep(1 / self.frequency)
+        p.setRealTimeSimulation(0)
+        p.loadURDF("plane.urdf")

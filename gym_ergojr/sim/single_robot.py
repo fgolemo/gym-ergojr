@@ -4,8 +4,9 @@ from gym_ergojr.sim.abstract_robot import AbstractRobot
 class SingleRobot(AbstractRobot):
 
     def __init__(self, robot_model="ergojr-penholder", debug=False, frequency=100):
+        self.robot_model = robot_model
         super().__init__(debug, frequency)
-        self.id = self.addModel(robot_model)
+        self.hard_reset()
 
     def act(self, actions, **kwargs):
         super().act(actions, 0)
@@ -24,6 +25,10 @@ class SingleRobot(AbstractRobot):
 
     def get_tip(self):
         return super().get_tip(0)
+
+    def hard_reset(self):
+        super().hard_reset()
+        self.id = self.addModel(self.robot_model)
 
 
 if __name__ == '__main__':
