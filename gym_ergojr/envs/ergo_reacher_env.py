@@ -23,7 +23,7 @@ class ErgoReacherEnv(gym.Env):
                                             min_dist=0.1)
         self.goal = None
         self.dist = DistanceBetweenObjects(bodyA=self.robot.id, bodyB=self.ball.id,
-                                           linkA=13, linkB=-1)
+                                           linkA=13, linkB=1)
         self.episodes = 0  # used for resetting the sim every so often
         self.restart_every_n_episodes = 1000
 
@@ -81,6 +81,7 @@ class ErgoReacherEnv(gym.Env):
             self.goal = self.rhis.sampleSimplePoint()
         else:
             self.goal = self.rhis.samplePoint()
+        self.dist.goal = self.goal
 
         # this extra step is to move the ball away from the arm, to prevent
         # the ball pushing the arm away
@@ -121,8 +122,8 @@ if __name__ == '__main__':
     import gym_ergojr
     import time
 
-    # MODE = "manual"
-    MODE = "timings"
+    MODE = "manual"
+    # MODE = "timings"
 
     env = gym.make("ErgoReacher-Graphical-Simple-v1")
     env.reset()

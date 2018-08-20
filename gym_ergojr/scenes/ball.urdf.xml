@@ -9,11 +9,11 @@
         <color rgba="1 0 0 1"/>
       </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <sphere radius="1.0"/>
-      </geometry>
-    </collision>
+    <!--<collision>-->
+    <!--<origin rpy="0 0 0" xyz="0 0 0"/>-->
+    <!--<geometry>-->
+    <!--<sphere radius=".00001"/>-->
+    <!--</geometry>-->
+    <!--</collision>-->
   </link>
 </robot>
