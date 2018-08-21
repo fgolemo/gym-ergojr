@@ -28,7 +28,14 @@ class SingleRobot(AbstractRobot):
 
     def hard_reset(self):
         super().hard_reset()
-        self.id = self.addModel(self.robot_model)
+        for _ in range(5):
+            self.id = self.addModel(self.robot_model)
+            if self.id < 0:
+                continue
+            else:
+                return
+
+        print("couldn't load URDF after 5 attempts:", self.robot_model)
 
 
 if __name__ == '__main__':
