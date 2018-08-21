@@ -63,7 +63,7 @@ class ErgoReacherEnv(gym.Env):
 
         reward *= -1  # the reward is the inverse distance
 
-        if reward > -0.01:
+        if reward > -0.016: # this is a bit arbitrary, but works well
             done = True
             reward = 1
 

@@ -15,7 +15,10 @@ class DistanceBetweenObjects(object):
         # rt = p.rayTest(self.goal,posA[1])
         # dist = np.linalg.norm(np.array(self.goal)-np.array(rt[3]))
         dist = np.linalg.norm(np.array(self.goal)-np.array(posA[0]))
-        _ = float(dist)
+        if np.isnan(dist):
+            print ("pos:",posA)
+            print ("goal:",self.goal)
+            raise Exception("NaN dist")
 
         return dist
 
