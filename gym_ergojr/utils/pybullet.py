@@ -19,8 +19,7 @@ class DistanceBetweenObjects(object):
 
             if np.isnan(dist):
                 print(tries, "pos:", posA)
-                print(tries, "goal:", self.goal)
-                p.stepSimulation() # in case the sim just has a hiccup
+                print ("body {}, link {}".format(self.bodyA,self.linkA))
                 continue
             else:
                 return dist

@@ -70,11 +70,16 @@ class ErgoReacherEnv(gym.Env):
         obs = self._get_obs()
         return obs, reward, done, {}
 
+    def _setDist(self):
+        self.dist.bodyA = self.robot.id
+        self.dist.bodyB = self.ball.id
+
     def reset(self):
         self.episodes += 1
         if self.episodes >= self.restart_every_n_episodes:
             self.robot.hard_reset()  # this always has to go first
             self.ball.hard_reset()
+            self._setDist()
             self.episodes = 0
 
         if self.simple:
