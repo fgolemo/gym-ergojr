@@ -11,9 +11,11 @@ class DistanceBetweenObjects(object):
 
     def query(self):
         posA = p.getLinkState(bodyUniqueId=self.bodyA, linkIndex=self.linkA)
+        _ = [float(x) for x in posA[0]]
         # rt = p.rayTest(self.goal,posA[1])
         # dist = np.linalg.norm(np.array(self.goal)-np.array(rt[3]))
         dist = np.linalg.norm(np.array(self.goal)-np.array(posA[0]))
+        _ = float(dist)
 
         return dist
 

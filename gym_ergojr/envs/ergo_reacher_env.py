@@ -93,7 +93,11 @@ class ErgoReacherEnv(gym.Env):
         for _ in range(30):
             self.robot.step()  # we need this to move the ball
 
-        qpos = np.random.uniform(low=-0.1, high=0.1, size=6)
+        qpos = np.random.uniform(low=-0.2, high=0.2, size=6)
+
+        if self.simple:
+            qpos[[0,3]] = 0
+
         self.robot.reset()
         self.robot.set(np.hstack((qpos, [0] * 6)))
         self.robot.act2(np.hstack((qpos)))
