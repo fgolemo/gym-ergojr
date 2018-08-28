@@ -30,11 +30,17 @@ xml_path = get_scene("ergojr-penholder")
 robot_file = URDF(xml_path, force_recompile=True).get_path()
 robot = p.loadURDF(robot_file, startPos, startOrientation, useFixedBase=1)
 
-cid1 = p.createConstraint(robot, 3, robot, -1, p.JOINT_FIXED,
-                          jointAxis=[0, 0, 0],
+cid1 = p.createConstraint(robot, 5, robot, 6, p.JOINT_FIXED,
+                          jointAxis=[1, 0, 0],
                           parentFramePosition=[0, 0, 0],
                           childFramePosition=[0, 0, 0])
-p.changeConstraint(cid1, [0, 0, 0.1], maxForce=10)
+p.changeConstraint(cid1, [0, 0, 0.1], maxForce=.4)
+
+cid2 = p.createConstraint(robot, 11, robot, 12, p.JOINT_FIXED,
+                          jointAxis=[1, 0, 0],
+                          parentFramePosition=[0, 0, 0],
+                          childFramePosition=[0, 0, 0])
+p.changeConstraint(cid2, [0, 0, 0.1], maxForce=.2)
 
 for i in range(p.getNumJoints(robot)):
     print(p.getJointInfo(robot, i))

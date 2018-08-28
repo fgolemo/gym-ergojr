@@ -105,3 +105,19 @@ register(
     reward_threshold=0,
     kwargs={'headless': False, 'simple': True}
 )
+
+register(
+    id='ErgoReacher-Headless-Simple-Backlash-v1',
+    entry_point='gym_ergojr.envs:ErgoReacherEnv',
+    timestep_limit=100,
+    reward_threshold=0,
+    kwargs={'headless': True, 'simple': True, 'backlash': True}
+)
+
+register(
+    id='ErgoReacher-Graphical-Simple-Backlash-v1',
+    entry_point='gym_ergojr.envs:ErgoReacherEnv',
+    timestep_limit=100,
+    reward_threshold=0,
+    kwargs={'headless': False, 'simple': True, 'backlash': True}
+)

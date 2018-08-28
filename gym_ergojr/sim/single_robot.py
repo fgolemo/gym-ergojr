@@ -3,9 +3,9 @@ from gym_ergojr.sim.abstract_robot import AbstractRobot
 
 class SingleRobot(AbstractRobot):
 
-    def __init__(self, robot_model="ergojr-penholder", debug=False, frequency=100):
+    def __init__(self, robot_model="ergojr-penholder", debug=False, frequency=100, backlash=False):
         self.robot_model = robot_model
-        super().__init__(debug, frequency)
+        super().__init__(debug, frequency, backlash)
         self.hard_reset()
 
     def act(self, actions, **kwargs):
@@ -33,6 +33,11 @@ class SingleRobot(AbstractRobot):
             if self.id < 0:
                 continue
             else:
+                if self.backlash:
+                    self.load_backlash(self.id, [
+                        (5,6,.4),
+                        (11,12,.2)
+                    ])
                 return
 
         print("couldn't load URDF after 5 attempts:", self.robot_model)

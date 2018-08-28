@@ -13,10 +13,11 @@ from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 
 
 class ErgoReacherEnv(gym.Env):
-    def __init__(self, headless=False, simple=False):
+    def __init__(self, headless=False, simple=False, backlash=False):
         self.simple = simple
+        self.backlash = backlash
 
-        self.robot = SingleRobot(debug=not headless)
+        self.robot = SingleRobot(debug=not headless, backlash=backlash)
         self.ball = Ball()
         self.rhis = RandomPointInHalfSphere(0.0, 0.0369, 0.0437,
                                             radius=0.2022, height=0.2610,
@@ -88,14 +89,8 @@ class ErgoReacherEnv(gym.Env):
             self.goal = self.rhis.samplePoint()
         self.dist.goal = self.goal
 
-        # this extra step is to move the ball away from the arm, to prevent
-        # the ball pushing the arm away
-        self.ball.changePos([1, 0, 0])
-        for _ in range(10):
-            self.robot.step()  # we need this to move the ball
-
         self.ball.changePos(self.goal)
-        for _ in range(30):
+        for _ in range(20):
             self.robot.step()  # we need this to move the ball
 
         qpos = np.random.uniform(low=-0.2, high=0.2, size=6)

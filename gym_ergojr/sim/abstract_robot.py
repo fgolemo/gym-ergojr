@@ -14,9 +14,10 @@ MOTOR_DIRECTIONS = [1, -1, -1, 1, -1, -1]  # how do the motors turn on real robo
 
 class AbstractRobot():
 
-    def __init__(self, debug=False, frequency=100):
+    def __init__(self, debug=False, frequency=100, backlash=None):
         self.debug = debug
         self.frequency = frequency
+        self.backlash = backlash
         if debug:
             p.connect(p.GUI)  # or p.DIRECT for non-graphical version
             p.resetDebugVisualizerCamera(cameraDistance=0.7,
@@ -49,6 +50,17 @@ class AbstractRobot():
                 print(p.getJointInfo(robot_id, i))
 
         return robot_id
+
+    def load_backlash(self, robot_id, backlashes):
+        for bl in backlashes:
+            assert len(bl) == 3
+
+            cid = p.createConstraint(robot_id, bl[0], robot_id, bl[1], p.JOINT_FIXED,
+                                      jointAxis=[1, 0, 0],
+                                      parentFramePosition=[0, 0, 0],
+                                      childFramePosition=[0, 0, 0])
+            p.changeConstraint(cid, [0, 0, 0.1], maxForce=bl[2])
+
 
     def clip_action(self, actions):
         return np.multiply(
