@@ -35,8 +35,8 @@ class SingleRobot(AbstractRobot):
             else:
                 if self.backlash:
                     self.load_backlash(self.id, [
-                        (5,6,.4),
-                        (11,12,.2)
+                        (5,6,.6), # was .4 before
+                        (11,12,.4) # was .2 before
                     ])
                 return
 
