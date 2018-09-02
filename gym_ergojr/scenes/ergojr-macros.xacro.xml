@@ -79,4 +79,10 @@
             </collision>
         </xacro:unless>
     </xacro:macro>
+
+    <xacro:macro name="blash" params="backlash">
+        <xacro:if value="${backlash == 1}">
+            <dynamics damping=".2"/>
+        </xacro:if>
+    </xacro:macro>
 </robot>

@@ -3,7 +3,7 @@
     <xacro:include filename="ergojr-macros.xacro.xml"/>
 
     <xacro:macro name="ergojr" params="prefix:=1 rotx_base:=0 roty_base:=0 rotz_base:=0
-                                        posx_base:=0 posy_base:=0 posz_base:=0 ">
+                                        posx_base:=0 posy_base:=0 posz_base:=0 backlash:=0">
 
         <link name="${prefix}_anchor"/>
 
@@ -62,6 +62,8 @@
             <origin rpy="0 0 0" xyz="0 .0095 .027"/>
             <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
             <axis xyz="0 0 1"/>
+            <xacro:blash backlash="${backlash}"/>
+
         </joint>
 
         <link name="${prefix}_link1_bottom">
@@ -82,6 +84,7 @@
             <origin xyz="0 0 .024"/>
             <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
             <axis xyz="1 0 0"/>
+            <xacro:blash backlash="${backlash}"/>
         </joint>
 
         <link name="${prefix}_motor2link">
@@ -110,6 +113,7 @@
             <origin xyz="0 0 .035"/>
             <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
             <axis xyz="1 0 0"/>
+            <xacro:blash backlash="${backlash}"/>
         </joint>
 
         <link name="${prefix}_motor3link">

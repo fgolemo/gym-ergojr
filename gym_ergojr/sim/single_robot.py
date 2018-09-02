@@ -5,6 +5,8 @@ class SingleRobot(AbstractRobot):
 
     def __init__(self, robot_model="ergojr-penholder", debug=False, frequency=100, backlash=False):
         self.robot_model = robot_model
+        if backlash:
+            self.robot_model += "-backlash"
         super().__init__(debug, frequency, backlash)
         self.hard_reset()
 
@@ -34,10 +36,11 @@ class SingleRobot(AbstractRobot):
                 continue
             else:
                 if self.backlash:
-                    self.load_backlash(self.id, [
-                        (5,6,.6), # was .4 before
-                        (11,12,.4) # was .2 before
-                    ])
+                    # self.load_backlash(self.id, [
+                    #     (5,6,.6), # was .4 before
+                    #     (11,12,.4) # was .2 before
+                    # ])
+                    pass
                 return
 
         print("couldn't load URDF after 5 attempts:", self.robot_model)
