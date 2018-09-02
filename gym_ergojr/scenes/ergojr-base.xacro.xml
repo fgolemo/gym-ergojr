@@ -3,7 +3,7 @@
     <xacro:include filename="ergojr-macros.xacro.xml"/>
 
     <xacro:macro name="ergojr" params="prefix:=1 rotx_base:=0 roty_base:=0 rotz_base:=0
-                                        posx_base:=0 posy_base:=0 posz_base:=0 backlash:=0">
+                                        posx_base:=0 posy_base:=0 posz_base:=0 backlash:=0 weird_mass:=0">
 
         <link name="${prefix}_anchor"/>
 
@@ -53,7 +53,7 @@
         </joint>
 
         <link name="${prefix}_motor1link">
-            <xacro:motor posz="0.0135"/>
+            <xacro:motor posz="0.0135" weird_mass="${weird_mass}"/>
         </link>
 
         <joint name="${prefix}_motor1joint" type="revolute">
@@ -88,7 +88,7 @@
         </joint>
 
         <link name="${prefix}_motor2link">
-            <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.0015" posz="0.0095"/>
+            <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.0015" posz="0.0095" weird_mass="${weird_mass}"/>
         </link>
 
         <joint name="${prefix}_motor2link_to_motor2bridge3" type="fixed">
@@ -117,7 +117,7 @@
         </joint>
 
         <link name="${prefix}_motor3link">
-            <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.0015" posz="0.0095"/>
+            <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.0015" posz="0.0095" weird_mass="${weird_mass}"/>
         </link>
 
         <joint name="${prefix}_motor3link_to_motor2bridge3" type="fixed">
@@ -144,7 +144,7 @@
         </joint>
 
         <link name="${prefix}_motor4link">
-            <xacro:motor rotx="${pi}" posy=".0095" posz=".0145"/>
+            <xacro:motor rotx="${pi}" posy=".0095" posz=".0145" weird_mass="${weird_mass}"/>
             <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
         </link>
 
@@ -174,7 +174,7 @@
         </joint>
 
         <link name="${prefix}_motor5link">
-            <xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095"/>
+            <xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095" weird_mass="${weird_mass}"/>
         </link>
 
 
@@ -204,7 +204,7 @@
 
         <link name="${prefix}_motor6link">
             <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
-            <xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095"/>
+            <xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095" weird_mass="${weird_mass}"/>
         </link>
 
     </xacro:macro>

@@ -34,7 +34,7 @@
 
 
     <xacro:macro name="motor" params="rotx:=0 roty:=0 rotz:=0
-                                    posx:=0 posy:=0 posz:=0">
+                                    posx:=0 posy:=0 posz:=0 weird_mass:=0">
         <visual>
             <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
             <geometry>
@@ -52,8 +52,16 @@
             <!--ACTUAL MASS-->
             <!--<mass value=".017"/>-->
 
-            <!--WORKING MASS-->
-            <mass value=".1"/>
+            <xacro:unless value="${weird_mass == 1}">
+                <!--NORMAL WORKING MASS-->
+                <mass value=".1"/>
+            </xacro:unless>
+
+            <xacro:if value="${weird_mass == 1}">
+                <!--SLOW MASS-->
+                <mass value=".2"/>
+            </xacro:if>
+
             <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
             <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
         </inertial>
@@ -82,7 +90,8 @@
 
     <xacro:macro name="blash" params="backlash">
         <xacro:if value="${backlash == 1}">
-            <dynamics damping=".2"/>
+            <dynamics damping=".1"/>
+            <!--friction="50.0"-->
         </xacro:if>
     </xacro:macro>
 </robot>

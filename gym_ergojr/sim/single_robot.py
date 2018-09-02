@@ -36,11 +36,12 @@ class SingleRobot(AbstractRobot):
                 continue
             else:
                 if self.backlash:
-                    # self.load_backlash(self.id, [
-                    #     (5,6,.6), # was .4 before
-                    #     (11,12,.4) # was .2 before
-                    # ])
-                    pass
+
+                    self.load_backlash(self.id, [
+                        (5,6,.8), # was .4 before
+                        (11,12,.6) # was .2 before
+                    ])
+                    print ("loaded backlash")
                 return
 
         print("couldn't load URDF after 5 attempts:", self.robot_model)

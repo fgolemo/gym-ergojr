@@ -4,7 +4,7 @@
     <xacro:include filename="ergojr-base.xacro.xml"/>
 
     <xacro:ergojr prefix="1" rotx_base="0" roty_base="0" rotz_base="0"
-                  posx_base="0" posy_base="0" posz_base="0" backlash="1"/>
+                  posx_base="0" posy_base="0" posz_base="0" backlash="1" weird_mass="1"/>
 
     <joint name="motor6link_to_penholder" type="fixed">
         <parent link="1_motor6link"/>

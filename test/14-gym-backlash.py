@@ -5,6 +5,7 @@ import numpy as np
 
 env = gym.make("ErgoReacher-Graphical-Simple-Backlash-v1")
 env.reset()
+env.seed(15)
 
 for i in range(1005):
     if i % 50 == 0:
