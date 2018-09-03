@@ -68,12 +68,13 @@ class AbstractRobot():
             MOTOR_DIRECTIONS
         )
 
-    def act(self, actions, robot_id):
-        actions_clipped = self.clip_action(actions)
-        p.setJointMotorControlArray(self.robots[robot_id], self.motor_ids,
-                                    p.POSITION_CONTROL,
-                                    targetPositions=actions_clipped,
-                                    forces=[MAX_FORCE] * 6)
+    ## DEPRECATED
+    # def act(self, actions, robot_id):
+    #     actions_clipped = self.clip_action(actions)
+    #     p.setJointMotorControlArray(self.robots[robot_id], self.motor_ids,
+    #                                 p.POSITION_CONTROL,
+    #                                 targetPositions=actions_clipped,
+    #                                 forces=[MAX_FORCE] * 6)
 
     def act2(self, actions, robot_id):
         actions_clipped = self.clip_action(actions)

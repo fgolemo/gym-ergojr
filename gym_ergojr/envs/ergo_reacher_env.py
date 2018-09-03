@@ -33,14 +33,14 @@ class ErgoReacherEnv(gym.Env):
         }
 
         if not simple:
-            # observation = 6 joints + 3 coordinates for target
-            self.observation_space = spaces.Box(low=-1, high=1, shape=(6 + 3,), dtype=np.float32)  #
+            # observation = 6 joints + 6 velocities + 3 coordinates for target
+            self.observation_space = spaces.Box(low=-1, high=1, shape=(6 + 6 + 3,), dtype=np.float32)  #
             # action = 6 joint angles
             self.action_space = spaces.Box(low=-1, high=1, shape=(6,), dtype=np.float32)  #
 
         else:
-            # observation = 4 joints + 2 coordinates for target
-            self.observation_space = spaces.Box(low=-1, high=1, shape=(4 + 2,), dtype=np.float32)  #
+            # observation = 4 joints + 4 velocities + 2 coordinates for target
+            self.observation_space = spaces.Box(low=-1, high=1, shape=(4 + 4 + 2,), dtype=np.float32)  #
             # action = 4 joint angles
             self.action_space = spaces.Box(low=-1, high=1, shape=(4,), dtype=np.float32)  #
 
@@ -64,7 +64,7 @@ class ErgoReacherEnv(gym.Env):
 
         reward *= -1  # the reward is the inverse distance
 
-        if reward > -0.016: # this is a bit arbitrary, but works well
+        if reward > -0.016:  # this is a bit arbitrary, but works well
             done = True
             reward = 1
 
@@ -96,7 +96,7 @@ class ErgoReacherEnv(gym.Env):
         qpos = np.random.uniform(low=-0.2, high=0.2, size=6)
 
         if self.simple:
-            qpos[[0,3]] = 0
+            qpos[[0, 3]] = 0
 
         self.robot.reset()
         self.robot.set(np.hstack((qpos, [0] * 6)))
@@ -107,11 +107,11 @@ class ErgoReacherEnv(gym.Env):
 
     def _get_obs(self):
         obs = np.hstack([
-            self.robot.observe()[:6],
+            self.robot.observe(),
             self.rhis.normalize(self.goal)
         ])
         if self.simple:
-            obs = obs[[1, 2, 4, 5, 7, 8]]
+            obs = obs[[1, 2, 4, 5, 7, 8, 10, 11, 13, 14]]
         return obs
 
     def render(self, mode='human', close=False):
@@ -119,6 +119,12 @@ class ErgoReacherEnv(gym.Env):
 
     def close(self):
         self.robot.close()
+
+    def _get_state(self):
+        return self.robot.observe()
+
+    def _set_state(self, posvel):
+        self.robot.set(posvel)
 
 
 if __name__ == '__main__':
