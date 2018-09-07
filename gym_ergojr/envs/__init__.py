@@ -3,4 +3,4 @@ from gym_ergojr.envs.ergo_fight_plus import ErgoFightPlusEnv
 from gym_ergojr.envs.ergo_fight_plus_gp import ErgoFightPlusGPEnv
 from gym_ergojr.envs.ergo_fight_plus_training import ErgoFightPlusTrainingEnv
 from gym_ergojr.envs.ergo_reacher_env import ErgoReacherEnv
-
+from gym_ergojr.envs.ergo_reacher_plus import ErgoReacherPlusEnv

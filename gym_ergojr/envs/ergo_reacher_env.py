@@ -57,6 +57,13 @@ class ErgoReacherEnv(gym.Env):
 
         self.robot.act2(action)
         self.robot.step()
+
+        reward, done = self._getReward()
+
+        obs = self._get_obs()
+        return obs, reward, done, {}
+
+    def _getReward(self):
         done = False
 
         with launch_ipdb_on_exception():
@@ -68,8 +75,7 @@ class ErgoReacherEnv(gym.Env):
             done = True
             reward = 1
 
-        obs = self._get_obs()
-        return obs, reward, done, {}
+        return reward, done
 
     def _setDist(self):
         self.dist.bodyA = self.robot.id

@@ -121,3 +121,18 @@ register(
     reward_threshold=0,
     kwargs={'headless': False, 'simple': True, 'backlash': True}
 )
+
+register(
+    id='ErgoReacher-Headless-Simple-Plus-v1',
+    entry_point='gym_ergojr.envs:ErgoReacherPlusEnv',
+    kwargs={'base_env_id': 'ErgoReacher-Headless-Simple-v1'},
+)
+
+register(
+    id='ErgoReacher-Graphical-Simple-Plus-v1',
+    entry_point='gym_ergojr.envs:ErgoReacherPlusEnv',
+    kwargs={'base_env_id': 'ErgoReacher-Graphical-Simple-v1'},
+)
+
+
+
