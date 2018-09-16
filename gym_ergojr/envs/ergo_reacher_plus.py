@@ -61,7 +61,6 @@ class ErgoReacherPlusWrapper(gym.Wrapper):
         return self.net.parameters()
 
     def step(self, action):
-        self.step_counter += 1
         obs_real_t1 = self.unwrapped._get_obs()
 
         obs_sim_t2, _, _, info = self.unwrapped.step(action)

@@ -130,7 +130,12 @@ class ErgoReacherEnv(gym.Env):
         return self.robot.observe()
 
     def _set_state(self, posvel):
-        self.robot.set(posvel)
+        if self.simple:
+            new_state = np.zeros((12), dtype=np.float32)
+            new_state[[1, 2, 4, 5, 7, 8, 10, 11]] = posvel
+        else:
+            new_state = np.array(posvel)
+        self.robot.set(new_state)
 
 
 if __name__ == '__main__':
