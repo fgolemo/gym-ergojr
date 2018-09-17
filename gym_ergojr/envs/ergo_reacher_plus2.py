@@ -12,11 +12,11 @@ class ErgoReacherPlus2Wrapper(gym.Wrapper):
         super().__init__(env)
         self.env = env
 
-        HIDDEN_NODES = 40
+        HIDDEN_NODES = 100
 
-        modelFile = "../trained_lstms/lstm_ers_v2_exp3_l3_n{}.pt".format(HIDDEN_NODES)
+        modelFile = "../trained_lstms/lstm_ers_v3_exp6_l3_n{}.pt".format(HIDDEN_NODES)
         modelArch = ReacherModelV2(
-            hidden_cells=40
+            hidden_cells=HIDDEN_NODES
         )
 
         full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), modelFile)
@@ -84,6 +84,9 @@ class ErgoReacherPlus2Wrapper(gym.Wrapper):
         self.step_counter = 0
         self.net.zero_hidden(1)  # !important
         return self.env.reset()
+
+    def set_state(self, state):
+        return self.unwrapped._set_state(state)
 
 
 def ErgoReacherPlus2Env(base_env_id):
