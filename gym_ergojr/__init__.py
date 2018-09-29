@@ -146,5 +146,14 @@ register(
     kwargs={'base_env_id': 'ErgoReacher-Graphical-Simple-v1'},
 )
 
+register(
+    id='ErgoReacher-Headless-Simple-Plus-NoSim-v2',
+    entry_point='gym_ergojr.envs:ErgoReacherPlus2Env',
+    kwargs={'base_env_id': 'ErgoReacher-Headless-Simple-v1', 'nosim': True},
+)
 
-
+register(
+    id='ErgoReacher-Graphical-Simple-Plus-NoSim-v2',
+    entry_point='gym_ergojr.envs:ErgoReacherPlus2Env',
+    kwargs={'base_env_id': 'ErgoReacher-Graphical-Simple-v1', 'nosim': True},
+)

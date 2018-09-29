@@ -3,11 +3,17 @@ from torch import nn
 
 
 class ReacherModelV2(nn.Module):
-    def __init__(self, hidden_cells):
+    def __init__(self, hidden_cells, ff=False):
         super(ReacherModelV2, self).__init__()
         self.hidden = hidden_cells
+        self.ff = ff  # if it's only the feed-forward no-sim model
 
-        self.linear1 = nn.Linear(20, self.hidden)
+        self.n_inputs = 20
+
+        if self.ff:
+            self.n_inputs = 12
+
+        self.linear1 = nn.Linear(self.n_inputs, self.hidden)
         self.lstm1 = nn.LSTMCell(self.hidden, self.hidden)
         self.lstm2 = nn.LSTMCell(self.hidden, self.hidden)
         self.lstm3 = nn.LSTMCell(self.hidden, self.hidden)
@@ -23,14 +29,13 @@ class ReacherModelV2(nn.Module):
         self.h_t3 = torch.zeros(batch_size, self.hidden, dtype=torch.float)
         self.c_t3 = torch.zeros(batch_size, self.hidden, dtype=torch.float)
 
-
     def forward(self, input):
         # input shape should be (32 /minibatch, 100 /steps, 20 /features)
 
         outputs = []
         self.zero_hidden(input.size(0))
 
-        chunked_in = input.chunk(input.size(1), dim=1) # slice through minibatch
+        chunked_in = input.chunk(input.size(1), dim=1)  # slice through minibatch
 
         for i, input_t in enumerate(chunked_in):
             hidden = self.linear1(input_t).squeeze(1)
@@ -55,7 +60,7 @@ class ReacherModelV2(nn.Module):
         # 8 - sim_{t+1}
         # 8 - real_{t}
         # 4 - action
-        hidden = self.linear1(input_t.view(1,1,20)).squeeze(1)
+        hidden = self.linear1(input_t.view(1, 1, self.n_inputs)).squeeze(1)
 
         self.h_t, self.c_t = self.lstm1(hidden, (self.h_t, self.c_t))
         self.h_t2, self.c_t2 = self.lstm2(self.h_t, (self.h_t2, self.c_t2))

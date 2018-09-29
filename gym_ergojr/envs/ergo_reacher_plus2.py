@@ -8,16 +8,24 @@ from gym_ergojr.models.model_reacher_v2 import ReacherModelV2
 
 
 class ErgoReacherPlus2Wrapper(gym.Wrapper):
-    def __init__(self, env):
+    def __init__(self, env, nosim=False):
         super().__init__(env)
         self.env = env
+        self.nosim = nosim
 
         HIDDEN_NODES = 100
 
-        modelFile = "../trained_lstms/lstm_ers_v3_exp6_l3_n{}.pt".format(HIDDEN_NODES)
-        modelArch = ReacherModelV2(
-            hidden_cells=HIDDEN_NODES
-        )
+        if not self.nosim:
+            modelFile = "../trained_lstms/lstm_ers_v3_exp6_l3_n{}.pt".format(HIDDEN_NODES)
+            modelArch = ReacherModelV2(
+                hidden_cells=HIDDEN_NODES
+            )
+        else:
+            modelFile = "../trained_lstms/lstm_ers_ff_v1_exp1_l3_n{}.pt".format(HIDDEN_NODES)
+            modelArch = ReacherModelV2(
+                hidden_cells=HIDDEN_NODES,
+                ff=True
+            )
 
         full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), modelFile)
         self.load_model(modelArch, full_path)
@@ -31,18 +39,13 @@ class ErgoReacherPlus2Wrapper(gym.Wrapper):
         print("DBG: MODEL LOADED:", modelPath)
 
     def data_to_var(self, sim_t2, real_t1, action):
-        out = torch.cat([
-            torch.from_numpy(sim_t2).float(),
-            torch.from_numpy(real_t1).float(),
-            torch.from_numpy(action).float()
-        ], dim=0)
-        return out
+        cat = []
+        if not self.nosim:
+            cat.append(torch.from_numpy(sim_t2).float())
+        cat.append(torch.from_numpy(real_t1).float())
+        cat.append(torch.from_numpy(action).float())
 
-    def data_to_var_nosim(self, real_t1, action):
-        out = torch.cat([
-            torch.from_numpy(real_t1).float(),
-            torch.from_numpy(action).float()
-        ], dim=0)
+        out = torch.cat(cat, dim=0)
         return out
 
     def get_parameters(self):
@@ -54,16 +57,23 @@ class ErgoReacherPlus2Wrapper(gym.Wrapper):
         obs_sim_t2, _, _, info = self.unwrapped.step(action)
 
         with torch.no_grad():
-            variable = self.data_to_var(obs_sim_t2[:8].copy(), obs_real_t1[:8].copy(), np.array(action).copy())
+            obs_sim_t2_ = None
+            if not self.nosim:
+                obs_sim_t2_ = obs_sim_t2[:8].copy()
+
+            variable = self.data_to_var(obs_sim_t2_, obs_real_t1[:8].copy(), np.array(action).copy())
             obs_real_t2_delta = self.net.infer(variable)
 
-        obs_real_t2 = obs_sim_t2[:8].copy() + obs_real_t2_delta
+        if not self.nosim:
+            obs_real_t2 = obs_sim_t2[:8].copy() + obs_real_t2_delta
+        else:
+            obs_real_t2 = obs_real_t1[:8].copy() + obs_real_t2_delta
 
         self.unwrapped._set_state(obs_real_t2)
 
         new_obs = np.zeros((10), dtype=np.float32)
-        new_obs[:8] = obs_real_t2 # set joint pos/vel
-        new_obs[8:] = obs_sim_t2[8:] # set target x/y pos
+        new_obs[:8] = obs_real_t2  # set joint pos/vel
+        new_obs[8:] = obs_sim_t2[8:]  # set target x/y pos
 
         # print("real t1:", obs_real_t1[:8].round(2))
         # print("sim_ t2:", obs_sim_t2[:8].round(2))
@@ -89,15 +99,15 @@ class ErgoReacherPlus2Wrapper(gym.Wrapper):
         return self.unwrapped._set_state(state)
 
 
-def ErgoReacherPlus2Env(base_env_id):
-    return ErgoReacherPlus2Wrapper(gym.make(base_env_id))
+def ErgoReacherPlus2Env(base_env_id, nosim=False):
+    return ErgoReacherPlus2Wrapper(gym.make(base_env_id), nosim)
 
 
 if __name__ == '__main__':
     import gym_ergojr
     import time
 
-    env = gym.make("ErgoReacher-Graphical-Simple-Plus-v2")
+    env = gym.make("ErgoReacher-Graphical-Simple-Plus-NoSim-v2")
 
     env.reset()
 
