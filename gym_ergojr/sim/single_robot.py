@@ -10,11 +10,8 @@ class SingleRobot(AbstractRobot):
         super().__init__(debug, frequency, backlash)
         self.hard_reset()
 
-    def act(self, actions, **kwargs):
-        super().act(actions, 0)
-
     def act2(self, actions, **kwargs):
-        super().act2(actions, 0)
+        super().act2(actions, 0, **kwargs)
 
     def observe(self, **kwargs):
         return super().observe(0)

@@ -13,9 +13,11 @@ from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 
 
 class ErgoReacherEnv(gym.Env):
-    def __init__(self, headless=False, simple=False, backlash=False):
+    def __init__(self, headless=False, simple=False, backlash=False, max_force=1, max_vel=18):
         self.simple = simple
         self.backlash = backlash
+        self.max_force = max_force
+        self.max_vel = max_vel
 
         self.robot = SingleRobot(debug=not headless, backlash=backlash)
         self.ball = Ball()
@@ -55,7 +57,7 @@ class ErgoReacherEnv(gym.Env):
             action_[[1, 2, 4, 5]] = action
             action = action_
 
-        self.robot.act2(action)
+        self.robot.act2(action, max_force=self.max_force, max_vel=self.max_vel)
         self.robot.step()
 
         reward, done = self._getReward()
@@ -143,10 +145,12 @@ if __name__ == '__main__':
     import gym_ergojr
     import time
 
-    MODE = "manual"
-    # MODE = "timings"
+    # MODE = "manual"
+    # env = gym.make("ErgoReacher-Graphical-Simple-v1")
 
-    env = gym.make("ErgoReacher-Graphical-Simple-v1")
+    MODE = "timings"
+    env = gym.make("ErgoReacher-Headless-Simple-v1")
+
     env.reset()
 
     timings = []

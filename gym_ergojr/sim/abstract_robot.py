@@ -19,7 +19,7 @@ class AbstractRobot():
         self.frequency = frequency
         self.backlash = backlash
         if debug:
-            p.connect(p.GUI)  # or p.DIRECT for non-graphical version
+            p.connect(p.GUI)  # or p.DIRECT for non-graphical faster version
             p.resetDebugVisualizerCamera(cameraDistance=0.7,
                                          cameraYaw=135,
                                          cameraPitch=-45,
@@ -31,6 +31,7 @@ class AbstractRobot():
 
         self.robots = []
         self.motor_ids = [3, 4, 6, 8, 10, 12]  # this is consistent across different robots
+        self.debug_text = None
 
     def addModel(self, robot_model, pose=None):
         if pose is None:
@@ -76,14 +77,14 @@ class AbstractRobot():
     #                                 targetPositions=actions_clipped,
     #                                 forces=[MAX_FORCE] * 6)
 
-    def act2(self, actions, robot_id):
+    def act2(self, actions, robot_id, max_force=MAX_FORCE, max_vel=MAX_VEL):
         actions_clipped = self.clip_action(actions)
         for idx, act in enumerate(actions_clipped):
             p.setJointMotorControl2(self.robots[robot_id], self.motor_ids[idx],
                                     p.POSITION_CONTROL,
                                     targetPosition=act,
-                                    force=MAX_FORCE,
-                                    maxVelocity=MAX_VEL)
+                                    force=max_force,
+                                    maxVelocity=max_vel)
 
     def observe(self, robot_id):
         obs = p.getJointStates(self.robots[robot_id], self.motor_ids)
@@ -161,3 +162,9 @@ class AbstractRobot():
         p.setTimeStep(1 / self.frequency)
         p.setRealTimeSimulation(0)
         p.loadURDF("plane.urdf")
+
+    def set_text(self, text=None):
+        if self.debug_text is not None:
+            p.removeUserDebugItem(self.debug_text)
+        if text is not None and text is not "":
+            self.debug_text = p.addUserDebugText(text, [.1,-.1,.12], textColorRGB=[1,0,0], textSize=6)
