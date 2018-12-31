@@ -1,6 +1,4 @@
 import time
-from ipdb import launch_ipdb_on_exception
-
 import gym
 import numpy as np
 from gym import spaces
@@ -68,9 +66,7 @@ class ErgoReacherEnv(gym.Env):
     def _getReward(self):
         done = False
 
-        with launch_ipdb_on_exception():
-            reward = self.dist.query()
-
+        reward = self.dist.query()
         reward *= -1  # the reward is the inverse distance
 
         if reward > -0.016:  # this is a bit arbitrary, but works well

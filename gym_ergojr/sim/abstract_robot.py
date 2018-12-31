@@ -77,14 +77,28 @@ class AbstractRobot():
     #                                 targetPositions=actions_clipped,
     #                                 forces=[MAX_FORCE] * 6)
 
+    def float2list(self, val):
+        if type(val) == type(1) or type(val) == type(1.0):
+            return [val]*6
+        elif type(val) == type([]) or type(val) == type(np.array([])):
+            assert len(val) == 6
+            return val
+        else:
+            raise Exception("the value '{}' should either be float, int or list but it's {}".format(
+                val,
+                type(val)
+            ))
+
     def act2(self, actions, robot_id, max_force=MAX_FORCE, max_vel=MAX_VEL):
         actions_clipped = self.clip_action(actions)
+        force = self.float2list(max_force)
+        vel = self.float2list(max_vel)
         for idx, act in enumerate(actions_clipped):
             p.setJointMotorControl2(self.robots[robot_id], self.motor_ids[idx],
                                     p.POSITION_CONTROL,
                                     targetPosition=act,
-                                    force=max_force,
-                                    maxVelocity=max_vel)
+                                    force=force[idx],
+                                    maxVelocity=vel[idx])
 
     def observe(self, robot_id):
         obs = p.getJointStates(self.robots[robot_id], self.motor_ids)
