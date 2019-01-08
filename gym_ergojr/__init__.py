@@ -107,6 +107,22 @@ register(
 )
 
 register(
+    id='ErgoReacher-Headless-Simple-Halfdisk-v1',
+    entry_point='gym_ergojr.envs:ErgoReacherEnv',
+    timestep_limit=100,
+    reward_threshold=0,
+    kwargs={'headless': True, 'simple': True, 'goal_halfsphere': True}
+)
+
+register(
+    id='ErgoReacher-Graphical-Simpl-Halfdisk-v1',
+    entry_point='gym_ergojr.envs:ErgoReacherEnv',
+    timestep_limit=100,
+    reward_threshold=0,
+    kwargs={'headless': False, 'simple': True, 'goal_halfsphere': True}
+)
+
+register(
     id='ErgoReacher-Headless-Simple-Backlash-v1',
     entry_point='gym_ergojr.envs:ErgoReacherEnv',
     timestep_limit=100,

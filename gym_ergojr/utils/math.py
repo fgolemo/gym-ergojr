@@ -2,9 +2,10 @@ import numpy as np
 
 
 class RandomPointInHalfSphere(object):
-    def __init__(self, center_x, center_y, center_z, radius, height=None, min_dist=None):
+    def __init__(self, center_x, center_y, center_z, radius, height=None, min_dist=None, halfsphere=False):
         self.center = np.array([center_x, center_y, center_z])
         self.radius = radius
+        self.halfsphere = halfsphere
 
         self.height = radius
         if height is not None:
@@ -32,7 +33,10 @@ class RandomPointInHalfSphere(object):
 
     def sampleSimplePoint(self):
         while True:
-            point_y = np.random.uniform(low=0, high=self.radius, size=1)
+            low = 0
+            if self.halfsphere:
+                low = -self.radius * 2/3 #(because the robot can't go back as far as forward)
+            point_y = np.random.uniform(low=low, high=self.radius, size=1)
             point_z = np.random.uniform(low=0, high=self.height, size=1)
             point = np.hstack(([0],point_y, point_z))
 
