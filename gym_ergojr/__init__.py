@@ -91,7 +91,7 @@ register(
 )
 
 register(
-    id='ErgoReacher-Headless-Halfdisk-v0',
+    id='ErgoReacher-Headless-Halfsphere-v0',
     entry_point='gym_ergojr.envs:ErgoReacherEnv',
     timestep_limit=100,
     reward_threshold=0,
@@ -99,7 +99,7 @@ register(
 )
 
 register(
-    id='ErgoReacher-Graphical-Halfdisk-v0',
+    id='ErgoReacher-Graphical-Halfsphere-v0',
     entry_point='gym_ergojr.envs:ErgoReacherEnv',
     timestep_limit=100,
     reward_threshold=0,
