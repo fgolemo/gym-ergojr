@@ -116,7 +116,7 @@
     <inertial>
       <!--ACTUAL MASS-->
       <!--<mass value=".017"/>-->
-      <!--WORKING MASS-->
+      <!--NORMAL WORKING MASS-->
       <mass value=".1"/>
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
@@ -199,7 +199,7 @@
     <inertial>
       <!--ACTUAL MASS-->
       <!--<mass value=".017"/>-->
-      <!--WORKING MASS-->
+      <!--NORMAL WORKING MASS-->
       <mass value=".1"/>
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
@@ -267,7 +267,7 @@
     <inertial>
       <!--ACTUAL MASS-->
       <!--<mass value=".017"/>-->
-      <!--WORKING MASS-->
+      <!--NORMAL WORKING MASS-->
       <mass value=".1"/>
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
@@ -322,7 +322,7 @@
     <inertial>
       <!--ACTUAL MASS-->
       <!--<mass value=".017"/>-->
-      <!--WORKING MASS-->
+      <!--NORMAL WORKING MASS-->
       <mass value=".1"/>
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
@@ -404,7 +404,7 @@
     <inertial>
       <!--ACTUAL MASS-->
       <!--<mass value=".017"/>-->
-      <!--WORKING MASS-->
+      <!--NORMAL WORKING MASS-->
       <mass value=".1"/>
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
@@ -473,7 +473,7 @@
     <inertial>
       <!--ACTUAL MASS-->
       <!--<mass value=".017"/>-->
-      <!--WORKING MASS-->
+      <!--NORMAL WORKING MASS-->
       <mass value=".1"/>
       <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>

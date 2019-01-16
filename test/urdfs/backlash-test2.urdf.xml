@@ -1,0 +1,224 @@
+<?xml version="1.0" ?>
+<robot name="bot">
+  <!-- colors ................................................................. -->
+  <material name="red">
+    <color rgba="0.8 0 0 1"/>
+  </material>
+  <material name="green">
+    <color rgba="0 0.8 0 0.75"/>
+  </material>
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+  <material name="orange">
+    <color rgba="0.8 0.4 0 0.75"/>
+  </material>
+  <!-- cube base .................................................................-->
+  <link name="body">
+    <visual>
+      <geometry>
+        <box size="1 1 1"/>
+      </geometry>
+      <origin xyz="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1 1 1"/>
+      </geometry>
+      <origin xyz="0 0 0"/>
+    </collision>
+  </link>
+  <joint name="box2disk" type="revolute">
+    <limit lower="-1.5708" upper="1.5708"/>
+    <origin rpy="-1.5708 0 0" xyz="0 0.5 0"/>
+    <parent link="body"/>
+    <child link="disk1"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <!-- disk1 .................................................................-->
+  <link name="disk1">
+    <visual>
+      <geometry>
+        <cylinder length=".25" radius=".25"/>
+      </geometry>
+      <material name="green"/>
+      <origin xyz="0 0 .125"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length=".25" radius=".25"/>
+      </geometry>
+      <origin xyz="0 0 .125"/>
+    </collision>
+  </link>
+  <joint name="disk1indicator" type="fixed">
+    <origin rpy="0 0 0" xyz="0.25 0 .125"/>
+    <parent link="disk1"/>
+    <child link="indicator1"/>
+  </joint>
+  <link name="indicator1">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="red"/>
+      <origin xyz="0 0 0"/>
+    </visual>
+  </link>
+  <!-- disk2 .................................................................-->
+  <joint name="disk1disk2" type="revolute">
+    <limit lower="-.5708" upper=".5708"/>
+    <origin xyz="0 0 0.25"/>
+    <parent link="disk1"/>
+    <child link="disk2"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="disk2">
+    <visual>
+      <geometry>
+        <cylinder length=".25" radius=".25"/>
+      </geometry>
+      <material name="orange"/>
+      <origin xyz="0 0 .125"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length=".25" radius=".25"/>
+      </geometry>
+      <origin xyz="0 0 .125"/>
+    </collision>
+  </link>
+  <joint name="disk2indicator" type="fixed">
+    <origin rpy="0 0 0" xyz="0.25 0 .125"/>
+    <parent link="disk2"/>
+    <child link="indicator2"/>
+  </joint>
+  <link name="indicator2">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="red"/>
+      <origin xyz="0 0 0"/>
+    </visual>
+  </link>
+  <!-- arm1 .................................................................-->
+  <joint name="disk2arm1" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.25"/>
+    <parent link="disk2"/>
+    <child link="arm1"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="arm1">
+    <visual>
+      <geometry>
+        <box size="1 3 1"/>
+      </geometry>
+      <origin xyz="0 -1 0.5"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1 3 1"/>
+      </geometry>
+      <origin xyz="0 -1 0.5"/>
+    </collision>
+  </link>
+  <!-- disk3 .................................................................-->
+  <joint name="arm1disk3" type="revolute">
+    <limit lower="-1.5708" upper="1.5708"/>
+    <origin rpy="0 0 0" xyz="0 -2 1"/>
+    <parent link="arm1"/>
+    <child link="disk3"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="disk3">
+    <visual>
+      <geometry>
+        <cylinder length=".25" radius=".25"/>
+      </geometry>
+      <material name="green"/>
+      <origin xyz="0 0 .125"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length=".25" radius=".25"/>
+      </geometry>
+      <origin xyz="0 0 .125"/>
+    </collision>
+  </link>
+  <joint name="disk3indicator" type="fixed">
+    <origin rpy="0 0 0" xyz="0.25 0 .125"/>
+    <parent link="disk3"/>
+    <child link="indicator3"/>
+  </joint>
+  <link name="indicator3">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="red"/>
+      <origin xyz="0 0 0"/>
+    </visual>
+  </link>
+  <!-- disk4 .................................................................-->
+  <joint name="disk3disk4" type="revolute">
+    <limit lower="-.5708" upper=".5708"/>
+    <origin xyz="0 0 0.25"/>
+    <parent link="disk3"/>
+    <child link="disk4"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="disk4">
+    <visual>
+      <geometry>
+        <cylinder length=".25" radius=".25"/>
+      </geometry>
+      <material name="orange"/>
+      <origin xyz="0 0 .125"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length=".25" radius=".25"/>
+      </geometry>
+      <origin xyz="0 0 .125"/>
+    </collision>
+  </link>
+  <joint name="disk4indicator" type="fixed">
+    <origin rpy="0 0 0" xyz="0.25 0 .125"/>
+    <parent link="disk4"/>
+    <child link="indicator4"/>
+  </joint>
+  <link name="indicator4">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="red"/>
+      <origin xyz="0 0 0"/>
+    </visual>
+  </link>
+  <!-- arm2 .................................................................-->
+  <joint name="disk4arm2" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.25"/>
+    <parent link="disk4"/>
+    <child link="arm2"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="arm2">
+    <visual>
+      <geometry>
+        <box size="1 3 1"/>
+      </geometry>
+      <origin xyz="0 -1 0.5"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1 3 1"/>
+      </geometry>
+      <origin xyz="0 -1 0.5"/>
+    </collision>
+  </link>
+</robot>
