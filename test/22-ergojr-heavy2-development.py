@@ -9,7 +9,7 @@ from gym_ergojr.utils.urdf_helper import URDF
 
 physicsClient = p.connect(p.GUI)  # or p.DIRECT for non-graphical version
 p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
-p.resetDebugVisualizerCamera(cameraDistance=40,
+p.resetDebugVisualizerCamera(cameraDistance=4,
                              cameraYaw=135,
                              cameraPitch=-45,
                              cameraTargetPosition=[0, 0, 0])
@@ -26,7 +26,7 @@ startPos = [0, 0, 0]  # RGB = xyz
 startOrientation = p.getQuaternionFromEuler([0, 0, 0])  # rotated around which axis? # np.deg2rad(90)
 # rotating a standing cylinder around the y axis, puts it flat onto the x axis
 
-xml_path = get_scene("ergojr-penholder-heavy")
+xml_path = get_scene("ergojr-penholder-heavy2")
 
 robot_file = URDF(xml_path, force_recompile=True).get_path()
 robot = p.loadURDF(robot_file, startPos, startOrientation, useFixedBase=1)
@@ -68,15 +68,13 @@ for i in range(runtime):
         pos = (math.pi / 2) * p.readUserDebugParameter(debugParams[j])
         motorPos.append(pos)
         # p.setJointMotorControl2(robot, motors[i], p.VELOCITY_CONTROL, targetVelocity = pos)
-        p.setJointMotorControl2(robot, motors[j], p.POSITION_CONTROL, targetPosition=pos, force=1000, positionGain=.2)
+        p.setJointMotorControl2(robot, motors[j], p.POSITION_CONTROL, targetPosition=pos, force=1000)
         #                         force = p.readUserDebugParameter(forceSlider))
     pos = (math.pi / 2) * p.readUserDebugParameter(debugParams[joint_to_track-1])
     jpos, jvel, _, jtor = p.getJointState(robot, motors[joint_to_track-1])
     bpos, bvel, _, btor = p.getJointState(robot, backlash[joint_to_track-1])
     joint_tracking[i, :] = [pos, jpos, bpos, jvel, bvel, jtor, btor]
 
-    p.stepSimulation()
-    p.stepSimulation()
     p.stepSimulation()
     time.sleep(1. / frequency)
 

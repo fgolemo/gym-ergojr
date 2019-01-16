@@ -3,7 +3,9 @@
     <xacro:include filename="ergojr-macros.xacro.xml"/>
 
     <xacro:macro name="ergojr" params="prefix:=1 rotx_base:=0 roty_base:=0 rotz_base:=0
-                                        posx_base:=0 posy_base:=0 posz_base:=0 backlash_on:=1 backlash_val:=.1">
+                                        posx_base:=0 posy_base:=0 posz_base:=0
+                                        backlash_on:=1 backlash_val:=.1
+                                        damping:=100.0 friction:=100.0 weight:=1">
 
         <link name="${prefix}_anchor"/>
 
@@ -16,8 +18,8 @@
         <link name="${prefix}_base">
             <xacro:cylinder2 length="0.5" radius="7.5" posz=".25"/>
             <inertial>
-                <mass value="3.8"/>
-                <inertia ixx="1" iyy="1" izz="1"/>
+                <mass value="${3.8 * weight}"/>
+                <inertia ixx="${1 * weight}" iyy="${1 * weight}" izz="${1 * weight}"/>
             </inertial>
         </link>
 
@@ -30,8 +32,8 @@
         <link name="${prefix}_static_first_link">
             <xacro:cylinder2 length="0.3" radius="2.75" posz=".15"/>
             <inertial>
-                <mass value="1.1"/>
-                <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+                <mass value="${1.1 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
             </inertial>
         </link>
 
@@ -56,8 +58,8 @@
                 </geometry>
             </collision>
             <inertial>
-                <mass value="1.7"/>
-                <inertia ixx="2.55" iyy="2.76" izz="1.85"/>
+                <mass value="${1.7 * weight}"/>
+                <inertia ixx="${2.55 * weight}" iyy="${2.76 * weight}" izz="${1.85 * weight}"/>
             </inertial>
         </link>
         <joint name="${prefix}_motor1joint" type="revolute">
@@ -71,8 +73,8 @@
         <link name="${prefix}_motor1wheel">
             <xacro:cylinder2 length=".2" radius="0.8" color="red" posz=".1"/>
             <inertial>
-                <mass value="0.2"/>
-                <inertia ixx="1" iyy="1" izz="1"/>
+                <mass value="${.2 * weight}"/>
+                <inertia ixx="${1 * weight}" iyy="${1 * weight}" izz="${1 * weight}"/>
             </inertial>
         </link>
         <xacro:if value="${backlash_on}">
@@ -101,36 +103,38 @@
             <xacro:box2 sizex=".5" sizey="2." sizez="3.45" posz="1.725" posx="1.45"/>
 
             <inertial>
-                <mass value=".5"/>
-                <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+                <mass value="${.5 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
             </inertial>
         </link>
 
         <xacro:big_motor posx="-1.5" posz="2.4" rotx="${pihalf}" rotz="${pihalf}"
                          motor="2" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
                          backlash_val="${backlash_val}" prevlink="link1_bottom"
-                         nextlink_on="1" nextlink_val="motor2bridge3"/>
+                         nextlink_on="1" nextlink_val="motor2bridge3"
+                         damping="${damping}" friction="${friction}" weight="${weight}"/>
 
         <link name="${prefix}_motor2bridge3">
             <xacro:box2 sizex=".2" sizey="2." sizez="4.5" posx="-1.6" posz="2.25"/>
             <xacro:box2 sizex=".5" sizey="2." sizez="4.5" posx="1.45" posz="2.25"/>
             <inertial>
-                <mass value=".45"/>
-                <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+                <mass value="${.45 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
             </inertial>
         </link>
 
         <xacro:big_motor posx="-1.5" posz="3.5" rotx="${pihalf}" rotz="${pihalf}"
                          motor="3" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
                          backlash_val="${backlash_val}" prevlink="motor2bridge3"
-                         nextlink_on="1" nextlink_val="motor3bridge4"/>
+                         nextlink_on="1" nextlink_val="motor3bridge4"
+                         damping="${damping}" friction="${friction}" weight="${weight}"/>
 
 
         <link name="${prefix}_motor3bridge4">
             <xacro:box2 sizex="2.7" sizey="2." sizez=".2" posz=".9" posx="-.15"/>
             <inertial>
-                <mass value=".1"/>
-                <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+                <mass value="${.1 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
             </inertial>
         </link>
 
@@ -138,36 +142,39 @@
                          motor="4" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
                          backlash_val="${backlash_val}" prevlink="motor3bridge4"
                          nextlink_on="1" nextlink_val="motor4bridge5"
-                         rotxn="${pi}" rotyn="${pihalf}" rotzn="${pihalf}"/>
+                         rotxn="${pi}" rotyn="${pihalf}" rotzn="${pihalf}"
+                         damping="${damping}" friction="${friction}" weight="${weight}"/>
 
         <link name="${prefix}_motor4bridge5">
             <xacro:box2 sizex=".2" sizey="4.5" sizez="2." posx="-1.6" posy="2.25"/>
             <xacro:box2 sizex=".3" sizey=".5" sizez="2." posx="-1.35" posy=".25"/>
             <xacro:box2 sizex=".4" sizey="4.5" sizez="2." posx="1.4" posy="2.25"/>
             <inertial>
-                <mass value=".45"/>
-                <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+                <mass value="${.45 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
             </inertial>
         </link>
 
         <xacro:big_motor posx="-1.5" posy="3.5" posz="0" roty="${pihalf}"
                          motor="5" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
                          backlash_val="${backlash_val}" prevlink="motor4bridge5"
-                         nextlink_on="1" nextlink_val="motor5bridge6" rotxn="${pihalf}" />
+                         nextlink_on="1" nextlink_val="motor5bridge6" rotxn="${pihalf}"
+                         damping="${damping}" friction="${friction}" weight="${weight}"/>
 
         <link name="${prefix}_motor5bridge6">
             <xacro:box2 sizex=".2" sizey="4.5" sizez="2." posx="-1.6" posy="2.25"/>
             <xacro:box2 sizex=".4" sizey="4.5" sizez="2." posx="1.4" posy="2.25"/>
             <inertial>
-                <mass value=".45"/>
-                <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+                <mass value="${.45 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
             </inertial>
         </link>
 
         <xacro:big_motor posx="-1.5" posy="3.5" posz="0" roty="${pihalf}"
                          motor="6" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
                          backlash_val="${backlash_val}" prevlink="motor5bridge6"
-                         nextlink_on="0"/>
+                         nextlink_on="0" damping="${damping}" friction="${friction}"
+                         weight="${weight}"/>
 
     </xacro:macro>
 
