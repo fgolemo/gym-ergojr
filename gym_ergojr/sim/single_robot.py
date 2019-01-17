@@ -4,13 +4,13 @@ from gym_ergojr.sim.abstract_robot import AbstractRobot
 class SingleRobot(AbstractRobot):
 
     def __init__(self, robot_model="ergojr-penholder", debug=False, frequency=100, backlash=False, heavy=False,
-                 new_backlash=None):
+                 new_backlash=None, silent=False):
         self.robot_model = robot_model
         if backlash:
             self.robot_model += "-backlash"
         if heavy:
             self.robot_model += "-heavy"
-        super().__init__(debug, frequency, backlash, heavy, new_backlash)
+        super().__init__(debug, frequency, backlash, heavy, new_backlash, silent)
         self.hard_reset()
 
     def act2(self, actions, **kwargs):

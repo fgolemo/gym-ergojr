@@ -5,6 +5,7 @@ import pybullet_data
 import numpy as np
 import os.path as osp
 from gym_ergojr import get_scene
+from gym_ergojr.utils.libstfu import stdout_redirected, stdout_noop
 from gym_ergojr.utils.urdf_helper import URDF
 from xml.etree import ElementTree as et
 
@@ -18,23 +19,28 @@ et.register_namespace("xacro", NAMESPACE["xacro"])
 
 class AbstractRobot():
 
-    def __init__(self, debug=False, frequency=100, backlash=None, heavy=False, new_backlash=None):
+    def __init__(self, debug=False, frequency=100, backlash=None, heavy=False, new_backlash=None, silent=False):
         self.debug = debug
         self.frequency = frequency
         self.backlash = backlash
         self.heavy = heavy
         self.new_backlash = new_backlash
-        if debug:
-            p.connect(p.GUI)  # or p.DIRECT for non-graphical faster version
-            dist = .7
-            if self.heavy:
-                dist = 50
-            p.resetDebugVisualizerCamera(cameraDistance=dist,
-                                         cameraYaw=135,
-                                         cameraPitch=-45,
-                                         cameraTargetPosition=[0, 0, 0])
-        else:
-            p.connect(p.DIRECT)
+        self.output_handler = stdout_noop
+        if silent:
+            self.output_handler = stdout_redirected
+
+        with self.output_handler():
+            if debug:
+                p.connect(p.GUI)  # or p.DIRECT for non-graphical faster version
+                dist = .7
+                if self.heavy:
+                    dist = 50
+                p.resetDebugVisualizerCamera(cameraDistance=dist,
+                                             cameraYaw=135,
+                                             cameraPitch=-45,
+                                             cameraTargetPosition=[0, 0, 0])
+            else:
+                p.connect(p.DIRECT)
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optional for ground
 
@@ -53,20 +59,21 @@ class AbstractRobot():
         startOrientation = p.getQuaternionFromEuler(pose[3:])  # rotated around which axis? # np.deg2rad(90)
         # rotating a standing cylinder around the y axis, puts it flat onto the x axis
 
-        xml_path = get_scene(robot_model)
+        with self.output_handler():
+            xml_path = get_scene(robot_model)
 
-        if self.new_backlash is not None:
-            robot_file = self.update_backlash(xml_path)
-        else:
-            robot_file = URDF(xml_path, force_recompile=True).get_path()
+            if self.new_backlash is not None:
+                robot_file = self.update_backlash(xml_path)
+            else:
+                robot_file = URDF(xml_path, force_recompile=True).get_path()
 
-        robot_id = p.loadURDF(robot_file, startPos, startOrientation, useFixedBase=1)
-        self.robots.append(robot_id)
+            robot_id = p.loadURDF(robot_file, startPos, startOrientation, useFixedBase=1)
+            self.robots.append(robot_id)
 
-        if self.debug:
-            print(robot_model)
-            for i in range(p.getNumJoints(robot_id)):
-                print(p.getJointInfo(robot_id, i))
+            if self.debug:
+                print(robot_model)
+                for i in range(p.getNumJoints(robot_id)):
+                    print(p.getJointInfo(robot_id, i))
 
         return robot_id
 
