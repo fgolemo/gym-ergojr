@@ -9,183 +9,110 @@ def get_scene(name):
     return os.path.join(_ROOT, "scenes", name)
 
 
-register(
-    id='ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0',
-    entry_point='gym_ergojr.envs:ErgoFightStaticEnv',
-    timestep_limit=1000,
-    reward_threshold=150,
-    kwargs={'headless': False, 'scaling': 0.5},
-)
+for headlessness in ["Graphical", "Headless"]:
+    headlessness_switch = True if headlessness == "Headless" else False
 
-register(
-    id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0',
-    entry_point='gym_ergojr.envs:ErgoFightStaticEnv',
-    timestep_limit=1000,
-    reward_threshold=150,
-    kwargs={'headless': True, 'scaling': 0.5},
-)
+    register(
+        id='ErgoFightStatic-{}-Shield-Move-HalfRand-Bullet-v0'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoFightStaticEnv',
+        timestep_limit=1000,
+        reward_threshold=150,
+        kwargs={'headless': headlessness_switch, 'scaling': 0.5},
+    )
 
-register(
-    id='ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-Plus-v0',
-    entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0'},
-)
+    register(
+        id='ErgoFightStatic-{}-Shield-Move-HalfRand-Bullet-Plus-v0'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
+        kwargs={'base_env_id': 'ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0'},
+    )
 
-register(
-    id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-Plus-v0',
-    entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0'},
-)
+    register(
+        id='ErgoFightStatic-{}-Shield-Move-HalfRand-Bullet-Plus-Half-v0'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
+        kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0', "scaling": 0.5},
+    )
 
-register(
-    id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-Plus-Half-v0',
-    entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0', "scaling": 0.5},
-)
+    register(
 
-register(
+        id='ErgoFightStatic-{}-Shield-Move-HalfRand-Bullet-Plus-Training-v0'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoFightPlusTrainingEnv',
+        kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0'},
+    )
 
-    id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-Plus-Training-v0',
-    entry_point='gym_ergojr.envs:ErgoFightPlusTrainingEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0'},
-)
+    register(
+        id='ErgoFightStatic-{}-Shield-Move-HalfRand-Bullet-NoSim-v0'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
+        kwargs={'base_env_id': 'ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0', "noSim": True},
+    )
 
-register(
-    id='ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-NoSim-v0',
-    entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0', "noSim": True},
-)
+    register(
+        id='ErgoFightStatic-{}-Shield-Move-HalfRand-Bullet-PlusGP-v0'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoFightPlusGPEnv',
+        kwargs={'base_env_id': 'ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0'},
+    )
 
-register(
-    id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-NoSim-v0',
-    entry_point='gym_ergojr.envs:ErgoFightPlusEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0', "noSim": True},
-)
+    register(
+        id='ErgoReacher-{}-v0'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch}
+    )
 
-register(
-    id='ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-PlusGP-v0',
-    entry_point='gym_ergojr.envs:ErgoFightPlusGPEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Graphical-Shield-Move-HalfRand-Bullet-v0'},
-)
+    register(
+        id='ErgoReacher-{}-Halfsphere-v0'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'goal_halfsphere': True}
+    )
 
-register(
-    id='ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-PlusGP-v0',
-    entry_point='gym_ergojr.envs:ErgoFightPlusGPEnv',
-    kwargs={'base_env_id': 'ErgoFightStatic-Headless-Shield-Move-HalfRand-Bullet-v0'},
-)
+    register(
+        id='ErgoReacher-{}-Simple-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True}
+    )
 
-register(
-    id='ErgoReacher-Headless-v0',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': True}
-)
+    register(
+        id='ErgoReacher-{}-Simple-Halfdisk-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True, 'goal_halfsphere': True}
+    )
 
-register(
-    id='ErgoReacher-Graphical-v0',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': False}
-)
+    register(
+        id='ErgoReacher-{}-Simple-Halfdisk-Heavy-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherHeavyEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True, 'goal_halfsphere': True}
+    )
 
-register(
-    id='ErgoReacher-Headless-Halfsphere-v0',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': True, 'goal_halfsphere': True}
-)
+    register(
+        id='ErgoReacher-{}-Simple-Backlash-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True, 'backlash': True}
+    )
 
-register(
-    id='ErgoReacher-Graphical-Halfsphere-v0',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': False, 'goal_halfsphere': True}
-)
+    register(
+        id='ErgoReacher-{}-Simple-Plus-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherPlusEnv',
+        kwargs={'base_env_id': 'ErgoReacher-Headless-Simple-v1'},
+    )
 
-register(
-    id='ErgoReacher-Headless-Simple-v1',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': True, 'simple': True}
-)
+    register(
+        id='ErgoReacher-{}-Simple-Plus-v2'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherPlus2Env',
+        kwargs={'base_env_id': 'ErgoReacher-Headless-Simple-v1'},
+    )
 
-register(
-    id='ErgoReacher-Graphical-Simple-v1',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': False, 'simple': True}
-)
-
-register(
-    id='ErgoReacher-Headless-Simple-Halfdisk-v1',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': True, 'simple': True, 'goal_halfsphere': True}
-)
-
-register(
-    id='ErgoReacher-Graphical-Simpl-Halfdisk-v1',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': False, 'simple': True, 'goal_halfsphere': True}
-)
-
-register(
-    id='ErgoReacher-Headless-Simple-Backlash-v1',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': True, 'simple': True, 'backlash': True}
-)
-
-register(
-    id='ErgoReacher-Graphical-Simple-Backlash-v1',
-    entry_point='gym_ergojr.envs:ErgoReacherEnv',
-    timestep_limit=100,
-    reward_threshold=0,
-    kwargs={'headless': False, 'simple': True, 'backlash': True}
-)
-
-register(
-    id='ErgoReacher-Headless-Simple-Plus-v1',
-    entry_point='gym_ergojr.envs:ErgoReacherPlusEnv',
-    kwargs={'base_env_id': 'ErgoReacher-Headless-Simple-v1'},
-)
-
-register(
-    id='ErgoReacher-Graphical-Simple-Plus-v1',
-    entry_point='gym_ergojr.envs:ErgoReacherPlusEnv',
-    kwargs={'base_env_id': 'ErgoReacher-Graphical-Simple-v1'},
-)
-
-register(
-    id='ErgoReacher-Headless-Simple-Plus-v2',
-    entry_point='gym_ergojr.envs:ErgoReacherPlus2Env',
-    kwargs={'base_env_id': 'ErgoReacher-Headless-Simple-v1'},
-)
-
-register(
-    id='ErgoReacher-Graphical-Simple-Plus-v2',
-    entry_point='gym_ergojr.envs:ErgoReacherPlus2Env',
-    kwargs={'base_env_id': 'ErgoReacher-Graphical-Simple-v1'},
-)
-
-register(
-    id='ErgoReacher-Headless-Simple-Plus-NoSim-v2',
-    entry_point='gym_ergojr.envs:ErgoReacherPlus2Env',
-    kwargs={'base_env_id': 'ErgoReacher-Headless-Simple-v1', 'nosim': True},
-)
-
-register(
-    id='ErgoReacher-Graphical-Simple-Plus-NoSim-v2',
-    entry_point='gym_ergojr.envs:ErgoReacherPlus2Env',
-    kwargs={'base_env_id': 'ErgoReacher-Graphical-Simple-v1', 'nosim': True},
-)
+    register(
+        id='ErgoReacher-{}-Simple-Plus-NoSim-v2'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherPlus2Env',
+        kwargs={'base_env_id': 'ErgoReacher-Headless-Simple-v1', 'nosim': True},
+    )

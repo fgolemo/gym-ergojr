@@ -7,20 +7,25 @@ import numpy as np
 from gym_ergojr import get_scene
 from gym_ergojr.utils.urdf_helper import URDF
 
-MAX_VEL = 18  # not measured, but looks about right
-MAX_FORCE = 1  # idk, seems to work
+NORM_VEL = {"default": 18, "heavy": 38}
+MAX_VEL = {"default": 18, "heavy": 1000}  # not measured, but looks about right
+MAX_FORCE = {"default": 1, "heavy": 1000}
 MOTOR_DIRECTIONS = [1, -1, -1, 1, -1, -1]  # how do the motors turn on real robot
 
 
 class AbstractRobot():
 
-    def __init__(self, debug=False, frequency=100, backlash=None):
+    def __init__(self, debug=False, frequency=100, backlash=None, heavy=False):
         self.debug = debug
         self.frequency = frequency
         self.backlash = backlash
+        self.heavy = heavy
         if debug:
             p.connect(p.GUI)  # or p.DIRECT for non-graphical faster version
-            p.resetDebugVisualizerCamera(cameraDistance=0.7,
+            dist = .7
+            if self.heavy:
+                dist = 50
+            p.resetDebugVisualizerCamera(cameraDistance=dist,
                                          cameraYaw=135,
                                          cameraPitch=-45,
                                          cameraTargetPosition=[0, 0, 0])
@@ -30,7 +35,11 @@ class AbstractRobot():
         p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optional for ground
 
         self.robots = []
-        self.motor_ids = [3, 4, 6, 8, 10, 12]  # this is consistent across different robots
+        if not self.heavy:
+            self.motor_ids = [3, 4, 6, 8, 10, 12]  # this is consistent across different normal robots
+        if self.heavy:
+            print("DEBUG: using heavy motors")
+            self.motor_ids = [3, 6, 9, 12, 15, 18]  # this is consistent across different heavy robots
         self.debug_text = None
 
     def addModel(self, robot_model, pose=None):
@@ -57,11 +66,10 @@ class AbstractRobot():
             assert len(bl) == 3
 
             cid = p.createConstraint(robot_id, bl[0], robot_id, bl[1], p.JOINT_FIXED,
-                                      jointAxis=[1, 0, 0],
-                                      parentFramePosition=[0, 0, 0],
-                                      childFramePosition=[0, 0, 0])
+                                     jointAxis=[1, 0, 0],
+                                     parentFramePosition=[0, 0, 0],
+                                     childFramePosition=[0, 0, 0])
             p.changeConstraint(cid, [0, 0, 0.1], maxForce=bl[2])
-
 
     def clip_action(self, actions):
         return np.multiply(
@@ -79,7 +87,7 @@ class AbstractRobot():
 
     def float2list(self, val):
         if type(val) == type(1) or type(val) == type(1.0):
-            return [val]*6
+            return [val] * 6
         elif type(val) == type([]) or type(val) == type(np.array([])):
             assert len(val) == 6
             return val
@@ -89,16 +97,33 @@ class AbstractRobot():
                 type(val)
             ))
 
-    def act2(self, actions, robot_id, max_force=MAX_FORCE, max_vel=MAX_VEL):
+    def act2(self, actions, robot_id, max_force=None, max_vel=None, positionGain=None):
         actions_clipped = self.clip_action(actions)
+        if self.heavy and positionGain is None:
+            positionGain = .2
+
+        if max_force is None:
+            max_force = MAX_FORCE["default" if not self.heavy else "heavy"]
+
+        if max_vel is None:
+            max_vel = MAX_VEL["default" if not self.heavy else "heavy"]
+
         force = self.float2list(max_force)
         vel = self.float2list(max_vel)
         for idx, act in enumerate(actions_clipped):
-            p.setJointMotorControl2(self.robots[robot_id], self.motor_ids[idx],
-                                    p.POSITION_CONTROL,
-                                    targetPosition=act,
-                                    force=force[idx],
-                                    maxVelocity=vel[idx])
+            if positionGain is None:
+                p.setJointMotorControl2(self.robots[robot_id], self.motor_ids[idx],
+                                        p.POSITION_CONTROL,
+                                        targetPosition=act,
+                                        force=force[idx],
+                                        maxVelocity=vel[idx])
+            else:
+                p.setJointMotorControl2(self.robots[robot_id], self.motor_ids[idx],
+                                        p.POSITION_CONTROL,
+                                        targetPosition=act,
+                                        force=force[idx],
+                                        maxVelocity=vel[idx],
+                                        positionGain=positionGain)
 
     def observe(self, robot_id):
         obs = p.getJointStates(self.robots[robot_id], self.motor_ids)
@@ -108,8 +133,10 @@ class AbstractRobot():
 
     def normalize(self, posvel):
         assert len(posvel) == 12
+        norm_max_vel = NORM_VEL["default" if not self.heavy else "heavy"]
+
         pos_norm = (posvel[:6] + np.pi / 2) / np.pi
-        vel_norm = (posvel[6:] + MAX_VEL) / (MAX_VEL * 2)
+        vel_norm = (posvel[6:] + norm_max_vel) / (norm_max_vel * 2)
         posvel_norm = np.hstack((pos_norm, vel_norm))
         posvel_shifted = posvel_norm * 2 - 1
         posvel_shifted[:6] = np.multiply(posvel_shifted[:6], MOTOR_DIRECTIONS)
@@ -175,10 +202,13 @@ class AbstractRobot():
         p.setGravity(0, 0, -10)
         p.setTimeStep(1 / self.frequency)
         p.setRealTimeSimulation(0)
-        p.loadURDF("plane.urdf")
+        if not self.heavy:
+            p.loadURDF("plane.urdf")
+        else:
+            p.loadURDF(URDF(get_scene("plane-big.urdf.xml")).get_path())
 
     def set_text(self, text=None):
         if self.debug_text is not None:
             p.removeUserDebugItem(self.debug_text)
         if text is not None and text is not "":
-            self.debug_text = p.addUserDebugText(text, [.1,-.1,.12], textColorRGB=[1,0,0], textSize=6)
+            self.debug_text = p.addUserDebugText(text, [.1, -.1, .12], textColorRGB=[1, 0, 0], textSize=6)

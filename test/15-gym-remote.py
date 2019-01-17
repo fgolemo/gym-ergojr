@@ -4,7 +4,8 @@ import gym_ergojr
 
 master = Tk()
 
-env = gym.make("ErgoReacher-Graphical-Simple-Plus-v2")
+# env = gym.make("ErgoReacher-Graphical-Simple-Plus-v2")
+env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-Heavy-v1")
 env.reset()
 
 
