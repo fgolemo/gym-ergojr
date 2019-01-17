@@ -11,7 +11,7 @@ class Ball(object):
         self.hard_reset()
 
     def changePos(self, new_pos):
-        p.changeConstraint(self.ball_cid, new_pos, maxForce=500)
+        p.changeConstraint(self.ball_cid, new_pos, maxForce=25000 * self.scaling)
 
     def hard_reset(self):
         startOrientation = p.getQuaternionFromEuler([0, 0, 0])
@@ -20,5 +20,5 @@ class Ball(object):
                                            jointAxis=[0, 0, 0],
                                            parentFramePosition=[0, 0, 0],
                                            childFramePosition=[0, 0, 0])
-        p.changeConstraint(self.ball_cid, [0, 0, 0.1], maxForce=500)
+        p.changeConstraint(self.ball_cid, [0, 0, 0.1], maxForce=25000 * self.scaling)
 
