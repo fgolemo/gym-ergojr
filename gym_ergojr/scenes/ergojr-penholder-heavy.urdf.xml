@@ -18,7 +18,12 @@
   <material name="red">
     <color rgba="1 0 0 1"/>
   </material>
-  <link name="1_anchor"/>
+  <link name="1_anchor">
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1"/>
+    </inertial>
+  </link>
   <joint name="1_anchor_to_base" type="fixed">
     <parent link="1_anchor"/>
     <child link="1_base"/>

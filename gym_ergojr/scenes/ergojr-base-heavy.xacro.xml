@@ -9,7 +9,12 @@
 backlash_val1:=0 backlash_val2:=0 backlash_val3:=0
 backlash_val4:=0 backlash_val5:=0 backlash_val6:=0">
 
-        <link name="${prefix}_anchor"/>
+        <link name="${prefix}_anchor">
+            <inertial>
+                <mass value="1"/>
+                <inertia ixx="1" iyy="1" izz="1"/>
+            </inertial>
+        </link>
 
         <joint name="${prefix}_anchor_to_base" type="fixed">
             <parent link="${prefix}_anchor"/>
