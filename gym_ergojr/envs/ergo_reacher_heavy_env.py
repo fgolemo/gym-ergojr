@@ -15,9 +15,8 @@ class ErgoReacherHeavyEnv(gym.Env):
         self.simple = simple
         self.max_force = max_force
         self.max_vel = max_vel
-        self.backlash = backlash
 
-        self.robot = SingleRobot(debug=not headless, heavy=True, new_backlash=self.backlash)
+        self.robot = SingleRobot(debug=not headless, heavy=True, new_backlash=backlash)
         self.ball = Ball(1)
         self.rhis = RandomPointInHalfSphere(0.0, 3.69, 4.37,
                                             radius=20.22, height=26.10,
@@ -82,6 +81,11 @@ class ErgoReacherHeavyEnv(gym.Env):
     def _setDist(self):
         self.dist.bodyA = self.robot.id
         self.dist.bodyB = self.ball.id
+
+    def update_backlash(self, new_val):
+        self.robot.new_backlash = new_val
+        self.force_urdf_reload = True
+        # and now on the next self.reset() the new modified URDF will be loaded
 
     def reset(self):
         self.episodes += 1
