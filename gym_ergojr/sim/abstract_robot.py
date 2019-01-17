@@ -3,23 +3,27 @@ import pybullet as p
 import time
 import pybullet_data
 import numpy as np
-
+import os.path as osp
 from gym_ergojr import get_scene
 from gym_ergojr.utils.urdf_helper import URDF
+from xml.etree import ElementTree as et
 
 NORM_VEL = {"default": 18, "heavy": 38}
 MAX_VEL = {"default": 18, "heavy": 1000}  # not measured, but looks about right
 MAX_FORCE = {"default": 1, "heavy": 1000}
 MOTOR_DIRECTIONS = [1, -1, -1, 1, -1, -1]  # how do the motors turn on real robot
+NAMESPACE = {'xacro': 'http://www.ros.org/wiki/xacro'}  # add more as needed
+et.register_namespace("xacro", NAMESPACE["xacro"])
 
 
 class AbstractRobot():
 
-    def __init__(self, debug=False, frequency=100, backlash=None, heavy=False):
+    def __init__(self, debug=False, frequency=100, backlash=None, heavy=False, new_backlash=None):
         self.debug = debug
         self.frequency = frequency
         self.backlash = backlash
         self.heavy = heavy
+        self.new_backlash = new_backlash
         if debug:
             p.connect(p.GUI)  # or p.DIRECT for non-graphical faster version
             dist = .7
@@ -50,7 +54,12 @@ class AbstractRobot():
         # rotating a standing cylinder around the y axis, puts it flat onto the x axis
 
         xml_path = get_scene(robot_model)
-        robot_file = URDF(xml_path, force_recompile=True).get_path()
+
+        if self.new_backlash is not None:
+            robot_file = self.update_backlash(xml_path)
+        else:
+            robot_file = URDF(xml_path, force_recompile=True).get_path()
+
         robot_id = p.loadURDF(robot_file, startPos, startOrientation, useFixedBase=1)
         self.robots.append(robot_id)
 
@@ -71,19 +80,25 @@ class AbstractRobot():
                                      childFramePosition=[0, 0, 0])
             p.changeConstraint(cid, [0, 0, 0.1], maxForce=bl[2])
 
+    def update_backlash(self, xml_path):
+        backlashes = self.float2list(self.new_backlash)
+
+        tree = et.parse(xml_path + ".xacro.xml")
+
+        for i in range(6):
+            bl_val = tree.find(".//xacro:property[@name='backlash_val{}']".format(i + 1), NAMESPACE)
+            bl_val.set('value', "{}".format(backlashes[i]))
+
+        filename = "{}-bl{}".format(xml_path, np.around(self.new_backlash, 5))
+        tree.write(filename + ".xacro.xml")
+        robot_file = URDF(xml_path, force_recompile=True).get_path()
+        return robot_file
+
     def clip_action(self, actions):
         return np.multiply(
             np.pi / 2 * np.clip(actions, -1, 1),
             MOTOR_DIRECTIONS
         )
-
-    ## DEPRECATED
-    # def act(self, actions, robot_id):
-    #     actions_clipped = self.clip_action(actions)
-    #     p.setJointMotorControlArray(self.robots[robot_id], self.motor_ids,
-    #                                 p.POSITION_CONTROL,
-    #                                 targetPositions=actions_clipped,
-    #                                 forces=[MAX_FORCE] * 6)
 
     def float2list(self, val):
         if type(val) == type(1) or type(val) == type(1.0):

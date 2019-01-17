@@ -3,16 +3,23 @@
     <xacro:include filename="ergojr-macros.xacro.xml"/>
     <xacro:include filename="ergojr-base-heavy.xacro.xml"/>
 
-    <xacro:property name="weight" value=".5" />
-    <xacro:property name="damping" value="10" />
-    <xacro:property name="friction" value="10" />
-    <xacro:property name="backlash_on" value="1" />
-    <xacro:property name="backlash_val" value=".1" />
+    <xacro:property name="weight" value=".5"/>
+    <xacro:property name="damping" value="10"/>
+    <xacro:property name="friction" value="10"/>
+    <xacro:property name="backlash_on" value="1"/>
+    <xacro:property name="backlash_val1" value=".0"/>
+    <xacro:property name="backlash_val2" value=".0"/>
+    <xacro:property name="backlash_val3" value=".0"/>
+    <xacro:property name="backlash_val4" value=".0"/>
+    <xacro:property name="backlash_val5" value=".0"/>
+    <xacro:property name="backlash_val6" value=".0"/>
 
     <xacro:ergojr prefix="1" rotx_base="0" roty_base="0" rotz_base="0"
                   posx_base="0" posy_base="0" posz_base="0"
-                  backlash_on="${backlash_on}" backlash_val="${backlash_val}"
-                  damping="${damping}" friction="${friction}" weight="${weight}"/>
+                  backlash_on="${backlash_on}"
+                  damping="${damping}" friction="${friction}" weight="${weight}"
+                  backlash_val1="${backlash_val1}" backlash_val2="${backlash_val2}" backlash_val3="${backlash_val3}"
+                  backlash_val4="${backlash_val4}" backlash_val5="${backlash_val5}" backlash_val6="${backlash_val6}"/>
 
     <joint name="motor6link_to_penholder" type="fixed">
         <parent link="1_motor6link"/>

@@ -4,8 +4,10 @@
 
     <xacro:macro name="ergojr" params="prefix:=1 rotx_base:=0 roty_base:=0 rotz_base:=0
                                         posx_base:=0 posy_base:=0 posz_base:=0
-                                        backlash_on:=1 backlash_val:=.1
-                                        damping:=100.0 friction:=100.0 weight:=1">
+                                        backlash_on:=1
+                                        damping:=100.0 friction:=100.0 weight:=1
+backlash_val1:=0 backlash_val2:=0 backlash_val3:=0
+backlash_val4:=0 backlash_val5:=0 backlash_val6:=0">
 
         <link name="${prefix}_anchor"/>
 
@@ -79,7 +81,7 @@
         </link>
         <xacro:if value="${backlash_on}">
             <joint name="${prefix}_motor1backlash" type="revolute">
-                <limit lower="-${backlash_val}" upper="${backlash_val}"/>
+                <limit lower="-${backlash_val1}" upper="${backlash_val1}"/>
                 <dynamics damping="100.0" friction="10.0"/>
                 <parent link="${prefix}_motor1wheel"/>
                 <child link="${prefix}_link1_bottom"/>
@@ -110,7 +112,7 @@
 
         <xacro:big_motor posx="-1.5" posz="2.4" rotx="${pihalf}" rotz="${pihalf}"
                          motor="2" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
-                         backlash_val="${backlash_val}" prevlink="link1_bottom"
+                         backlash_val="${backlash_val2}" prevlink="link1_bottom"
                          nextlink_on="1" nextlink_val="motor2bridge3"
                          damping="${damping}" friction="${friction}" weight="${weight}"/>
 
@@ -125,7 +127,7 @@
 
         <xacro:big_motor posx="-1.5" posz="3.5" rotx="${pihalf}" rotz="${pihalf}"
                          motor="3" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
-                         backlash_val="${backlash_val}" prevlink="motor2bridge3"
+                         backlash_val="${backlash_val3}" prevlink="motor2bridge3"
                          nextlink_on="1" nextlink_val="motor3bridge4"
                          damping="${damping}" friction="${friction}" weight="${weight}"/>
 
@@ -140,7 +142,7 @@
 
         <xacro:big_motor posy="0" posz="1.0"
                          motor="4" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
-                         backlash_val="${backlash_val}" prevlink="motor3bridge4"
+                         backlash_val="${backlash_val4}" prevlink="motor3bridge4"
                          nextlink_on="1" nextlink_val="motor4bridge5"
                          rotxn="${pi}" rotyn="${pihalf}" rotzn="${pihalf}"
                          damping="${damping}" friction="${friction}" weight="${weight}"/>
@@ -157,7 +159,7 @@
 
         <xacro:big_motor posx="-1.5" posy="3.5" posz="0" roty="${pihalf}"
                          motor="5" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
-                         backlash_val="${backlash_val}" prevlink="motor4bridge5"
+                         backlash_val="${backlash_val5}" prevlink="motor4bridge5"
                          nextlink_on="1" nextlink_val="motor5bridge6" rotxn="${pihalf}"
                          damping="${damping}" friction="${friction}" weight="${weight}"/>
 
@@ -172,7 +174,7 @@
 
         <xacro:big_motor posx="-1.5" posy="3.5" posz="0" roty="${pihalf}"
                          motor="6" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
-                         backlash_val="${backlash_val}" prevlink="motor5bridge6"
+                         backlash_val="${backlash_val6}" prevlink="motor5bridge6"
                          nextlink_on="0" damping="${damping}" friction="${friction}"
                          weight="${weight}"/>
 

@@ -1,0 +1,28 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ergojr-penholder">
+    <xacro:include filename="ergojr-macros.xacro.xml" />
+    <xacro:include filename="ergojr-base-heavy.xacro.xml" />
+
+    <xacro:property name="weight" value=".5" />
+    <xacro:property name="damping" value="10" />
+    <xacro:property name="friction" value="10" />
+    <xacro:property name="backlash_on" value="1" />
+    <xacro:property name="backlash_val" value="0.2" />
+
+    <xacro:ergojr backlash_on="${backlash_on}" backlash_val="${backlash_val}" damping="${damping}" friction="${friction}" posx_base="0" posy_base="0" posz_base="0" prefix="1" rotx_base="0" roty_base="0" rotz_base="0" weight="${weight}" />
+
+    <joint name="motor6link_to_penholder" type="fixed">
+        <parent link="1_motor6link" />
+        <child link="penholder" />
+        <origin rpy="0 ${pihalf} 0" xyz="0 3.0 1.25" />
+    </joint>
+
+    <link name="penholder">
+        <xacro:box2 posy="-0.1" sizex="2.4" sizey=".4" sizez="2." />
+        <xacro:cylinder2 length="2." posy=".7" radius="0.7" />
+        <inertial>
+            <mass value="${.4 * weight}" />
+            <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}" />
+        </inertial>
+    </link>
+
+</robot>

@@ -119,7 +119,7 @@
     </inertial>
   </link>
   <joint name="1_motor1backlash" type="revolute">
-    <limit lower="-0.1" upper="0.1"/>
+    <limit lower="-0.0" upper="0.0"/>
     <dynamics damping="100.0" friction="10.0"/>
     <parent link="1_motor1wheel"/>
     <child link="1_link1_bottom"/>
@@ -172,7 +172,7 @@
     </inertial>
   </link>
   <joint name="1_motor2backlash" type="revolute">
-    <limit lower="-0.1" upper="0.1"/>
+    <limit lower="-0.0" upper="0.0"/>
     <dynamics damping="10" friction="10"/>
     <parent link="1_link1_bottom"/>
     <child link="1_motor2wheel"/>
@@ -265,7 +265,7 @@
     </inertial>
   </link>
   <joint name="1_motor3backlash" type="revolute">
-    <limit lower="-0.1" upper="0.1"/>
+    <limit lower="-0.0" upper="0.0"/>
     <dynamics damping="10" friction="10"/>
     <parent link="1_motor2bridge3"/>
     <child link="1_motor3wheel"/>
@@ -345,7 +345,7 @@
     </inertial>
   </link>
   <joint name="1_motor4backlash" type="revolute">
-    <limit lower="-0.1" upper="0.1"/>
+    <limit lower="-0.0" upper="0.0"/>
     <dynamics damping="10" friction="10"/>
     <parent link="1_motor3bridge4"/>
     <child link="1_motor4wheel"/>
@@ -451,7 +451,7 @@
     </inertial>
   </link>
   <joint name="1_motor5backlash" type="revolute">
-    <limit lower="-0.1" upper="0.1"/>
+    <limit lower="-0.0" upper="0.0"/>
     <dynamics damping="10" friction="10"/>
     <parent link="1_motor4bridge5"/>
     <child link="1_motor5wheel"/>
@@ -544,7 +544,7 @@
     </inertial>
   </link>
   <joint name="1_motor6backlash" type="revolute">
-    <limit lower="-0.1" upper="0.1"/>
+    <limit lower="-0.0" upper="0.0"/>
     <dynamics damping="10" friction="10"/>
     <parent link="1_motor5bridge6"/>
     <child link="1_motor6wheel"/>

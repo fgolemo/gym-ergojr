@@ -11,12 +11,13 @@ from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 
 
 class ErgoReacherHeavyEnv(gym.Env):
-    def __init__(self, headless=False, simple=False, max_force=1000, max_vel=100, goal_halfsphere=False):
+    def __init__(self, headless=False, simple=False, max_force=1000, max_vel=100, goal_halfsphere=False, backlash=.1):
         self.simple = simple
         self.max_force = max_force
         self.max_vel = max_vel
+        self.backlash = backlash
 
-        self.robot = SingleRobot(debug=not headless, heavy=True)
+        self.robot = SingleRobot(debug=not headless, heavy=True, new_backlash=self.backlash)
         self.ball = Ball(1)
         self.rhis = RandomPointInHalfSphere(0.0, 3.69, 4.37,
                                             radius=20.22, height=26.10,
@@ -26,6 +27,8 @@ class ErgoReacherHeavyEnv(gym.Env):
                                            linkA=13, linkB=1)
         self.episodes = 0  # used for resetting the sim every so often
         self.restart_every_n_episodes = 1000
+
+        self.force_urdf_reload = False
 
         self.metadata = {
             'render.modes': ['human']
@@ -82,18 +85,19 @@ class ErgoReacherHeavyEnv(gym.Env):
 
     def reset(self):
         self.episodes += 1
-        if self.episodes >= self.restart_every_n_episodes:
+        if self.force_urdf_reload or self.episodes >= self.restart_every_n_episodes:
             self.robot.hard_reset()  # this always has to go first
             self.ball.hard_reset()
             self._setDist()
             self.episodes = 0
+            self.force_urdf_reload = False
 
         if self.simple:
             self.goal = self.rhis.sampleSimplePoint()
         else:
             self.goal = self.rhis.samplePoint()
 
-        print (self.goal)
+        print(self.goal)
         self.dist.goal = self.goal
 
         self.ball.changePos(self.goal)
