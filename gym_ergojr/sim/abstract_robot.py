@@ -48,7 +48,6 @@ class AbstractRobot():
         if not self.heavy:
             self.motor_ids = [3, 4, 6, 8, 10, 12]  # this is consistent across different normal robots
         if self.heavy:
-            print("DEBUG: using heavy motors")
             self.motor_ids = [3, 6, 9, 12, 15, 18]  # this is consistent across different heavy robots
         self.debug_text = None
 
