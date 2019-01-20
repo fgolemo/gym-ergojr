@@ -101,7 +101,6 @@ class ErgoReacherHeavyEnv(gym.Env):
         else:
             self.goal = self.rhis.samplePoint()
 
-        print(self.goal)
         self.dist.goal = self.goal
 
         self.ball.changePos(self.goal)

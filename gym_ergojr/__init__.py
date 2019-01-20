@@ -92,6 +92,38 @@ for headlessness in ["Graphical", "Headless"]:
     )
 
     register(
+        id='ErgoReacher-{}-Simple-Halfdisk-Heavy-0.0bl-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherHeavyEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True, 'goal_halfsphere': True, 'backlash': .001}
+    )
+
+    register(
+        id='ErgoReacher-{}-Simple-Halfdisk-Heavy-0.2bl-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherHeavyEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True, 'goal_halfsphere': True, 'backlash': .2}
+    )
+
+    register(
+        id='ErgoReacher-{}-Simple-Halfdisk-Heavy-0.4bl-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherHeavyEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True, 'goal_halfsphere': True, 'backlash': .4}
+    )
+
+    register(
+        id='ErgoReacher-{}-Simple-Halfdisk-Heavy-0.6bl-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherHeavyEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True, 'goal_halfsphere': True, 'backlash': .6}
+    )
+
+    register(
         id='ErgoReacher-{}-Simple-Backlash-v1'.format(headlessness),
         entry_point='gym_ergojr.envs:ErgoReacherEnv',
         timestep_limit=100,
