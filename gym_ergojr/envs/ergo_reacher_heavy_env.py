@@ -23,7 +23,7 @@ class ErgoReacherHeavyEnv(gym.Env):
                                             min_dist=10., halfsphere=goal_halfsphere)
         self.goal = None
         self.dist = DistanceBetweenObjects(bodyA=self.robot.id, bodyB=self.ball.id,
-                                           linkA=13, linkB=1)
+                                           linkA=19, linkB=1)
         self.episodes = 0  # used for resetting the sim every so often
         self.restart_every_n_episodes = 1000
 
