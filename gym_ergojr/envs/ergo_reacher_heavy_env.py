@@ -21,7 +21,7 @@ class ErgoReacherHeavyEnv(gym.Env):
         self.max_vel = max_vel
         self.double_goal = double_goal
 
-        self.robot = SingleRobot(debug=not headless, heavy=True, new_backlash=backlash, silent=False)
+        self.robot = SingleRobot(debug=not headless, heavy=True, new_backlash=backlash, silent=True)
         self.ball = Ball(1)
         self.rhis = RandomPointInHalfSphere(0.0, 3.69, 4.37,
                                             radius=RADIUS, height=26.10,
