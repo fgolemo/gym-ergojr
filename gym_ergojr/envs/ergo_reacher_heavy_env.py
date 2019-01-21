@@ -133,6 +133,9 @@ class ErgoReacherHeavyEnv(gym.Env):
             self.robot.step()  # we need this to move the ball
 
     def reset(self):
+        self.goals_done = 0
+        self.goal_dirty = False
+
         self.episodes += 1
         if self.force_urdf_reload or self.episodes >= self.restart_every_n_episodes:
             self.robot.hard_reset()  # this always has to go first
