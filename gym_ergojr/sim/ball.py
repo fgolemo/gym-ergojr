@@ -10,8 +10,8 @@ class Ball(object):
         self.ball_file = URDF(xml_path, force_recompile=False).get_path()
         self.hard_reset()
 
-    def changePos(self, new_pos):
-        p.changeConstraint(self.ball_cid, new_pos, maxForce=25000 * self.scaling)
+    def changePos(self, new_pos, speed=1):
+        p.changeConstraint(self.ball_cid, new_pos, maxForce=25000 * self.scaling * speed)
 
     def hard_reset(self):
         startOrientation = p.getQuaternionFromEuler([0, 0, 0])
@@ -21,4 +21,3 @@ class Ball(object):
                                            parentFramePosition=[0, 0, 0],
                                            childFramePosition=[0, 0, 0])
         p.changeConstraint(self.ball_cid, [0, 0, 0.1], maxForce=25000 * self.scaling)
-

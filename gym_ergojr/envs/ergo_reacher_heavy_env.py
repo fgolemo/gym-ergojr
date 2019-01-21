@@ -9,19 +9,26 @@ from gym_ergojr.sim.single_robot import SingleRobot
 from gym_ergojr.utils.math import RandomPointInHalfSphere
 from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 
+RADIUS = 20.22
+MAX_GOALS = 2
+
 
 class ErgoReacherHeavyEnv(gym.Env):
-    def __init__(self, headless=False, simple=False, max_force=1000, max_vel=100, goal_halfsphere=False, backlash=.1):
+    def __init__(self, headless=False, simple=False, max_force=1000,
+                 max_vel=100, goal_halfsphere=False, backlash=.1, double_goal=False):
         self.simple = simple
         self.max_force = max_force
         self.max_vel = max_vel
+        self.double_goal = double_goal
 
-        self.robot = SingleRobot(debug=not headless, heavy=True, new_backlash=backlash, silent=True)
+        self.robot = SingleRobot(debug=not headless, heavy=True, new_backlash=backlash, silent=False)
         self.ball = Ball(1)
         self.rhis = RandomPointInHalfSphere(0.0, 3.69, 4.37,
-                                            radius=20.22, height=26.10,
+                                            radius=RADIUS, height=26.10,
                                             min_dist=10., halfsphere=goal_halfsphere)
         self.goal = None
+        self.goals_done = 0
+        self.goal_dirty = False
         self.dist = DistanceBetweenObjects(bodyA=self.robot.id, bodyB=self.ball.id,
                                            linkA=19, linkB=1)
         self.episodes = 0  # used for resetting the sim every so often
@@ -72,9 +79,39 @@ class ErgoReacherHeavyEnv(gym.Env):
         reward = self.dist.query()
         reward *= -1  # the reward is the inverse distance
 
-        if reward > -1.6:  # this is a bit arbitrary, but works well
-            done = True
-            reward = 1
+        if not self.double_goal:  # this is the normal mode
+            if reward > -1.6:  # this is a bit arbitrary, but works well
+                done = True
+                reward = 1
+        else:
+            print(1, reward)
+            if reward > -1.6:
+                self.goals_done += 1
+                if self.goals_done == MAX_GOALS:
+                    done = True
+                else:
+                    self.move_ball()
+                    self.goal_dirty = True
+
+            max_multiplier = (MAX_GOALS - self.goals_done - 1)
+            if self.goal_dirty:
+                max_multiplier += 1
+                self.goal_dirty = False
+
+            # unnormalized:
+            reward = reward - (RADIUS * 2 * max_multiplier)
+            print(2, reward, (RADIUS * 2 * max_multiplier))
+
+            # # normalize - [0,1] range:
+            reward = (reward + (RADIUS * 2 * (MAX_GOALS))) / (
+                    RADIUS * 2 * (MAX_GOALS))
+            if done:
+                reward = 1
+            print(3, reward)
+
+            # normalize - [-1,1] range:
+            reward = reward * 2 - 1
+            print(4, reward, done)
 
         return reward, done
 
@@ -87,6 +124,18 @@ class ErgoReacherHeavyEnv(gym.Env):
         self.force_urdf_reload = True
         # and now on the next self.reset() the new modified URDF will be loaded
 
+    def move_ball(self):
+        if self.simple:
+            self.goal = self.rhis.sampleSimplePoint()
+        else:
+            self.goal = self.rhis.samplePoint()
+
+        self.dist.goal = self.goal
+        self.ball.changePos(self.goal, 4)
+
+        for _ in range(20):
+            self.robot.step()  # we need this to move the ball
+
     def reset(self):
         self.episodes += 1
         if self.force_urdf_reload or self.episodes >= self.restart_every_n_episodes:
@@ -96,16 +145,7 @@ class ErgoReacherHeavyEnv(gym.Env):
             self.episodes = 0
             self.force_urdf_reload = False
 
-        if self.simple:
-            self.goal = self.rhis.sampleSimplePoint()
-        else:
-            self.goal = self.rhis.samplePoint()
-
-        self.dist.goal = self.goal
-
-        self.ball.changePos(self.goal)
-        for _ in range(20):
-            self.robot.step()  # we need this to move the ball
+        self.move_ball()
 
         qpos = np.random.uniform(low=-0.2, high=0.2, size=6)
 

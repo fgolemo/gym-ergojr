@@ -5,14 +5,15 @@ import gym_ergojr
 master = Tk()
 
 # env = gym.make("ErgoReacher-Graphical-Simple-Plus-v2")
-env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-Heavy-v1")
+# env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-Heavy-v1")
+env = gym.make("ErgoReacher-Graphical-DoubleGoal-v1")
 env.reset()
 
 
 def getActions():
     action = [m.get() for m in motors]
 
-    return [action[1],action[2],action[4],action[5]]
+    return [action[1], action[2], action[4], action[5]]
 
 
 def stepN(N):
@@ -37,12 +38,15 @@ def step100():
 def reset():
     env.reset()
 
+
 def observe():
     print(env.unwrapped._get_obs(), env.unwrapped._getReward())
 
+
 def sett():
     action = getActions()
-    env.unwrapped._set_state(action + [0]*4)
+    env.unwrapped._set_state(action + [0] * 4)
+
 
 motors = []
 for i in range(6):

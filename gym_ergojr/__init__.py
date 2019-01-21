@@ -124,6 +124,14 @@ for headlessness in ["Graphical", "Headless"]:
     )
 
     register(
+        id='ErgoReacher-{}-DoubleGoal-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherHeavyEnv',
+        timestep_limit=200,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True, 'goal_halfsphere': True, 'double_goal': True}
+    )
+
+    register(
         id='ErgoReacher-{}-Simple-Backlash-v1'.format(headlessness),
         entry_point='gym_ergojr.envs:ErgoReacherEnv',
         timestep_limit=100,
