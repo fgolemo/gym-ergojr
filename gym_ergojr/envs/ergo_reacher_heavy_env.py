@@ -84,7 +84,6 @@ class ErgoReacherHeavyEnv(gym.Env):
                 done = True
                 reward = 1
         else:
-            print(1, reward)
             if reward > -1.6:
                 self.goals_done += 1
                 if self.goals_done == MAX_GOALS:
@@ -100,18 +99,15 @@ class ErgoReacherHeavyEnv(gym.Env):
 
             # unnormalized:
             reward = reward - (RADIUS * 2 * max_multiplier)
-            print(2, reward, (RADIUS * 2 * max_multiplier))
 
             # # normalize - [0,1] range:
             reward = (reward + (RADIUS * 2 * (MAX_GOALS))) / (
                     RADIUS * 2 * (MAX_GOALS))
             if done:
                 reward = 1
-            print(3, reward)
 
             # normalize - [-1,1] range:
             reward = reward * 2 - 1
-            print(4, reward, done)
 
         return reward, done
 
