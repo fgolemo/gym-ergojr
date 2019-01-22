@@ -6,7 +6,8 @@ master = Tk()
 
 # env = gym.make("ErgoReacher-Graphical-Simple-Plus-v2")
 # env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-Heavy-v1")
-env = gym.make("ErgoReacher-Graphical-DoubleGoal-v1")
+# env = gym.make("ErgoReacher-Graphical-DoubleGoal-v1")
+env = gym.make("ErgoReacher-Graphical-DoubleGoal-Easy-0.5bl-7000g-v1")
 env.reset()
 
 

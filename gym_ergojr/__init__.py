@@ -172,6 +172,15 @@ for headlessness in ["Graphical", "Headless"]:
     )
 
     register(
+        id='ErgoReacher-{}-DoubleGoal-Easy-0.5bl-7000g-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherHeavyEnv',
+        timestep_limit=200,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'simple': True, 'goal_halfsphere': False,
+                'double_goal': True, 'backlash': .5, 'max_force': 7000}
+    )
+
+    register(
         id='ErgoReacher-{}-Simple-Backlash-v1'.format(headlessness),
         entry_point='gym_ergojr.envs:ErgoReacherEnv',
         timestep_limit=100,
