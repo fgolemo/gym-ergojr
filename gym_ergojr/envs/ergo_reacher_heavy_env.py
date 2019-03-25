@@ -9,24 +9,32 @@ from gym_ergojr.sim.single_robot import SingleRobot
 from gym_ergojr.utils.math import RandomPointInHalfSphere
 from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 
+RADIUS = 20.22
+MAX_GOALS = 2
 
-class ErgoReacherEnv(gym.Env):
-    def __init__(self, headless=False, simple=False, backlash=False, max_force=1, max_vel=18, goal_halfsphere=False):
+
+class ErgoReacherHeavyEnv(gym.Env):
+    def __init__(self, headless=False, simple=False, max_force=1000,
+                 max_vel=100, goal_halfsphere=False, backlash=.1, double_goal=False):
         self.simple = simple
-        self.backlash = backlash
         self.max_force = max_force
         self.max_vel = max_vel
+        self.double_goal = double_goal
 
-        self.robot = SingleRobot(debug=not headless, backlash=backlash)
-        self.ball = Ball()
-        self.rhis = RandomPointInHalfSphere(0.0, 0.0369, 0.0437,
-                                            radius=0.2022, height=0.2610,
-                                            min_dist=0.1, halfsphere=goal_halfsphere)
+        self.robot = SingleRobot(debug=not headless, heavy=True, new_backlash=backlash, silent=True)
+        self.ball = Ball(1)
+        self.rhis = RandomPointInHalfSphere(0.0, 3.69, 4.37,
+                                            radius=RADIUS, height=26.10,
+                                            min_dist=10., halfsphere=goal_halfsphere)
         self.goal = None
+        self.goals_done = 0
+        self.goal_dirty = False
         self.dist = DistanceBetweenObjects(bodyA=self.robot.id, bodyB=self.ball.id,
-                                           linkA=13, linkB=1)
+                                           linkA=19, linkB=1)
         self.episodes = 0  # used for resetting the sim every so often
         self.restart_every_n_episodes = 1000
+
+        self.force_urdf_reload = False
 
         self.metadata = {
             'render.modes': ['human']
@@ -57,6 +65,8 @@ class ErgoReacherEnv(gym.Env):
 
         self.robot.act2(action, max_force=self.max_force, max_vel=self.max_vel)
         self.robot.step()
+        self.robot.step()
+        self.robot.step()
 
         reward, done = self._getReward()
 
@@ -69,9 +79,35 @@ class ErgoReacherEnv(gym.Env):
         reward = self.dist.query()
         reward *= -1  # the reward is the inverse distance
 
-        if reward > -0.016:  # this is a bit arbitrary, but works well
-            done = True
-            reward = 1
+        if not self.double_goal:  # this is the normal mode
+            if reward > -1.6:  # this is a bit arbitrary, but works well
+                done = True
+                reward = 1
+        else:
+            if reward > -1.6:
+                self.goals_done += 1
+                if self.goals_done == MAX_GOALS:
+                    done = True
+                else:
+                    self.move_ball()
+                    self.goal_dirty = True
+
+            max_multiplier = (MAX_GOALS - self.goals_done - 1)
+            if self.goal_dirty:
+                max_multiplier += 1
+                self.goal_dirty = False
+
+            # unnormalized:
+            reward = reward - (RADIUS * 2 * max_multiplier)
+
+            # # normalize - [0,1] range:
+            reward = (reward + (RADIUS * 2 * (MAX_GOALS))) / (
+                    RADIUS * 2 * (MAX_GOALS))
+            if done:
+                reward = 1
+
+            # normalize - [-1,1] range:
+            reward = reward * 2 - 1
 
         return reward, done
 
@@ -79,23 +115,36 @@ class ErgoReacherEnv(gym.Env):
         self.dist.bodyA = self.robot.id
         self.dist.bodyB = self.ball.id
 
-    def reset(self):
-        self.episodes += 1
-        if self.episodes >= self.restart_every_n_episodes:
-            self.robot.hard_reset()  # this always has to go first
-            self.ball.hard_reset()
-            self._setDist()
-            self.episodes = 0
+    def update_backlash(self, new_val):
+        self.robot.new_backlash = new_val
+        self.force_urdf_reload = True
+        # and now on the next self.reset() the new modified URDF will be loaded
 
+    def move_ball(self):
         if self.simple:
             self.goal = self.rhis.sampleSimplePoint()
         else:
             self.goal = self.rhis.samplePoint()
-        self.dist.goal = self.goal
 
-        self.ball.changePos(self.goal)
+        self.dist.goal = self.goal
+        self.ball.changePos(self.goal, 4)
+
         for _ in range(20):
             self.robot.step()  # we need this to move the ball
+
+    def reset(self):
+        self.goals_done = 0
+        self.goal_dirty = False
+
+        self.episodes += 1
+        if self.force_urdf_reload or self.episodes >= self.restart_every_n_episodes:
+            self.robot.hard_reset()  # this always has to go first
+            self.ball.hard_reset()
+            self._setDist()
+            self.episodes = 0
+            self.force_urdf_reload = False
+
+        self.move_ball()
 
         qpos = np.random.uniform(low=-0.2, high=0.2, size=6)
 
@@ -141,11 +190,11 @@ if __name__ == '__main__':
     import gym_ergojr
     import time
 
-    # MODE = "manual"
-    # env = gym.make("ErgoReacher-Graphical-Simple-v1")
+    MODE = "manual"
+    env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-Heavy-v1")
 
-    MODE = "timings"
-    env = gym.make("ErgoReacher-Headless-Simple-v1")
+    # MODE = "timings"
+    # env = gym.make("ErgoReacher-Headless-Simple-Halfdisk-Heavy-v1")
 
     env.reset()
 

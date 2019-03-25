@@ -1,0 +1,188 @@
+<?xml version="1.0" ?>
+<robot name="ergojr-base" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="ergojr-macros.xacro.xml"/>
+
+    <xacro:macro name="ergojr" params="prefix:=1 rotx_base:=0 roty_base:=0 rotz_base:=0
+                                        posx_base:=0 posy_base:=0 posz_base:=0
+                                        backlash_on:=1
+                                        damping:=100.0 friction:=100.0 weight:=1
+backlash_val1:=0 backlash_val2:=0 backlash_val3:=0
+backlash_val4:=0 backlash_val5:=0 backlash_val6:=0">
+
+        <link name="${prefix}_anchor">
+            <inertial>
+                <mass value="1"/>
+                <inertia ixx="1" iyy="1" izz="1"/>
+            </inertial>
+        </link>
+
+        <joint name="${prefix}_anchor_to_base" type="fixed">
+            <parent link="${prefix}_anchor"/>
+            <child link="${prefix}_base"/>
+            <origin xyz="${posx_base} ${posy_base} ${posz_base}" rpy="${rotx_base} ${roty_base} ${rotz_base}"/>
+        </joint>
+
+        <link name="${prefix}_base">
+            <xacro:cylinder2 length="0.5" radius="7.5" posz=".25"/>
+            <inertial>
+                <mass value="${3.8 * weight}"/>
+                <inertia ixx="${1 * weight}" iyy="${1 * weight}" izz="${1 * weight}"/>
+            </inertial>
+        </link>
+
+        <joint name="${prefix}_base_to_static" type="fixed">
+            <parent link="${prefix}_base"/>
+            <child link="${prefix}_static_first_link"/>
+            <origin xyz="0 3.8 0.5"/>
+        </joint>
+
+        <link name="${prefix}_static_first_link">
+            <xacro:cylinder2 length="0.3" radius="2.75" posz=".15"/>
+            <inertial>
+                <mass value="${1.1 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
+            </inertial>
+        </link>
+
+        <joint name="${prefix}_motor1_to_static" type="fixed">
+            <parent link="${prefix}_static_first_link"/>
+            <child link="${prefix}_motor1link"/>
+            <origin xyz="0 -1.0 .3"/>
+        </joint>
+
+        <link name="${prefix}_motor1link">
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 1.25"/>
+                <geometry>
+                    <box size="2.4 3.5 2.5"/>
+                </geometry>
+                <material name="black"/>
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 1.25"/>
+                <geometry>
+                    <box size="2.4 3.5 2.5"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="${1.7 * weight}"/>
+                <inertia ixx="${2.55 * weight}" iyy="${2.76 * weight}" izz="${1.85 * weight}"/>
+            </inertial>
+        </link>
+        <joint name="${prefix}_motor1joint" type="revolute">
+            <parent link="${prefix}_motor1link"/>
+            <child link="${prefix}_motor1wheel"/>
+            <origin rpy="0 0 0" xyz="0 .95 2.5"/>
+            <dynamics damping="100.0" friction="10.0"/>
+            <limit lower="-${pihalf}" upper="${pihalf}"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+        <link name="${prefix}_motor1wheel">
+            <xacro:cylinder2 length=".2" radius="0.8" color="red" posz=".1"/>
+            <inertial>
+                <mass value="${.2 * weight}"/>
+                <inertia ixx="${1 * weight}" iyy="${1 * weight}" izz="${1 * weight}"/>
+            </inertial>
+        </link>
+        <xacro:if value="${backlash_on}">
+            <joint name="${prefix}_motor1backlash" type="revolute">
+                <limit lower="-${backlash_val1}" upper="${backlash_val1}"/>
+                <dynamics damping="100.0" friction="10.0"/>
+                <parent link="${prefix}_motor1wheel"/>
+                <child link="${prefix}_link1_bottom"/>
+                <axis xyz="0 0 1"/>
+                <origin xyz="0 0 0.2"/>
+            </joint>
+        </xacro:if>
+
+        <xacro:unless value="${backlash_on}">
+            <joint name="${prefix}_motor1backlash" type="fixed">
+                <parent link="${prefix}_motor1wheel"/>
+                <child link="${prefix}_link1_bottom"/>
+                <origin xyz="0 0 0.2"/>
+            </joint>
+        </xacro:unless>
+
+
+        <link name="${prefix}_link1_bottom">
+            <xacro:box2 sizex="3.4" sizey="2." sizez=".2" posz="0.1"/>
+            <xacro:box2 sizex=".2" sizey="2." sizez="3.45" posz="1.725" posx="-1.6"/>
+            <xacro:box2 sizex=".5" sizey="2." sizez="3.45" posz="1.725" posx="1.45"/>
+
+            <inertial>
+                <mass value="${.5 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
+            </inertial>
+        </link>
+
+        <xacro:big_motor posx="-1.5" posz="2.4" rotx="${pihalf}" rotz="${pihalf}"
+                         motor="2" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
+                         backlash_val="${backlash_val2}" prevlink="link1_bottom"
+                         nextlink_on="1" nextlink_val="motor2bridge3"
+                         damping="${damping}" friction="${friction}" weight="${weight}"/>
+
+        <link name="${prefix}_motor2bridge3">
+            <xacro:box2 sizex=".2" sizey="2." sizez="4.5" posx="-1.6" posz="2.25"/>
+            <xacro:box2 sizex=".5" sizey="2." sizez="4.5" posx="1.45" posz="2.25"/>
+            <inertial>
+                <mass value="${.45 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
+            </inertial>
+        </link>
+
+        <xacro:big_motor posx="-1.5" posz="3.5" rotx="${pihalf}" rotz="${pihalf}"
+                         motor="3" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
+                         backlash_val="${backlash_val3}" prevlink="motor2bridge3"
+                         nextlink_on="1" nextlink_val="motor3bridge4"
+                         damping="${damping}" friction="${friction}" weight="${weight}"/>
+
+
+        <link name="${prefix}_motor3bridge4">
+            <xacro:box2 sizex="2.7" sizey="2." sizez=".2" posz=".9" posx="-.15"/>
+            <inertial>
+                <mass value="${.1 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
+            </inertial>
+        </link>
+
+        <xacro:big_motor posy="0" posz="1.0"
+                         motor="4" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
+                         backlash_val="${backlash_val4}" prevlink="motor3bridge4"
+                         nextlink_on="1" nextlink_val="motor4bridge5"
+                         rotxn="${pi}" rotyn="${pihalf}" rotzn="${pihalf}"
+                         damping="${damping}" friction="${friction}" weight="${weight}"/>
+
+        <link name="${prefix}_motor4bridge5">
+            <xacro:box2 sizex=".2" sizey="4.5" sizez="2." posx="-1.6" posy="2.25"/>
+            <xacro:box2 sizex=".3" sizey=".5" sizez="2." posx="-1.35" posy=".25"/>
+            <xacro:box2 sizex=".4" sizey="4.5" sizez="2." posx="1.4" posy="2.25"/>
+            <inertial>
+                <mass value="${.45 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
+            </inertial>
+        </link>
+
+        <xacro:big_motor posx="-1.5" posy="3.5" posz="0" roty="${pihalf}"
+                         motor="5" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
+                         backlash_val="${backlash_val5}" prevlink="motor4bridge5"
+                         nextlink_on="1" nextlink_val="motor5bridge6" rotxn="${pihalf}"
+                         damping="${damping}" friction="${friction}" weight="${weight}"/>
+
+        <link name="${prefix}_motor5bridge6">
+            <xacro:box2 sizex=".2" sizey="4.5" sizez="2." posx="-1.6" posy="2.25"/>
+            <xacro:box2 sizex=".4" sizey="4.5" sizez="2." posx="1.4" posy="2.25"/>
+            <inertial>
+                <mass value="${.45 * weight}"/>
+                <inertia ixx="${1e-3 * weight}" iyy="${1e-3 * weight}" izz="${1e-3 * weight}"/>
+            </inertial>
+        </link>
+
+        <xacro:big_motor posx="-1.5" posy="3.5" posz="0" roty="${pihalf}"
+                         motor="6" axis="0 0 1" prefix="1" backlash_on="${backlash_on}"
+                         backlash_val="${backlash_val6}" prevlink="motor5bridge6"
+                         nextlink_on="0" damping="${damping}" friction="${friction}"
+                         weight="${weight}"/>
+
+    </xacro:macro>
+
+</robot>

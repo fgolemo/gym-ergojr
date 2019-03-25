@@ -57,6 +57,7 @@ class URDF(object):
             output_path = path.replace(".xacro", "")
 
         with open(output_path, "w") as output_file:
+            # print("Debug: Converting Xacro file - don't do this in production")
             output_file.write(doc.toprettyxml(indent='  '))
 
         return output_path

@@ -3,34 +3,53 @@ import pybullet as p
 import time
 import pybullet_data
 import numpy as np
-
+import os.path as osp
 from gym_ergojr import get_scene
+from gym_ergojr.utils.libstfu import stdout_redirected, stdout_noop
 from gym_ergojr.utils.urdf_helper import URDF
+from xml.etree import ElementTree as et
 
-MAX_VEL = 18  # not measured, but looks about right
-MAX_FORCE = 1  # idk, seems to work
+NORM_VEL = {"default": 18, "heavy": 38}
+MAX_VEL = {"default": 18, "heavy": 1000}  # not measured, but looks about right
+MAX_FORCE = {"default": 1, "heavy": 1000}
 MOTOR_DIRECTIONS = [1, -1, -1, 1, -1, -1]  # how do the motors turn on real robot
+NAMESPACE = {'xacro': 'http://www.ros.org/wiki/xacro'}  # add more as needed
+et.register_namespace("xacro", NAMESPACE["xacro"])
 
 
 class AbstractRobot():
 
-    def __init__(self, debug=False, frequency=100, backlash=None):
+    def __init__(self, debug=False, frequency=100, backlash=None, heavy=False, new_backlash=None, silent=False):
         self.debug = debug
         self.frequency = frequency
         self.backlash = backlash
-        if debug:
-            p.connect(p.GUI)  # or p.DIRECT for non-graphical version
-            p.resetDebugVisualizerCamera(cameraDistance=0.7,
-                                         cameraYaw=135,
-                                         cameraPitch=-45,
-                                         cameraTargetPosition=[0, 0, 0])
-        else:
-            p.connect(p.DIRECT)
+        self.heavy = heavy
+        self.new_backlash = new_backlash
+        self.output_handler = stdout_noop
+        if silent:
+            self.output_handler = stdout_redirected
+
+        with self.output_handler():
+            if debug:
+                p.connect(p.GUI)  # or p.DIRECT for non-graphical faster version
+                dist = .7
+                if self.heavy:
+                    dist = 50
+                p.resetDebugVisualizerCamera(cameraDistance=dist,
+                                             cameraYaw=135,
+                                             cameraPitch=-45,
+                                             cameraTargetPosition=[0, 0, 0])
+            else:
+                p.connect(p.DIRECT)
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optional for ground
 
         self.robots = []
-        self.motor_ids = [3, 4, 6, 8, 10, 12]  # this is consistent across different robots
+        if not self.heavy:
+            self.motor_ids = [3, 4, 6, 8, 10, 12]  # this is consistent across different normal robots
+        if self.heavy:
+            self.motor_ids = [3, 6, 9, 12, 15, 18]  # this is consistent across different heavy robots
+        self.debug_text = None
 
     def addModel(self, robot_model, pose=None):
         if pose is None:
@@ -39,15 +58,21 @@ class AbstractRobot():
         startOrientation = p.getQuaternionFromEuler(pose[3:])  # rotated around which axis? # np.deg2rad(90)
         # rotating a standing cylinder around the y axis, puts it flat onto the x axis
 
-        xml_path = get_scene(robot_model)
-        robot_file = URDF(xml_path, force_recompile=True).get_path()
-        robot_id = p.loadURDF(robot_file, startPos, startOrientation, useFixedBase=1)
-        self.robots.append(robot_id)
+        with self.output_handler():
+            xml_path = get_scene(robot_model)
 
-        if self.debug:
-            print(robot_model)
-            for i in range(p.getNumJoints(robot_id)):
-                print(p.getJointInfo(robot_id, i))
+            if self.new_backlash is not None:
+                robot_file = self.update_backlash(xml_path)
+            else:
+                robot_file = URDF(xml_path, force_recompile=True).get_path()
+
+            robot_id = p.loadURDF(robot_file, startPos, startOrientation, useFixedBase=1)
+            self.robots.append(robot_id)
+
+            if self.debug:
+                print(robot_model)
+                for i in range(p.getNumJoints(robot_id)):
+                    print(p.getJointInfo(robot_id, i))
 
         return robot_id
 
@@ -56,11 +81,24 @@ class AbstractRobot():
             assert len(bl) == 3
 
             cid = p.createConstraint(robot_id, bl[0], robot_id, bl[1], p.JOINT_FIXED,
-                                      jointAxis=[1, 0, 0],
-                                      parentFramePosition=[0, 0, 0],
-                                      childFramePosition=[0, 0, 0])
+                                     jointAxis=[1, 0, 0],
+                                     parentFramePosition=[0, 0, 0],
+                                     childFramePosition=[0, 0, 0])
             p.changeConstraint(cid, [0, 0, 0.1], maxForce=bl[2])
 
+    def update_backlash(self, xml_path):
+        backlashes = self.float2list(self.new_backlash)
+
+        tree = et.parse(xml_path + ".xacro.xml")
+
+        for i in range(6):
+            bl_val = tree.find(".//xacro:property[@name='backlash_val{}']".format(i + 1), NAMESPACE)
+            bl_val.set('value', "{}".format(backlashes[i]))
+
+        filename = "{}-bl{}".format(xml_path, np.around(self.new_backlash, 5))
+        tree.write(filename + ".xacro.xml")
+        robot_file = URDF(xml_path, force_recompile=True).get_path()
+        return robot_file
 
     def clip_action(self, actions):
         return np.multiply(
@@ -68,22 +106,45 @@ class AbstractRobot():
             MOTOR_DIRECTIONS
         )
 
-    ## DEPRECATED
-    # def act(self, actions, robot_id):
-    #     actions_clipped = self.clip_action(actions)
-    #     p.setJointMotorControlArray(self.robots[robot_id], self.motor_ids,
-    #                                 p.POSITION_CONTROL,
-    #                                 targetPositions=actions_clipped,
-    #                                 forces=[MAX_FORCE] * 6)
+    def float2list(self, val):
+        if type(val) == type(1) or type(val) == type(1.0):
+            return [val] * 6
+        elif type(val) == type([]) or type(val) == type(np.array([])):
+            assert len(val) == 6
+            return val
+        else:
+            raise Exception("the value '{}' should either be float, int or list but it's {}".format(
+                val,
+                type(val)
+            ))
 
-    def act2(self, actions, robot_id):
+    def act2(self, actions, robot_id, max_force=None, max_vel=None, positionGain=None):
         actions_clipped = self.clip_action(actions)
+        if self.heavy and positionGain is None:
+            positionGain = .2
+
+        if max_force is None:
+            max_force = MAX_FORCE["default" if not self.heavy else "heavy"]
+
+        if max_vel is None:
+            max_vel = MAX_VEL["default" if not self.heavy else "heavy"]
+
+        force = self.float2list(max_force)
+        vel = self.float2list(max_vel)
         for idx, act in enumerate(actions_clipped):
-            p.setJointMotorControl2(self.robots[robot_id], self.motor_ids[idx],
-                                    p.POSITION_CONTROL,
-                                    targetPosition=act,
-                                    force=MAX_FORCE,
-                                    maxVelocity=MAX_VEL)
+            if positionGain is None:
+                p.setJointMotorControl2(self.robots[robot_id], self.motor_ids[idx],
+                                        p.POSITION_CONTROL,
+                                        targetPosition=act,
+                                        force=force[idx],
+                                        maxVelocity=vel[idx])
+            else:
+                p.setJointMotorControl2(self.robots[robot_id], self.motor_ids[idx],
+                                        p.POSITION_CONTROL,
+                                        targetPosition=act,
+                                        force=force[idx],
+                                        maxVelocity=vel[idx],
+                                        positionGain=positionGain)
 
     def observe(self, robot_id):
         obs = p.getJointStates(self.robots[robot_id], self.motor_ids)
@@ -93,8 +154,10 @@ class AbstractRobot():
 
     def normalize(self, posvel):
         assert len(posvel) == 12
+        norm_max_vel = NORM_VEL["default" if not self.heavy else "heavy"]
+
         pos_norm = (posvel[:6] + np.pi / 2) / np.pi
-        vel_norm = (posvel[6:] + MAX_VEL) / (MAX_VEL * 2)
+        vel_norm = (posvel[6:] + norm_max_vel) / (norm_max_vel * 2)
         posvel_norm = np.hstack((pos_norm, vel_norm))
         posvel_shifted = posvel_norm * 2 - 1
         posvel_shifted[:6] = np.multiply(posvel_shifted[:6], MOTOR_DIRECTIONS)
@@ -160,4 +223,13 @@ class AbstractRobot():
         p.setGravity(0, 0, -10)
         p.setTimeStep(1 / self.frequency)
         p.setRealTimeSimulation(0)
-        p.loadURDF("plane.urdf")
+        if not self.heavy:
+            p.loadURDF("plane.urdf")
+        else:
+            p.loadURDF(URDF(get_scene("plane-big.urdf.xml")).get_path())
+
+    def set_text(self, text=None):
+        if self.debug_text is not None:
+            p.removeUserDebugItem(self.debug_text)
+        if text is not None and text is not "":
+            self.debug_text = p.addUserDebugText(text, [.1, -.1, .12], textColorRGB=[1, 0, 0], textSize=6)

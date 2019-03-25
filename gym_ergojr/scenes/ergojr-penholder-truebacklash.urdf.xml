@@ -1,0 +1,361 @@
+<?xml version="1.0" ?>
+<robot name="ergojr-penholder" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <link name="1_anchor"/>
+  <joint name="1_anchor_to_base" type="fixed">
+    <parent link="1_anchor"/>
+    <child link="1_base"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <link name="1_base">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0025"/>
+      <geometry>
+        <cylinder length="0.005" radius="0.075"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0025"/>
+      <geometry>
+        <cylinder length="0.005" radius="0.075"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="1_base_to_static" type="fixed">
+    <parent link="1_base"/>
+    <child link="1_static_first_link"/>
+    <origin xyz="0 .038 0.005"/>
+  </joint>
+  <link name="1_static_first_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0015"/>
+      <geometry>
+        <cylinder length="0.003" radius="0.0275"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0015"/>
+      <geometry>
+        <cylinder length="0.003" radius="0.0275"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="1_motor1_to_static" type="fixed">
+    <parent link="1_static_first_link"/>
+    <child link="1_motor1link"/>
+    <origin xyz="0 -.010 .003"/>
+  </joint>
+  <link name="1_motor1link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0135"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0135"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="1_motor1joint" type="continuous">
+    <parent link="1_motor1link"/>
+    <child link="1_motor1backlashbody"/>
+    <origin rpy="0 0 0" xyz="0 .0095 .027"/>
+    <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="1_motor1backlashbody">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="1_motor1backlash" type="revolute">
+    <limit lower="-0.1" upper="0.1"/>
+    <parent link="1_motor1backlashbody"/>
+    <child link="1_link1_bottom"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="1_link1_bottom">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.001"/>
+      <geometry>
+        <box size="0.034 0.02 0.002"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.001"/>
+      <geometry>
+        <box size="0.034 0.02 0.002"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.016 0 0.01725"/>
+      <geometry>
+        <box size="0.002 0.02 0.0345"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.016 0 0.01725"/>
+      <geometry>
+        <box size="0.002 0.02 0.0345"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0145 0 0.01725"/>
+      <geometry>
+        <box size="0.005 0.02 0.0345"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0145 0 0.01725"/>
+      <geometry>
+        <box size="0.005 0.02 0.0345"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="1_motor2joint" type="continuous">
+    <parent link="1_link1_bottom"/>
+    <child link="1_motor2backlashbody"/>
+    <origin xyz="0 0 .024"/>
+    <limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+  <link name="1_motor2backlashbody">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="1_motor2backlash" type="revolute">
+    <limit lower="-0.1" upper="0.1"/>
+    <parent link="1_motor2backlashbody"/>
+    <child link="1_motor2link"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+  <link name="1_motor2link">
+    <visual>
+      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="1_motor2link_to_motor2bridge3" type="fixed">
+    <parent link="1_motor2link"/>
+    <child link="1_motor2bridge3"/>
+    <origin xyz="0 0 .019"/>
+  </joint>
+  <link name="1_motor2bridge3">
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.016 0 0.0225"/>
+      <geometry>
+        <box size="0.002 0.02 0.045"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.016 0 0.0225"/>
+      <geometry>
+        <box size="0.002 0.02 0.045"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0145 0 0.0225"/>
+      <geometry>
+        <box size="0.005 0.02 0.045"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0145 0 0.0225"/>
+      <geometry>
+        <box size="0.005 0.02 0.045"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="1_motor3joint" type="continuous">
+    <parent link="1_motor2bridge3"/>
+    <child link="1_motor3backlashbody"/>
+    <origin xyz="0 0 .035"/>
+    <!--<limit effort="100.0" lower="-1.570796326795" upper="1.570796326795" velocity="0.5"/>-->
+    <axis xyz="1 0 0"/>
+  </joint>
+  <link name="1_motor3backlashbody">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="1_motor3backlash" type="revolute">
+    <limit lower="-0.1" upper="0.1"/>
+    <parent link="1_motor3backlashbody"/>
+    <child link="1_motor3link"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+  <link name="1_motor3link">
+    <visual>
+      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="1.570796326795 0 1.570796326795" xyz="-0.0015 0 0.0095"/>
+      <geometry>
+        <box size=".024 .035 .027"/>
+      </geometry>
+    </collision>
+  </link>
+  <!--<joint name="${prefix}_motor3link_to_motor2bridge3" type="fixed">-->
+  <!--<parent link="${prefix}_motor3link"/>-->
+  <!--<child link="${prefix}_motor3bridge4"/>-->
+  <!--<origin xyz="0 0 .026"/>-->
+  <!--</joint>-->
+  <!--<link name="${prefix}_motor3bridge4">-->
+  <!--<xacro:box2 sizex=".027" sizey=".02" sizez=".002" posz="0.002" posx="-0.0015"/>-->
+  <!--<inertial>-->
+  <!--<mass value=".001"/>-->
+  <!--<inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>-->
+  <!--&lt;!&ndash;<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>&ndash;&gt;-->
+  <!--</inertial>-->
+  <!--</link>-->
+  <!--<joint name="${prefix}_motor4joint" type="revolute">-->
+  <!--<parent link="${prefix}_motor3bridge4"/>-->
+  <!--<child link="${prefix}_motor4backlashbody"/>-->
+  <!--<origin xyz="0 0 .002"/>-->
+  <!--<limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>-->
+  <!--<axis xyz="0 0 1"/>-->
+  <!--</joint>-->
+  <!--<xacro:trueblash prefix="${prefix}" backlash="${backlash}" motor="4" nextlink="${prefix}_motor4link"/>-->
+  <!--<link name="${prefix}_motor4link">-->
+  <!--<xacro:motor rotx="${pi}" posy=".0095" posz=".0145" weird_mass="${weird_mass}"/>-->
+  <!--&lt;!&ndash;<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>&ndash;&gt;-->
+  <!--</link>-->
+  <!--<joint name="${prefix}_motor4link_to_motor4bridge5" type="fixed">-->
+  <!--<parent link="${prefix}_motor4link"/>-->
+  <!--<child link="${prefix}_motor4bridge5"/>-->
+  <!--<origin xyz="0 .013 .015"/>-->
+  <!--</joint>-->
+  <!--<link name="${prefix}_motor4bridge5">-->
+  <!--<xacro:box2 sizex=".002" sizey=".045" sizez=".02" posx="-.016" posy=".0225"/>-->
+  <!--<xacro:box2 sizex=".003" sizey=".005" sizez=".02" posx="-.0135" posy=".0025"/>-->
+  <!--<xacro:box2 sizex=".004" sizey=".045" sizez=".02" posx=".014" posy=".0225"/>-->
+  <!--<inertial>-->
+  <!--<mass value=".0045"/>-->
+  <!--<inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>-->
+  <!--&lt;!&ndash;<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>&ndash;&gt;-->
+  <!--</inertial>-->
+  <!--</link>-->
+  <!--<joint name="${prefix}_motor5joint" type="revolute">-->
+  <!--<parent link="${prefix}_motor4bridge5"/>-->
+  <!--<child link="${prefix}_motor5backlashbody"/>-->
+  <!--<origin xyz="0 0.035 0"/>-->
+  <!--<limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>-->
+  <!--<axis xyz="1 0 0"/>-->
+  <!--</joint>-->
+  <!--<xacro:trueblash prefix="${prefix}" backlash="${backlash}" motor="5" nextlink="${prefix}_motor5link"/>-->
+  <!--<link name="${prefix}_motor5link">-->
+  <!--<xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095" weird_mass="${weird_mass}"/>-->
+  <!--</link>-->
+  <!--<joint name="${prefix}_motor5link_to_motor5bridge6" type="fixed">-->
+  <!--<parent link="${prefix}_motor5link"/>-->
+  <!--<child link="${prefix}_motor5bridge6"/>-->
+  <!--<origin xyz=".0 .019 .0"/>-->
+  <!--</joint>-->
+  <!--<link name="${prefix}_motor5bridge6">-->
+  <!--<xacro:box2 sizex=".002" sizey=".045" sizez=".02" posx="-.016" posy=".0225"/>-->
+  <!--<xacro:box2 sizex=".004" sizey=".045" sizez=".02" posx=".014" posy=".0225"/>-->
+  <!--<inertial>-->
+  <!--<mass value=".0045"/>-->
+  <!--<inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>-->
+  <!--&lt;!&ndash;<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>&ndash;&gt;-->
+  <!--</inertial>-->
+  <!--</link>-->
+  <!--<joint name="${prefix}_motor6joint" type="revolute">-->
+  <!--<parent link="${prefix}_motor5bridge6"/>-->
+  <!--<child link="${prefix}_motor6backlashbody"/>-->
+  <!--<origin xyz="0 0.035 0"/>-->
+  <!--<limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>-->
+  <!--<axis xyz="1 0 0"/>-->
+  <!--</joint>-->
+  <!--<xacro:trueblash prefix="${prefix}" backlash="${backlash}" motor="6" nextlink="${prefix}_motor6link"/>-->
+  <!--<link name="${prefix}_motor6link">-->
+  <!--&lt;!&ndash;<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>&ndash;&gt;-->
+  <!--<xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095" weird_mass="${weird_mass}"/>-->
+  <!--</link>-->
+  <!--<joint name="motor6link_to_penholder" type="fixed">-->
+  <!--<parent link="1_motor6link"/>-->
+  <!--<child link="penholder"/>-->
+  <!--<origin xyz=".0 .030 .0"/>-->
+  <!--</joint>-->
+  <!--<link name="penholder">-->
+  <!--<xacro:box2 sizex=".024" sizey=".004" sizez=".02" posy="-0.001"/>-->
+  <!--<xacro:cylinder2 length="0.02" radius="0.007" posy=".007"/>-->
+  <!--<inertial>-->
+  <!--<mass value=".004"/>-->
+  <!--<inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>-->
+  <!--&lt;!&ndash;<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>&ndash;&gt;-->
+  <!--</inertial>-->
+  <!--</link>-->
+</robot>

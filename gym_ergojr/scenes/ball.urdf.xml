@@ -9,6 +9,10 @@
         <color rgba="1 0 0 1"/>
       </material>
     </visual>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1"/>
+    </inertial>
     <!--<collision>-->
     <!--<origin rpy="0 0 0" xyz="0 0 0"/>-->
     <!--<geometry>-->
