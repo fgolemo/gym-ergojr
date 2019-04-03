@@ -9,18 +9,26 @@ from gym_ergojr.sim.single_robot import SingleRobot
 from gym_ergojr.utils.math import RandomPointInHalfSphere
 from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 
+GOAL_REACHED_DISTANCE = -0.016  # distance between robot tip and goal under which the task is considered solved
+RADIUS = 0.2022
+DIA = 2 * RADIUS
+
 
 class ErgoReacherEnv(gym.Env):
-    def __init__(self, headless=False, simple=False, backlash=False, max_force=1, max_vel=18, goal_halfsphere=False):
+    def __init__(self, headless=False, simple=False, backlash=False,
+                 max_force=1, max_vel=18, goal_halfsphere=False, multi_goal=False, goals=3):
         self.simple = simple
         self.backlash = backlash
         self.max_force = max_force
         self.max_vel = max_vel
+        self.multigoal = multi_goal
+        self.n_goals = goals
+        self.goals_done = 0
 
         self.robot = SingleRobot(debug=not headless, backlash=backlash)
         self.ball = Ball()
         self.rhis = RandomPointInHalfSphere(0.0, 0.0369, 0.0437,
-                                            radius=0.2022, height=0.2610,
+                                            radius=RADIUS, height=0.2610,
                                             min_dist=0.1, halfsphere=goal_halfsphere)
         self.goal = None
         self.dist = DistanceBetweenObjects(bodyA=self.robot.id, bodyB=self.ball.id,
@@ -67,11 +75,31 @@ class ErgoReacherEnv(gym.Env):
         done = False
 
         reward = self.dist.query()
-        reward *= -1  # the reward is the inverse distance
 
-        if reward > -0.016:  # this is a bit arbitrary, but works well
-            done = True
-            reward = 1
+        if not self.multigoal:  # this is the normal mode
+            reward *= -1  # the reward is the inverse distance
+            if reward > GOAL_REACHED_DISTANCE:  # this is a bit arbitrary, but works well
+                done = True
+                reward = 1
+        else:
+            if -reward > GOAL_REACHED_DISTANCE:
+                self.goals_done += 1
+                if self.goals_done == self.n_goals:
+                    done = True
+                else:
+                    robot_state = self._get_obs()[:8]
+                    self.move_ball()
+                    self._set_state(robot_state)  # move robot back after ball has movedÒ
+                    self.robot.step()
+                    reward = self.dist.query()
+
+            reward = (self.goals_done * DIA + (DIA - reward)) / (self.n_goals * DIA)
+
+            if done:
+                reward = 1
+
+            # normalize - [-1,1] range:
+            reward = reward * 2 - 1
 
         return reward, done
 
@@ -79,7 +107,21 @@ class ErgoReacherEnv(gym.Env):
         self.dist.bodyA = self.robot.id
         self.dist.bodyB = self.ball.id
 
+    def move_ball(self):
+        if self.simple:
+            self.goal = self.rhis.sampleSimplePoint()
+        else:
+            self.goal = self.rhis.samplePoint()
+
+        self.dist.goal = self.goal
+        self.ball.changePos(self.goal, 4)
+
+        for _ in range(20):
+            self.robot.step()  # we need this to move the ball
+
     def reset(self):
+        self.goals_done = 0
+
         self.episodes += 1
         if self.episodes >= self.restart_every_n_episodes:
             self.robot.hard_reset()  # this always has to go first
@@ -87,15 +129,7 @@ class ErgoReacherEnv(gym.Env):
             self._setDist()
             self.episodes = 0
 
-        if self.simple:
-            self.goal = self.rhis.sampleSimplePoint()
-        else:
-            self.goal = self.rhis.samplePoint()
-        self.dist.goal = self.goal
-
-        self.ball.changePos(self.goal)
-        for _ in range(20):
-            self.robot.step()  # we need this to move the ball
+        self.move_ball()
 
         qpos = np.random.uniform(low=-0.2, high=0.2, size=6)
 
@@ -144,8 +178,8 @@ if __name__ == '__main__':
     # MODE = "manual"
     # env = gym.make("ErgoReacher-Graphical-Simple-v1")
 
-    MODE = "timings"
-    env = gym.make("ErgoReacher-Headless-Simple-v1")
+    MODE = "manual"
+    env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-v1")
 
     env.reset()
 

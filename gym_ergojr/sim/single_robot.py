@@ -14,6 +14,10 @@ class SingleRobot(AbstractRobot):
         self.hard_reset()
 
     def act2(self, actions, **kwargs):
+        actions[2] = np.clip(actions[2],
+                             a_min=max(-1 - actions[1], -1),
+                             a_max=1)  # to prevent robot from hitting the case
+
         super().act2(actions, 0, **kwargs)
 
     def observe(self, **kwargs):
