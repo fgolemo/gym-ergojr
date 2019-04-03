@@ -99,7 +99,7 @@ class ErgoReacherEnv(gym.Env):
                 reward = 1
 
             # normalize - [-1,1] range:
-            reward = reward * 2 - 1
+            # reward = reward * 2 - 1
 
         return reward, done
 

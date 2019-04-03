@@ -35,10 +35,11 @@ class RandomPointInHalfSphere(object):
             return point
 
     def sampleSimplePoint(self):
+        low = 0
+        if self.halfsphere:
+            low = -self.radius * 2 / 3  # (because the robot can't go back as far as forward)
+
         while True:
-            low = 0
-            if self.halfsphere:
-                low = -self.radius * 2 / 3  # (because the robot can't go back as far as forward)
             point_y = np.random.uniform(low=low, high=self.radius, size=1)
             point_z = np.random.uniform(low=0, high=self.height, size=1)
             point = np.hstack(([0], point_y, point_z))
@@ -46,6 +47,9 @@ class RandomPointInHalfSphere(object):
             dist = np.linalg.norm(point)
 
             if dist > self.radius or dist < self.min_dist:
+                continue
+
+            if point_y < 0 and point_z < self.height / 2: # this is due to movement restrictions with the new base
                 continue
 
             point += self.center
