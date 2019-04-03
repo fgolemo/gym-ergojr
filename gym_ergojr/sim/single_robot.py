@@ -1,5 +1,5 @@
 from gym_ergojr.sim.abstract_robot import AbstractRobot
-
+import numpy as np
 
 class SingleRobot(AbstractRobot):
 
