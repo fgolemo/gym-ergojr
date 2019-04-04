@@ -116,6 +116,7 @@ class ErgoReacherEnv(gym.Env):
             if self.goals_done == RESET_EVERY:
                 self.goals_done = 0
                 self.reset(True)
+            done = False
 
             # normalize - [-1,1] range:
             # reward = reward * 2 - 1
