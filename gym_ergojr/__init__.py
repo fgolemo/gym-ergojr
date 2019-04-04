@@ -214,3 +214,11 @@ for headlessness in ["Graphical", "Headless"]:
         kwargs={'headless': headlessness_switch, 'simple': True, 'goal_halfsphere': True, 'multi_goal': True, 'goals': 3}
     )
 
+    register(
+        id='ErgoReacher-{}-Gripper-MobileGoal-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherEnv',
+        timestep_limit=100,
+        reward_threshold=0,
+        kwargs={'headless': headlessness_switch, 'goal_halfsphere': True, 'gripper': True}
+    )
+

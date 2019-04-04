@@ -12,18 +12,22 @@ from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 GOAL_REACHED_DISTANCE = -0.016  # distance between robot tip and goal under which the task is considered solved
 RADIUS = 0.2022
 DIA = 2 * RADIUS
+RESET_EVERY = 5  # for the gripper
 
 
 class ErgoReacherEnv(gym.Env):
     def __init__(self, headless=False, simple=False, backlash=False,
-                 max_force=1, max_vel=18, goal_halfsphere=False, multi_goal=False, goals=3):
+                 max_force=1, max_vel=18, goal_halfsphere=False, multi_goal=False, goals=3, gripper=False):
         self.simple = simple
         self.backlash = backlash
         self.max_force = max_force
         self.max_vel = max_vel
         self.multigoal = multi_goal
         self.n_goals = goals
+        self.gripper = gripper
+
         self.goals_done = 0
+        self.is_initialized = False
 
         self.robot = SingleRobot(debug=not headless, backlash=backlash)
         self.ball = Ball()
@@ -40,17 +44,22 @@ class ErgoReacherEnv(gym.Env):
             'render.modes': ['human']
         }
 
-        if not simple:
+        if not simple and not gripper:  # default
             # observation = 6 joints + 6 velocities + 3 coordinates for target
             self.observation_space = spaces.Box(low=-1, high=1, shape=(6 + 6 + 3,), dtype=np.float32)  #
             # action = 6 joint angles
             self.action_space = spaces.Box(low=-1, high=1, shape=(6,), dtype=np.float32)  #
 
-        else:
+        elif not gripper:  # simple
             # observation = 4 joints + 4 velocities + 2 coordinates for target
             self.observation_space = spaces.Box(low=-1, high=1, shape=(4 + 4 + 2,), dtype=np.float32)  #
             # action = 4 joint angles
             self.action_space = spaces.Box(low=-1, high=1, shape=(4,), dtype=np.float32)  #
+        else:  # gripper
+            # observation = 3 joints + 3 velocities + 2 coordinates for target
+            self.observation_space = spaces.Box(low=-1, high=1, shape=(3 + 3 + 2,), dtype=np.float32)  #
+            # action = 3 joint angles, [-,1,2,-,4,-]
+            self.action_space = spaces.Box(low=-1, high=1, shape=(3,), dtype=np.float32)  #
 
         super().__init__()
 
@@ -58,9 +67,12 @@ class ErgoReacherEnv(gym.Env):
         return [np.random.seed(seed)]
 
     def step(self, action):
-        if self.simple:
+        if self.simple or self.gripper:
             action_ = np.zeros(6, np.float32)
-            action_[[1, 2, 4, 5]] = action
+            if self.simple:
+                action_[[1, 2, 4, 5]] = action
+            if self.gripper:
+                action_[[1, 2, 4]] = action
             action = action_
 
         self.robot.act2(action, max_force=self.max_force, max_vel=self.max_vel)
@@ -79,6 +91,7 @@ class ErgoReacherEnv(gym.Env):
         if not self.multigoal:  # this is the normal mode
             reward *= -1  # the reward is the inverse distance
             if reward > GOAL_REACHED_DISTANCE:  # this is a bit arbitrary, but works well
+                self.goals_done += 1
                 done = True
                 reward = 1
         else:
@@ -98,6 +111,12 @@ class ErgoReacherEnv(gym.Env):
             if done:
                 reward = 1
 
+        if self.gripper:
+            reward *= 10
+            if self.goals_done == RESET_EVERY:
+                self.goals_done = 0
+                self.reset(True)
+
             # normalize - [-1,1] range:
             # reward = reward * 2 - 1
 
@@ -108,7 +127,7 @@ class ErgoReacherEnv(gym.Env):
         self.dist.bodyB = self.ball.id
 
     def move_ball(self):
-        if self.simple:
+        if self.simple or self.gripper:
             self.goal = self.rhis.sampleSimplePoint()
         else:
             self.goal = self.rhis.samplePoint()
@@ -119,7 +138,7 @@ class ErgoReacherEnv(gym.Env):
         for _ in range(20):
             self.robot.step()  # we need this to move the ball
 
-    def reset(self):
+    def reset(self, forced=False):
         self.goals_done = 0
 
         self.episodes += 1
@@ -129,17 +148,27 @@ class ErgoReacherEnv(gym.Env):
             self._setDist()
             self.episodes = 0
 
+        if self.is_initialized:
+            robot_state = self._get_state()
+
         self.move_ball()
 
-        qpos = np.random.uniform(low=-0.2, high=0.2, size=6)
+        if self.gripper and self.is_initialized:
+            self._set_state(robot_state[:6])  # move robot back after ball has movedÒ
+            self.robot.step()
 
-        if self.simple:
-            qpos[[0, 3]] = 0
+        if forced or not self.gripper:  # if it's the gripper
+            qpos = np.random.uniform(low=-0.2, high=0.2, size=6)
 
-        self.robot.reset()
-        self.robot.set(np.hstack((qpos, [0] * 6)))
-        self.robot.act2(np.hstack((qpos)))
-        self.robot.step()
+            if self.simple:
+                qpos[[0, 3]] = 0
+
+            self.robot.reset()
+            self.robot.set(np.hstack((qpos, [0] * 6)))
+            self.robot.act2(np.hstack((qpos)))
+            self.robot.step()
+
+        self.is_initialized = True
 
         return self._get_obs()
 
@@ -150,6 +179,8 @@ class ErgoReacherEnv(gym.Env):
         ])
         if self.simple:
             obs = obs[[1, 2, 4, 5, 7, 8, 10, 11, 13, 14]]
+        if self.gripper:
+            obs = obs[[1, 2, 4, 7, 8, 10, 13, 14]]
         return obs
 
     def render(self, mode='human', close=False):
@@ -162,9 +193,12 @@ class ErgoReacherEnv(gym.Env):
         return self.robot.observe()
 
     def _set_state(self, posvel):
-        if self.simple:
+        if self.simple or self.gripper:
             new_state = np.zeros((12), dtype=np.float32)
-            new_state[[1, 2, 4, 5, 7, 8, 10, 11]] = posvel
+            if self.simple:
+                new_state[[1, 2, 4, 5, 7, 8, 10, 11]] = posvel
+            if self.gripper:
+                new_state[[1, 2, 4, 7, 8, 10]] = posvel
         else:
             new_state = np.array(posvel)
         self.robot.set(new_state)
@@ -179,7 +213,8 @@ if __name__ == '__main__':
     # env = gym.make("ErgoReacher-Graphical-Simple-v1")
 
     MODE = "manual"
-    env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-v1")
+    # env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-v1")
+    env = gym.make("ErgoReacher-Graphical-Gripper-MobileGoal-v1")
 
     env.reset()
 
