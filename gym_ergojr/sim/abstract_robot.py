@@ -225,6 +225,7 @@ class AbstractRobot():
         p.setRealTimeSimulation(0)
         if not self.heavy:
             p.loadURDF("plane.urdf")
+            # pass
         else:
             p.loadURDF(URDF(get_scene("plane-big.urdf.xml")).get_path())
 

@@ -78,16 +78,16 @@ class ErgoReacherEnv(gym.Env):
         self.robot.act2(action, max_force=self.max_force, max_vel=self.max_vel)
         self.robot.step()
 
-        reward, done = self._getReward()
+        reward, done, dist = self._getReward()
 
         obs = self._get_obs()
-        return obs, reward, done, {}
+        return obs, reward, done, {"distance":dist}
 
     def _getReward(self):
         done = False
 
         reward = self.dist.query()
-
+        distance = reward.copy()
         if not self.multigoal:  # this is the normal mode
             reward *= -1  # the reward is the inverse distance
             if reward > GOAL_REACHED_DISTANCE:  # this is a bit arbitrary, but works well
@@ -121,7 +121,7 @@ class ErgoReacherEnv(gym.Env):
             # normalize - [-1,1] range:
             # reward = reward * 2 - 1
 
-        return reward, done
+        return reward, done, distance
 
     def _setDist(self):
         self.dist.bodyA = self.robot.id
@@ -211,11 +211,11 @@ if __name__ == '__main__':
     import time
 
     # MODE = "manual"
-    # env = gym.make("ErgoReacher-Graphical-Simple-v1")
+    env = gym.make("ErgoReacher-Graphical-Simple-v1")
 
     MODE = "manual"
     # env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-v1")
-    env = gym.make("ErgoReacher-Graphical-Gripper-MobileGoal-v1")
+    # env = gym.make("ErgoReacher-Graphical-Gripper-MobileGoal-v1")
 
     env.reset()
 
@@ -233,6 +233,7 @@ if __name__ == '__main__':
         while True:
             action = env.action_space.sample()
             obs, rew, done, misc = env.step(action)
+            # obs, rew, done, misc = env.step([17/90,-29/90,-33/90,-61/90])
 
             if MODE == "manual":
                 print("act {}, obs {}, rew {}, done {}".format(
@@ -254,4 +255,7 @@ if __name__ == '__main__':
 
             if done:
                 env.reset()
+                # env.unwrapped.goal = np.array([0., 0.01266761, 0.21479595])
+                # env.unwrapped.dist.goal = np.array([0., 0.01266761, 0.21479595])
+                # env.unwrapped.ball.changePos(env.unwrapped.goal, 4)
                 break
