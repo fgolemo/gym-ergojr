@@ -17,9 +17,9 @@ def gen_rot_matrix(axis, angle):
     b, c, d = -axis * math.sin(angle / 2.0)
 
     return np.array([
-        [a*a+b*b-c*c-d*d, 2*(b*c-a*d), 2*(b*d+a*c)],
-        [2*(b*c+a*d), a*a+c*c-b*b-d*d, 2*(c*d-a*b)],
-        [2*(b*d-a*c), 2*(c*d+a*b), a*a+d*d-b*b-c*c]
+        [a * a + b * b - c * c - d * d, 2 * (b * c - a * d), 2 * (b * d + a * c)],
+        [2 * (b * c + a * d), a * a + c * c - b * b - d * d, 2 * (c * d - a * b)],
+        [2 * (b * d - a * c), 2 * (c * d + a * b), a * a + d * d - b * b - c * c]
     ])
 
 
@@ -42,17 +42,17 @@ def forward_kinematics(angles):
     # sim
 
     # Height of the base to first segment
-    L0_y = .038 # base offset
-    L0_z = .005 + .003 + .027 # base + base2 + motor1
+    L0_y = .038  # base offset
+    L0_z = .005 + .003 + .027  # base + base2 + motor1
 
     # Segment 1, upward
     L1 = 0.024
 
     # Length of segment 2, upward
-    L2 = .019 + .035 # plastic + motor
+    L2 = .019 + .035  # plastic + motor
 
     # Length of segment 3, upward
-    L3 = .026 + .002 + .015/2
+    L3 = .026 + .002 + .015 / 2
 
     # Length of segment 4, forward
     L4 = .013 + .035
@@ -61,35 +61,34 @@ def forward_kinematics(angles):
     L5 = .019 + .035
 
     # Segment 6 + center of tip
-    L6 = .042 # technically correct but slightly too long
-
+    L6 = .042  # technically correct but slightly too long
 
     # Segment 6 and center of tip
     pos = np.array((0, L6, 0))
-    m = gen_rot_matrix(np.array((1, 0, 0)), angles[5] * math.pi/180)
+    m = gen_rot_matrix(np.array((1, 0, 0)), angles[5] * math.pi / 180)
     pos = m.dot(pos)
 
     # Segment 5 and gripper plates
     pos += np.array((0, L5, 0))
-    m = gen_rot_matrix(np.array((1, 0, 0)), angles[4] * math.pi/180)
+    m = gen_rot_matrix(np.array((1, 0, 0)), angles[4] * math.pi / 180)
     pos = m.dot(pos)
 
     # Segment 4, forward segment
     # Segment 3, upwards
     pos += np.array((0, L4, 0))
     pos += np.array((0, 0, L3))
-    m = gen_rot_matrix(np.array((1, 0, 0)), angles[2] * math.pi/180)
+    m = gen_rot_matrix(np.array((1, 0, 0)), angles[2] * math.pi / 180)
     pos = m.dot(pos)
 
     # Segment 2, upwards
     pos += np.array((0, 0, L2))
-    m = gen_rot_matrix(np.array((1, 0, 0)), angles[1] * math.pi/180)
+    m = gen_rot_matrix(np.array((1, 0, 0)), angles[1] * math.pi / 180)
     pos = m.dot(pos)
 
     # Segment 1, upwards, rotation around Y
     pos += np.array((0, 0, L1))
     # m = gen_rot_matrix(np.array((0, 1, 0)), -angles[0] * math.pi/180)
-    m = gen_rot_matrix(np.array((0, 0, 1)), 0) # fixed to zero because joint locked
+    m = gen_rot_matrix(np.array((0, 0, 1)), 0)  # fixed to zero because joint locked
     pos = m.dot(pos)
 
     # Base height
@@ -107,15 +106,8 @@ def inverse_kinematics(target, samples=500):
     best_angles = [0] * 6
 
     for i in range(samples):
-        angles = [
-            0,
-            np.random.uniform(-90, 90),
-            np.random.uniform(-90, 90),
-            0,
-            np.random.uniform(-90, 90),
-            np.random.uniform(-90, 90),
-        ]
-        angles[-1] = 0
+        angles = np.random.uniform(-90, 90, 6)
+        angles[[0, 3]] = 0
         pos = forward_kinematics(angles)
         dist = np.linalg.norm(pos - target)
         # print (pos, dist)
@@ -125,4 +117,3 @@ def inverse_kinematics(target, samples=500):
             best_angles = angles
 
     return np.array(best_angles)
-
