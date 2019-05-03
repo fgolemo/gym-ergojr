@@ -88,6 +88,24 @@
         </collision>
     </xacro:macro>
 
+    <xacro:macro name="pusher_joint" params="prefix name start end posy:=0 posz:=0">
+        <joint name="${prefix}${name}" type="revolute">
+            <parent link="${prefix}${start}"/>
+            <child link="${prefix}${end}"/>
+            <origin xyz="0 ${posy} ${posz}"/>
+            <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="pusher_stiffjoint" params="prefix name start end">
+        <joint name="${prefix}${name}" type="fixed">
+            <parent link="${prefix}${start}"/>
+            <child link="${prefix}${end}"/>
+            <origin xyz="0 .027 0"/>
+        </joint>
+    </xacro:macro>
+
     <xacro:macro name="ergojrpusher" params="prefix:=1 rotx_base:=0 roty_base:=0 rotz_base:=0
                                         posx_base:=0 posy_base:=0 posz_base:=0">
 
@@ -120,57 +138,35 @@
             </collision>
         </link>
 
-        <joint name="${prefix}_motor1_joint" type="revolute">
-            <parent link="${prefix}_base"/>
-            <child link="${prefix}_motor1_link"/>
-            <origin xyz="0 0 .01"/>
-            <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
-            <axis xyz="0 0 1"/>
-        </joint>
+        <xacro:pusher_joint prefix="${prefix}" name="_motor1_joint" posz=".01" start="_base" end="_motor1_link"/>
 
         <link name="${prefix}_motor1_link">
             <xacro:motor posx="0" posy=".009" posz=".0135"/>
         </link>
 
-        <joint name="${prefix}_motor1bridge2" type="fixed">
-            <parent link="${prefix}_motor1_link"/>
-            <child link="${prefix}_motor1bridge2_link"/>
-            <origin xyz="0 .027 0"/>
-        </joint>
+        <xacro:pusher_stiffjoint prefix="${prefix}" name="_motor1bridge2" start="_motor1_link"
+                                 end="_motor1bridge2_link"/>
 
         <link name="${prefix}_motor1bridge2_link">
             <xacro:pusher_bridgelink/>
         </link>
 
-        <joint name="${prefix}_motor2_joint" type="revolute">
-            <parent link="${prefix}_motor1bridge2_link"/>
-            <child link="${prefix}_motor2_link"/>
-            <origin xyz="0 .027 0"/>
-            <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
-            <axis xyz="0 0 1"/>
-        </joint>
+        <xacro:pusher_joint prefix="${prefix}" name="_motor2_joint" posy=".027" start="_motor1bridge2_link"
+                            end="_motor2_link"/>
 
         <link name="${prefix}_motor2_link">
             <xacro:motor posx="0" posy=".009" posz=".0135"/>
         </link>
 
-        <joint name="${prefix}_motor2bridge3" type="fixed">
-            <parent link="${prefix}_motor2_link"/>
-            <child link="${prefix}_motor2bridge3_link"/>
-            <origin xyz="0 .027 0"/>
-        </joint>
+        <xacro:pusher_stiffjoint prefix="${prefix}" name="_motor2bridge3" start="_motor2_link"
+                                 end="_motor2bridge3_link"/>
 
         <link name="${prefix}_motor2bridge3_link">
             <xacro:pusher_bridgelink/>
         </link>
 
-        <joint name="${prefix}_motor3_joint" type="revolute">
-            <parent link="${prefix}_motor2bridge3_link"/>
-            <child link="${prefix}_motor3_link"/>
-            <origin xyz="0 .027 0"/>
-            <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
-            <axis xyz="0 0 1"/>
-        </joint>
+        <xacro:pusher_joint prefix="${prefix}" name="_motor3_joint" posy=".027" start="_motor2bridge3_link"
+                            end="_motor3_link"/>
 
         <link name="${prefix}_motor3_link">
             <xacro:motor posx="0" posy=".009" posz=".0135"/>
