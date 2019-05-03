@@ -14,7 +14,7 @@
         <color rgba="1 0 0 1"/>
     </material>
 
-    <xacro:macro name="cylinder" params="length radius color:=white
+    <xacro:macro name="cylinder2" params="length radius color:=white
                                         rotx:=0 roty:=0 rotz:=0
                                         posx:=0 posy:=0 posz:=0 ">
         <visual>

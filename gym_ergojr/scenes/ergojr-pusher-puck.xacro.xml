@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<robot name="puck" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="mass" value=".1"/>
+
+    <material name="white">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
+
+    <xacro:macro name="cylinder_inertia" params="m r h">
+        <inertia ixx="${m*(3*r*r+h*h)/12}" ixy="0" ixz="0"
+                 iyy="${m*(3*r*r+h*h)/12}" iyz="0"
+                 izz="${m*r*r/2}"/>
+    </xacro:macro>
+
+    <xacro:macro name="cylinder2" params="length radius color:=white
+                                        rotx:=0 roty:=0 rotz:=0
+                                        posx:=0 posy:=0 posz:=0 ">
+        <visual>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+        <collision>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+        </collision>
+    </xacro:macro>
+
+    <link name="2_anchor">
+        <inertial>
+            <mass value="1"/>
+            <inertia ixx="1" iyy="1" izz="1"/>
+        </inertial>
+    </link>
+
+
+    <joint name="2_puck_to_world" type="prismatic">
+        <parent link="2_anchor"/>
+        <child link="2_puck_y"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="0.0" lower="-1" upper="1" velocity="1000.0"/>
+    </joint>
+
+    <link name="2_puck_y">
+        <inertial>
+            <mass value="${mass}"/>
+            <xacro:cylinder_inertia m="${mass}" r=".02" h=".03"/>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+        </inertial>
+    </link>
+
+    <joint name="2_puck_y_to_z" type="prismatic">
+        <parent link="2_puck_y"/>
+        <child link="2_puck"/>
+        <axis xyz="1 0 0"/>
+        <limit effort="0.0" lower="-1" upper="1" velocity="1000.0"/>
+    </joint>
+
+    <!--    <link name="2_puck_z">-->
+    <!--        <inertial>-->
+    <!--            <mass value="0.01"/>-->
+    <!--            <inertia ixx="0.2125" ixy="-0.005" ixz="0.0225" iyy="0.205" iyz="0.045" izz="0.0125"/>-->
+    <!--            <origin rpy="0 0 0" xyz="0 0 0"/>-->
+    <!--        </inertial>-->
+    <!--    </link>-->
+
+    <!--    <joint name="2_puck_z_to_puck" type="continuous">-->
+    <!--        <parent link="2_puck_z"/>-->
+    <!--        <child link="2_puck"/>-->
+    <!--        <axis xyz="0 0 1"/>-->
+    <!--    </joint>-->
+
+    <link name="2_puck">
+        <xacro:cylinder2 length=".03" radius=".02" posz=".015" color="red"/>
+        <inertial>
+            <mass value="${mass}"/>
+            <xacro:cylinder_inertia m="${mass}" r=".02" h=".03"/>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+        </inertial>
+    </link>
+
+
+</robot>
