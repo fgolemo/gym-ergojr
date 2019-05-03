@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+<robot name="pusher_macros" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="pi" value="3.14159265359"/>
+    <xacro:property name="pihalf" value="${pi/2}"/>
+
+    <material name="white">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
+
+    <xacro:macro name="cylinder_inertia" params="m r h">
+        <inertia ixx="${m*(3*r*r+h*h)/12}" ixy="0" ixz="0"
+                 iyy="${m*(3*r*r+h*h)/12}" iyz="0"
+                 izz="${m*r*r/2}"/>
+    </xacro:macro>
+
+    <xacro:macro name="cylinder2" params="length radius color:=white
+                                        rotx:=0 roty:=0 rotz:=0
+                                        posx:=0 posy:=0 posz:=0 ">
+        <visual>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+        <collision>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+        </collision>
+    </xacro:macro>
+
+    <xacro:macro name="box2" params="sizex sizey sizez rotx:=0 roty:=0 rotz:=0 posx:=0 posy:=0 posz:=0 color:=white">
+        <visual>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <box size="${sizex} ${sizey} ${sizez}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+        <collision>
+            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
+            <geometry>
+                <box size="${sizex} ${sizey} ${sizez}"/>
+            </geometry>
+        </collision>
+    </xacro:macro>
+
+    <xacro:macro name="motor" params="rotx:=0 roty:=0 rotz:=0
+                                    posx:=0 posy:=0 posz:=0">
+
+        <xacro:box2 sizex=".024" sizey=".036" sizez=".027"
+                    rotx="${rotx}" roty="${roty}" rotz="${rotz}"
+                    posx="${posx}" posy="${posy}" posz="${posz}" color="black"/>
+        <inertial>
+            <!--ACTUAL MASS-->
+            <!--<mass value=".017"/>-->
+
+            <!--NORMAL WORKING MASS-->
+            <mass value=".1"/>
+            <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="pusher_bridgelink">
+        <xacro:box2 sizex=".02" sizey=".045" sizez=".002"
+                    posx="0" posy=".0145" posz="-.001"/>
+
+        <xacro:box2 sizex=".02" sizey=".045" sizez=".002"
+                    posx="0" posy=".0145" posz=".028"/>
+    </xacro:macro>
+
+    <xacro:macro name="pusher_joint" params="prefix name start end posy:=0 posz:=0">
+        <joint name="${prefix}${name}" type="revolute">
+            <parent link="${prefix}${start}"/>
+            <child link="${prefix}${end}"/>
+            <origin xyz="0 ${posy} ${posz}"/>
+            <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="pusher_stiffjoint" params="prefix name start end">
+        <joint name="${prefix}${name}" type="fixed">
+            <parent link="${prefix}${start}"/>
+            <child link="${prefix}${end}"/>
+            <origin xyz="0 .027 0"/>
+        </joint>
+    </xacro:macro>
+
+</robot>

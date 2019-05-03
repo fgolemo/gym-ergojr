@@ -1,10 +1,21 @@
 <?xml version="1.0" ?>
 <robot name="ergojr-pusher" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="ergojr-pusher-macros.xacro.xml"/>
     <xacro:include filename="ergojr-pusher-base.xacro.xml"/>
 
     <xacro:ergojrpusher prefix="1" rotx_base="0" roty_base="0" rotz_base="0"
-                  posx_base="0" posy_base="0" posz_base="0"/>
+                        posx_base="0" posy_base="0" posz_base="0"/>
 
-<!--    TODO: put end effector code here-->
+    <joint name="1_motor3_to_tip" type="fixed">
+        <parent link="1_motor3_link"/>
+        <child link="1_tip"/>
+        <origin xyz="0 .027 0"/>
+    </joint>
+
+    <link name="1_tip">
+        <xacro:box2 sizex=".06" sizey=".004" sizez=".0282" posy=".002" posz=".0141"/>
+        <xacro:box2 sizex=".004" sizey=".028" sizez=".0282" posx=".028" posy=".018" posz=".0141"/>
+        <xacro:box2 sizex=".004" sizey=".028" sizez=".0282" posx="-.028" posy=".018" posz=".0141"/>
+    </link>
 
 </robot>

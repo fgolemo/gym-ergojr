@@ -1,41 +1,7 @@
 <?xml version="1.0" ?>
 <robot name="puck" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="ergojr-pusher-macros.xacro.xml"/>
     <xacro:property name="mass" value=".1"/>
-
-    <material name="white">
-        <color rgba="1 1 1 1"/>
-    </material>
-
-    <material name="black">
-        <color rgba="0 0 0 1"/>
-    </material>
-    <material name="red">
-        <color rgba="1 0 0 1"/>
-    </material>
-
-    <xacro:macro name="cylinder_inertia" params="m r h">
-        <inertia ixx="${m*(3*r*r+h*h)/12}" ixy="0" ixz="0"
-                 iyy="${m*(3*r*r+h*h)/12}" iyz="0"
-                 izz="${m*r*r/2}"/>
-    </xacro:macro>
-
-    <xacro:macro name="cylinder2" params="length radius color:=white
-                                        rotx:=0 roty:=0 rotz:=0
-                                        posx:=0 posy:=0 posz:=0 ">
-        <visual>
-            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
-            <geometry>
-                <cylinder length="${length}" radius="${radius}"/>
-            </geometry>
-            <material name="${color}"/>
-        </visual>
-        <collision>
-            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
-            <geometry>
-                <cylinder length="${length}" radius="${radius}"/>
-            </geometry>
-        </collision>
-    </xacro:macro>
 
     <link name="2_anchor">
         <inertial>

@@ -9,6 +9,15 @@
   <material name="red">
     <color rgba="1 0 0 1"/>
   </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
   <link name="1_anchor">
     <inertial>
       <mass value="1"/>
@@ -22,16 +31,16 @@
   </joint>
   <link name="1_base">
     <visual>
-      <origin xyz="0 0 .005"/>
+      <origin rpy="0 0 0" xyz="0 0 0.005"/>
       <geometry>
-        <box size=".02 .02 .01"/>
+        <box size="0.02 0.02 0.01"/>
       </geometry>
       <material name="white"/>
     </visual>
     <collision>
-      <origin xyz="0 0 .005"/>
+      <origin rpy="0 0 0" xyz="0 0 0.005"/>
       <geometry>
-        <box size=".02 .02 .01"/>
+        <box size="0.02 0.02 0.01"/>
       </geometry>
     </collision>
   </link>
@@ -46,14 +55,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0.009 0.0135"/>
       <geometry>
-        <box size=".024 .036 .027"/>
+        <box size="0.024 0.036 0.027"/>
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0.009 0.0135"/>
       <geometry>
-        <box size=".024 .036 .027"/>
+        <box size="0.024 0.036 0.027"/>
       </geometry>
     </collision>
     <inertial>
@@ -71,29 +80,29 @@
   </joint>
   <link name="1_motor1bridge2_link">
     <visual>
-      <origin xyz="0 .0145 -.001"/>
+      <origin rpy="0 0 0" xyz="0 0.0145 -0.001"/>
       <geometry>
-        <box size=".02 .045 .002"/>
+        <box size="0.02 0.045 0.002"/>
       </geometry>
       <material name="white"/>
     </visual>
     <collision>
-      <origin xyz="0 .0145 -.001"/>
+      <origin rpy="0 0 0" xyz="0 0.0145 -0.001"/>
       <geometry>
-        <box size=".02 .045 .002"/>
+        <box size="0.02 0.045 0.002"/>
       </geometry>
     </collision>
     <visual>
-      <origin xyz="0 .0145 .028"/>
+      <origin rpy="0 0 0" xyz="0 0.0145 0.028"/>
       <geometry>
-        <box size=".02 .045 .002"/>
+        <box size="0.02 0.045 0.002"/>
       </geometry>
       <material name="white"/>
     </visual>
     <collision>
-      <origin xyz="0 .0145 .028"/>
+      <origin rpy="0 0 0" xyz="0 0.0145 0.028"/>
       <geometry>
-        <box size=".02 .045 .002"/>
+        <box size="0.02 0.045 0.002"/>
       </geometry>
     </collision>
   </link>
@@ -108,14 +117,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0.009 0.0135"/>
       <geometry>
-        <box size=".024 .036 .027"/>
+        <box size="0.024 0.036 0.027"/>
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0.009 0.0135"/>
       <geometry>
-        <box size=".024 .036 .027"/>
+        <box size="0.024 0.036 0.027"/>
       </geometry>
     </collision>
     <inertial>
@@ -133,29 +142,29 @@
   </joint>
   <link name="1_motor2bridge3_link">
     <visual>
-      <origin xyz="0 .0145 -.001"/>
+      <origin rpy="0 0 0" xyz="0 0.0145 -0.001"/>
       <geometry>
-        <box size=".02 .045 .002"/>
+        <box size="0.02 0.045 0.002"/>
       </geometry>
       <material name="white"/>
     </visual>
     <collision>
-      <origin xyz="0 .0145 -.001"/>
+      <origin rpy="0 0 0" xyz="0 0.0145 -0.001"/>
       <geometry>
-        <box size=".02 .045 .002"/>
+        <box size="0.02 0.045 0.002"/>
       </geometry>
     </collision>
     <visual>
-      <origin xyz="0 .0145 .028"/>
+      <origin rpy="0 0 0" xyz="0 0.0145 0.028"/>
       <geometry>
-        <box size=".02 .045 .002"/>
+        <box size="0.02 0.045 0.002"/>
       </geometry>
       <material name="white"/>
     </visual>
     <collision>
-      <origin xyz="0 .0145 .028"/>
+      <origin rpy="0 0 0" xyz="0 0.0145 0.028"/>
       <geometry>
-        <box size=".02 .045 .002"/>
+        <box size="0.02 0.045 0.002"/>
       </geometry>
     </collision>
   </link>
@@ -170,14 +179,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0.009 0.0135"/>
       <geometry>
-        <box size=".024 .036 .027"/>
+        <box size="0.024 0.036 0.027"/>
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0.009 0.0135"/>
       <geometry>
-        <box size=".024 .036 .027"/>
+        <box size="0.024 0.036 0.027"/>
       </geometry>
     </collision>
     <inertial>
@@ -188,5 +197,50 @@
       <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
     </inertial>
   </link>
-  <!--    TODO: put end effector code here-->
+  <joint name="1_motor3_to_tip" type="fixed">
+    <parent link="1_motor3_link"/>
+    <child link="1_tip"/>
+    <origin xyz="0 .027 0"/>
+  </joint>
+  <link name="1_tip">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0.002 0.0141"/>
+      <geometry>
+        <box size="0.06 0.004 0.0282"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0.002 0.0141"/>
+      <geometry>
+        <box size="0.06 0.004 0.0282"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.028 0.018 0.0141"/>
+      <geometry>
+        <box size="0.004 0.028 0.0282"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.028 0.018 0.0141"/>
+      <geometry>
+        <box size="0.004 0.028 0.0282"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.028 0.018 0.0141"/>
+      <geometry>
+        <box size="0.004 0.028 0.0282"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.028 0.018 0.0141"/>
+      <geometry>
+        <box size="0.004 0.028 0.0282"/>
+      </geometry>
+    </collision>
+  </link>
 </robot>

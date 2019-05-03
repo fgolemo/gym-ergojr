@@ -1,110 +1,6 @@
 <?xml version="1.0" ?>
 <robot name="ergojr-base" xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:property name="pi" value="3.14159265359"/>
-    <xacro:property name="pihalf" value="${pi/2}"/>
-
-    <material name="white">
-        <color rgba="1 1 1 1"/>
-    </material>
-
-    <material name="black">
-        <color rgba="0 0 0 1"/>
-    </material>
-    <material name="red">
-        <color rgba="1 0 0 1"/>
-    </material>
-
-    <xacro:macro name="cylinder2" params="length radius color:=white
-                                        rotx:=0 roty:=0 rotz:=0
-                                        posx:=0 posy:=0 posz:=0 ">
-        <visual>
-            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
-            <geometry>
-                <cylinder length="${length}" radius="${radius}"/>
-            </geometry>
-            <material name="${color}"/>
-        </visual>
-        <collision>
-            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
-            <geometry>
-                <cylinder length="${length}" radius="${radius}"/>
-            </geometry>
-        </collision>
-    </xacro:macro>
-
-
-    <xacro:macro name="motor" params="rotx:=0 roty:=0 rotz:=0
-                                    posx:=0 posy:=0 posz:=0">
-        <visual>
-            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
-            <geometry>
-                <box size=".024 .036 .027"/>
-            </geometry>
-            <material name="black"/>
-        </visual>
-        <collision>
-            <origin rpy="${rotx} ${roty} ${rotz}" xyz="${posx} ${posy} ${posz}"/>
-            <geometry>
-                <box size=".024 .036 .027"/>
-            </geometry>
-        </collision>
-        <inertial>
-            <!--ACTUAL MASS-->
-            <!--<mass value=".017"/>-->
-
-            <!--NORMAL WORKING MASS-->
-            <mass value=".1"/>
-            <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
-        </inertial>
-    </xacro:macro>
-
-    <xacro:macro name="pusher_bridgelink">
-        <visual>
-            <origin xyz="0 .0145 -.001"/>
-            <geometry>
-                <box size=".02 .045 .002"/>
-            </geometry>
-            <material name="white"/>
-        </visual>
-        <collision>
-            <origin xyz="0 .0145 -.001"/>
-            <geometry>
-                <box size=".02 .045 .002"/>
-            </geometry>
-        </collision>
-
-        <visual>
-            <origin xyz="0 .0145 .028"/>
-            <geometry>
-                <box size=".02 .045 .002"/>
-            </geometry>
-            <material name="white"/>
-        </visual>
-        <collision>
-            <origin xyz="0 .0145 .028"/>
-            <geometry>
-                <box size=".02 .045 .002"/>
-            </geometry>
-        </collision>
-    </xacro:macro>
-
-    <xacro:macro name="pusher_joint" params="prefix name start end posy:=0 posz:=0">
-        <joint name="${prefix}${name}" type="revolute">
-            <parent link="${prefix}${start}"/>
-            <child link="${prefix}${end}"/>
-            <origin xyz="0 ${posy} ${posz}"/>
-            <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
-            <axis xyz="0 0 1"/>
-        </joint>
-    </xacro:macro>
-
-    <xacro:macro name="pusher_stiffjoint" params="prefix name start end">
-        <joint name="${prefix}${name}" type="fixed">
-            <parent link="${prefix}${start}"/>
-            <child link="${prefix}${end}"/>
-            <origin xyz="0 .027 0"/>
-        </joint>
-    </xacro:macro>
+    <xacro:include filename="ergojr-pusher-macros.xacro.xml"/>
 
     <xacro:macro name="ergojrpusher" params="prefix:=1 rotx_base:=0 roty_base:=0 rotz_base:=0
                                         posx_base:=0 posy_base:=0 posz_base:=0">
@@ -123,19 +19,7 @@
         </joint>
 
         <link name="${prefix}_base">
-            <visual>
-                <origin xyz="0 0 .005"/>
-                <geometry>
-                    <box size=".02 .02 .01"/>
-                </geometry>
-                <material name="white"/>
-            </visual>
-            <collision>
-                <origin xyz="0 0 .005"/>
-                <geometry>
-                    <box size=".02 .02 .01"/>
-                </geometry>
-            </collision>
+            <xacro:box2 sizex=".02" sizey=".02" sizez=".01" posz=".005"/>
         </link>
 
         <xacro:pusher_joint prefix="${prefix}" name="_motor1_joint" posz=".01" start="_base" end="_motor1_link"/>

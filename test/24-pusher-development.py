@@ -10,9 +10,9 @@ from gym_ergojr.utils.urdf_helper import URDF
 physicsClient = p.connect(p.GUI)  # or p.DIRECT for non-graphical version
 p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
 p.resetDebugVisualizerCamera(
-    cameraDistance=0.2,
-    cameraYaw=115,
-    cameraPitch=-45,
+    cameraDistance=0.4,
+    cameraYaw=135,
+    cameraPitch=-35,
     cameraTargetPosition=[0, 0.05, 0])
 
 p.setGravity(0, 0, -10)  # good enough
@@ -37,22 +37,13 @@ robot_file = URDF(xml_path, force_recompile=True).get_path()
 
 # Actually load the URDF file into simulation, make the base of the robot unmoving
 puck = p.loadURDF(
-    robot_file, [-.06, 0.075, 0.0], startOrientation, useFixedBase=1)
+    robot_file, [-.08, 0.075, 0.0], startOrientation, useFixedBase=1)
 
-# def make_puck():
-#   obj_visual = p.createVisualShape(p.GEOM_CYLINDER, radius=0.02, length=0.03)
-#   # visualFramePosition=[0, 0, .015])
-#   obj_colliision = p.createCollisionShape(
-#       p.GEOM_CYLINDER, radius=0.02, height=0.03)
-#   # collisionFramePosition=[0, 0, .015])
-#
-#   obj = p.createMultiBody(
-#       .1,  # mass in kg
-#       obj_colliision,
-#       obj_visual,
-#       basePosition=[-.06, 0.075, 0.016],
-#       baseOrientation=[0, 0, 0, 1])
-#   return obj
+obj_visual = p.createVisualShape(
+    p.GEOM_CYLINDER, radius=0.02, length=0.01, rgbaColor=[0, 1, 0, 1])
+
+p.createMultiBody(
+    baseVisualShapeIndex=obj_visual, basePosition=[-.20, -0.2, .005])
 
 for i in range(p.getNumJoints(robot)):
   print(p.getJointInfo(robot, i))
@@ -60,7 +51,7 @@ for i in range(p.getNumJoints(robot)):
 for i in range(p.getNumJoints(puck)):
   print(p.getJointInfo(puck, i))
 
-jointFrictionForce = .2
+jointFrictionForce = .4
 for joint in [0, 1]:
   p.setJointMotorControl2(
       puck,
