@@ -5,6 +5,7 @@ import pybullet_data
 import numpy as np
 
 from gym_ergojr import get_scene
+from gym_ergojr.utils.pybullet import DistanceBetweenObjects
 from gym_ergojr.utils.urdf_helper import URDF
 
 physicsClient = p.connect(p.GUI)  # or p.DIRECT for non-graphical version
@@ -36,29 +37,54 @@ xml_path = get_scene("ergojr-pusher-puck")
 robot_file = URDF(xml_path, force_recompile=True).get_path()
 
 # Actually load the URDF file into simulation, make the base of the robot unmoving
-puck = p.loadURDF(
-    robot_file, [-.08, 0.075, 0.0], startOrientation, useFixedBase=1)
 
 obj_visual = p.createVisualShape(
     p.GEOM_CYLINDER, radius=0.02, length=0.01, rgbaColor=[0, 1, 0, 1])
 
-p.createMultiBody(
-    baseVisualShapeIndex=obj_visual, basePosition=[-.20, -0.2, .005])
-
 for i in range(p.getNumJoints(robot)):
   print(p.getJointInfo(robot, i))
 
+
+def load_puck():
+  puck = p.loadURDF(
+      robot_file,
+      [np.random.uniform(-0.08, -0.14),
+       np.random.uniform(0.05, 0.1), 0.0],
+      startOrientation,
+      useFixedBase=1)
+
+  jointFrictionForce = .4
+  for joint in [0, 1]:
+    p.setJointMotorControl2(
+        puck,
+        joint,
+        p.VELOCITY_CONTROL,
+        force=jointFrictionForce,
+        targetVelocity=0)
+
+  dbo = DistanceBetweenObjects(puck, 1)
+
+  return puck, dbo
+
+
+puck, dbo = load_puck()
+
+
+def load_goal():
+  goal = np.array(
+      [np.random.uniform(-.30, -.1),
+       np.random.uniform(-.3, .1), .005])
+  dbo.goal = goal
+
+  target = p.createMultiBody(baseVisualShapeIndex=obj_visual, basePosition=goal)
+
+  return target, goal
+
+
+target, goal = load_goal()
+
 for i in range(p.getNumJoints(puck)):
   print(p.getJointInfo(puck, i))
-
-jointFrictionForce = .4
-for joint in [0, 1]:
-  p.setJointMotorControl2(
-      puck,
-      joint,
-      p.VELOCITY_CONTROL,
-      force=jointFrictionForce,
-      targetVelocity=0)
 
 motors = [1, 3, 5]
 motor_pos = [-.5, 1, .5]
@@ -82,7 +108,17 @@ for i in range(frequency * 30):
 
   p.stepSimulation()
 
+  dist = dbo.query()
+  print(dist)
+
   time.sleep(1. / frequency)
+
+  if i % 120 == 0 or dist < 0.01:
+    p.removeBody(puck)
+    puck, dbo = load_puck()
+
+    p.removeBody(target)
+    target, goal = load_goal()
 
 print(time.time() - start)
 p.disconnect()
