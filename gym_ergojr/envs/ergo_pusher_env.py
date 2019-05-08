@@ -78,7 +78,7 @@ class ErgoPusherEnv(gym.Env):
         return self._get_obs()
 
     def _get_obs(self):
-        obs = np.hstack([self.robot.observe(), self.puck.dbo.goal])
+        obs = np.hstack([self.robot.observe(), self.puck.dbo.goal[:2]])
         return obs
 
     def render(self, mode='human', close=False):
