@@ -341,7 +341,7 @@ class PusherRobot():
                 .format(val, type(val)))
 
     def act(self, actions, max_force=None, max_vel=None, positionGain=None):
-        actions += self.rest_pos[:3]
+        actions = np.array(actions) + np.array(self.rest_pos[:3])
         actions_clipped = self.clip_action(actions)
 
         if max_force is None:
