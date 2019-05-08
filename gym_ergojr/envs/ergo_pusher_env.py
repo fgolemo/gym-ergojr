@@ -96,13 +96,13 @@ if __name__ == '__main__':
     import gym_ergojr
     import time
 
-    # env = gym.make("ErgoPusher-Graphical-v1")
-    # MODE = "manual"
-    # r = range(100)
+    env = gym.make("ErgoPusher-Graphical-v1")
+    MODE = "manual"
+    r = range(100)
 
-    env = gym.make("ErgoPusher-Headless-v1")
-    MODE = "timings"
-    r = tqdm(range(10000))
+    # env = gym.make("ErgoPusher-Headless-v1")
+    # MODE = "timings"
+    # r = tqdm(range(10000))
 
     env.reset()
 
