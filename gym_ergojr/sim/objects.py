@@ -4,6 +4,9 @@ from gym_ergojr.utils.urdf_helper import URDF
 import pybullet as p
 import numpy as np
 
+PUSHER_GOAL_X = [-.2, -.1]
+PUSHER_GOAL_Y = [-.1, .05]
+
 
 class Ball(object):
 
@@ -57,8 +60,8 @@ class Puck(object):
     def add_puck(self):
         self.puck = p.loadURDF(
             self.robot_file, [
-                np.random.uniform(-0.08, -0.14),
-                np.random.uniform(0.05, 0.1), 0.0
+                np.random.uniform(-0.07, -0.10),
+                np.random.uniform(0.05, 0.08), 0.0
             ],
             p.getQuaternionFromEuler([0, 0, 0]),
             useFixedBase=1)
@@ -72,6 +75,13 @@ class Puck(object):
                 targetVelocity=0)
 
         self.dbo = DistanceBetweenObjects(self.puck, 1)
+
+    def normalize_goal(self):
+        x = (self.dbo.goal[0] - PUSHER_GOAL_X[0]) / (
+            PUSHER_GOAL_X[1] - PUSHER_GOAL_X[0])
+        y = (self.dbo.goal[1] - PUSHER_GOAL_Y[0]) / (
+            PUSHER_GOAL_Y[1] - PUSHER_GOAL_Y[0])
+        return np.array([x, y])
 
     def reset(self):
         if self.puck is not None:
@@ -91,9 +101,10 @@ class Puck(object):
         self.add_target()
 
     def add_target(self):
-        self.dbo.goal = np.array(
-            [np.random.uniform(-.30, -.1),
-             np.random.uniform(-.3, .1), 0])
+        self.dbo.goal = np.array([
+            np.random.uniform(PUSHER_GOAL_X[0], PUSHER_GOAL_X[1]),
+            np.random.uniform(PUSHER_GOAL_Y[0], PUSHER_GOAL_Y[1]), 0
+        ])
 
         self.target = p.createMultiBody(
             baseVisualShapeIndex=self.obj_visual, basePosition=self.dbo.goal)
