@@ -7,5 +7,4 @@ from gym_ergojr.envs.ergo_reacher_heavy_env import ErgoReacherHeavyEnv
 from gym_ergojr.envs.ergo_reacher_plus import ErgoReacherPlusEnv
 from gym_ergojr.envs.ergo_reacher_plus2 import ErgoReacherPlus2Env
 
-
-
+from gym_ergojr.envs.ergo_pusher_env import ErgoPusherEnv
