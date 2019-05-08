@@ -331,9 +331,9 @@ class PusherRobot():
 
     def float2list(self, val):
         if type(val) == type(1) or type(val) == type(1.0):
-            return [val] * 6
+            return [val] * 3
         elif type(val) == type([]) or type(val) == type(np.array([])):
-            assert len(val) == 6
+            assert len(val) == 3
             return val
         else:
             raise Exception(
@@ -341,7 +341,7 @@ class PusherRobot():
                 .format(val, type(val)))
 
     def act(self, actions, max_force=None, max_vel=None, positionGain=None):
-        actions += self.rest_pos
+        actions += self.rest_pos[:3]
         actions_clipped = self.clip_action(actions)
 
         if max_force is None:
