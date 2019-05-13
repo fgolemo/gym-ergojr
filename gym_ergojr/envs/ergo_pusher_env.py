@@ -25,9 +25,9 @@ class ErgoPusherEnv(gym.Env):
 
         self.metadata = {'render.modes': ['human']}
 
-        # observation = 3 joints + 3 velocities + 2 coordinates for target
+        # observation = 3 joints + 3 velocities + 2 puck position + 2 coordinates for target
         self.observation_space = spaces.Box(
-            low=-1, high=1, shape=(3 + 3 + 2,), dtype=np.float32)  #
+            low=-1, high=1, shape=(3 + 3 + 2 + 2,), dtype=np.float32)  #
 
         # action = 3 joint angles
         self.action_space = spaces.Box(
@@ -78,7 +78,11 @@ class ErgoPusherEnv(gym.Env):
         return self._get_obs()
 
     def _get_obs(self):
-        obs = np.hstack([self.robot.observe(), self.puck.normalize_goal()])
+        obs = np.hstack([
+            self.robot.observe(),
+            self.puck.normalize_puck(),
+            self.puck.normalize_goal()
+        ])
         return obs
 
     def render(self, mode='human', close=False):

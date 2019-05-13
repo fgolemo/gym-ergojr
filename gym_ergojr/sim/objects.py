@@ -7,6 +7,18 @@ import numpy as np
 PUSHER_GOAL_X = [-.2, -.1]
 PUSHER_GOAL_Y = [-.1, .05]
 
+PUSHER_PUCK_X = [-0.07, -0.10]
+PUSHER_PUCK_Y = [0.05, 0.08]
+
+PUSHER_PUCK_X_NORM = [
+    min(PUSHER_PUCK_X[0], PUSHER_PUCK_X[0]),
+    max(PUSHER_PUCK_X[1], PUSHER_PUCK_X[1])
+]
+PUSHER_PUCK_Y_NORM = [
+    min(PUSHER_PUCK_Y[0], PUSHER_PUCK_Y[0]),
+    max(PUSHER_PUCK_Y[1], PUSHER_PUCK_Y[1])
+]
+
 
 class Ball(object):
 
@@ -60,8 +72,8 @@ class Puck(object):
     def add_puck(self):
         self.puck = p.loadURDF(
             self.robot_file, [
-                np.random.uniform(-0.07, -0.10),
-                np.random.uniform(0.05, 0.08), 0.0
+                np.random.uniform(PUSHER_PUCK_X[0], PUSHER_PUCK_X[1]),
+                np.random.uniform(PUSHER_PUCK_Y[0], PUSHER_PUCK_Y[1]), 0.0
             ],
             p.getQuaternionFromEuler([0, 0, 0]),
             useFixedBase=1)
@@ -81,6 +93,15 @@ class Puck(object):
             PUSHER_GOAL_X[1] - PUSHER_GOAL_X[0])
         y = (self.dbo.goal[1] - PUSHER_GOAL_Y[0]) / (
             PUSHER_GOAL_Y[1] - PUSHER_GOAL_Y[0])
+        return np.array([x, y])
+
+    def normalize_puck(self):
+        pos = np.array(p.getLinkState(bodyUniqueId=self.puck,
+                                      linkIndex=1)[0])[:2]
+        x = (pos[0] - PUSHER_PUCK_X_NORM[0]) / (
+            PUSHER_PUCK_X_NORM[1] - PUSHER_PUCK_X_NORM[0])
+        y = (pos[1] - PUSHER_PUCK_Y_NORM[0]) / (
+            PUSHER_PUCK_Y_NORM[1] - PUSHER_PUCK_Y_NORM[0])
         return np.array([x, y])
 
     def reset(self):

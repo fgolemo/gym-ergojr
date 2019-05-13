@@ -4,39 +4,40 @@ import numpy as np
 
 class DistanceBetweenObjects(object):
 
-  def __init__(self, bodyA, linkA, bodyB=None, linkB=None):
-    self.bodyA = bodyA
-    self.linkA = linkA
+    def __init__(self, bodyA, linkA, bodyB=None, linkB=None):
+        self.bodyA = bodyA
+        self.linkA = linkA
 
-    self.bodyB = bodyB
-    self.linkB = linkB
+        self.bodyB = bodyB
+        self.linkB = linkB
 
-    self.goal = (0, 0, 0)
+        self.goal = (0, 0, 0)
 
-  def query(self):
-    for tries in range(5):
-      posA = p.getLinkState(bodyUniqueId=self.bodyA, linkIndex=self.linkA)
-      # rt = p.rayTest(self.goal,posA[1])
-      # dist = np.linalg.norm(np.array(self.goal)-np.array(rt[3]))
-      dist = np.linalg.norm(np.array(self.goal) - np.array(posA[0]))
+    def query(self):
+        for tries in range(5):
+            posA = p.getLinkState(bodyUniqueId=self.bodyA, linkIndex=self.linkA)
+            # rt = p.rayTest(self.goal,posA[1])
+            # dist = np.linalg.norm(np.array(self.goal)-np.array(rt[3]))
+            dist = np.linalg.norm(
+                np.array(self.goal)[:2] - np.array(posA[0])[:2])
 
-      if np.isnan(dist):
-        print(tries, "pos:", posA)
-        print("body {}, link {}".format(self.bodyA, self.linkA))
-        p.stepSimulation()
-        continue
-      else:
-        return dist
+            if np.isnan(dist):
+                print(tries, "pos:", posA)
+                print("body {}, link {}".format(self.bodyA, self.linkA))
+                p.stepSimulation()
+                continue
+            else:
+                return dist
 
-    # contacts = p.getClosestPoints(bodyA=self.bodyA, bodyB=self.bodyB,
-    #                               linkIndexA=self.linkA, linkIndexB=self.linkB,
-    #                               distance=999)
-    # if len(contacts) == 0:
-    #     return None
-    # return contacts[0][-2]
+        # contacts = p.getClosestPoints(bodyA=self.bodyA, bodyB=self.bodyB,
+        #                               linkIndexA=self.linkA, linkIndexB=self.linkB,
+        #                               distance=999)
+        # if len(contacts) == 0:
+        #     return None
+        # return contacts[0][-2]
 
 
 def sanitizeAction(action, alen):
-  action = np.clip(action, -1, 1)
-  assert len(action) == alen
-  return action
+    action = np.clip(action, -1, 1)
+    assert len(action) == alen
+    return action
