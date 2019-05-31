@@ -1,22 +1,34 @@
 from gym_ergojr.sim.abstract_robot import AbstractRobot
 import numpy as np
 
+
 class SingleRobot(AbstractRobot):
 
-    def __init__(self, robot_model="ergojr-penholder", debug=False, frequency=100, backlash=False, heavy=False,
-                 new_backlash=None, silent=False):
+    def __init__(self,
+                 robot_model="ergojr-penholder",
+                 debug=False,
+                 frequency=100,
+                 backlash=False,
+                 heavy=False,
+                 new_backlash=None,
+                 silent=False,
+                 gripper=False,
+                 reset=True):
         self.robot_model = robot_model
         if backlash:
             self.robot_model += "-backlash"
         if heavy:
             self.robot_model += "-heavy"
-        super().__init__(debug, frequency, backlash, heavy, new_backlash, silent)
-        self.hard_reset()
+        super().__init__(debug, frequency, backlash, heavy, new_backlash,
+                         silent, gripper)
+        self.rest_pos = [0, 0, 0, 0, 0, 0]
+        if reset:
+            self.hard_reset()
 
     def act2(self, actions, **kwargs):
-        actions[2] = np.clip(actions[2],
-                             a_min=max(-1 - actions[1], -1),
-                             a_max=1)  # to prevent robot from hitting the case
+        actions[2] = np.clip(
+            actions[2], a_min=max(-1 - actions[1], -1),
+            a_max=1)  # to prevent robot from hitting the case
 
         super().act2(actions, 0, **kwargs)
 
@@ -40,10 +52,12 @@ class SingleRobot(AbstractRobot):
                 continue
             else:
                 if self.backlash:
-                    self.load_backlash(self.id, [
-                        (5, 6, .8),  # was .4 before
-                        (11, 12, .6)  # was .2 before
-                    ])
+                    self.load_backlash(
+                        self.id,
+                        [
+                            (5, 6, .8),  # was .4 before
+                            (11, 12, .6)  # was .2 before
+                        ])
                     print("loaded backlash")
                 return
 

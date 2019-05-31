@@ -326,3 +326,9 @@ for headlessness in ["Graphical", "Headless"]:
         entry_point='gym_ergojr.envs:ErgoPusherEnv',
         max_episode_steps=100,
         kwargs={'headless': headlessness_switch})
+
+    register(
+        id='ErgoGripper-{}-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoGripperEnv',
+        max_episode_steps=100,
+        kwargs={'headless': headlessness_switch})

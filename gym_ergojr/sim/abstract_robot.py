@@ -27,11 +27,13 @@ class AbstractRobot():
                  backlash=None,
                  heavy=False,
                  new_backlash=None,
-                 silent=False):
+                 silent=False,
+                 gripper=False):
         self.debug = debug
         self.frequency = frequency
         self.backlash = backlash
         self.heavy = heavy
+        self.gripper = gripper
         self.new_backlash = new_backlash
         self.output_handler = stdout_noop
         if silent:
@@ -63,6 +65,8 @@ class AbstractRobot():
             self.motor_ids = [
                 3, 6, 9, 12, 15, 18
             ]  # this is consistent across different heavy robots
+        if self.gripper:
+            self.motor_ids = [3, 4, 6, 8, 10, 14]
         self.debug_text = None
 
     def addModel(self, robot_model, pose=None):

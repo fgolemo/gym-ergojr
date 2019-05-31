@@ -216,7 +216,7 @@
     </joint>
 
     <link name="gripperleft">
-        <xacro:box2 sizex=".002" sizey=".074" sizez=".02" posx="-.016" posy=".017" color="red"/>
+        <xacro:box2 sizex=".005" sizey=".074" sizez=".02" posx="-.0175" posy=".017" color="red"/>
         <inertial>
             <mass value=".004"/>
             <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
@@ -233,6 +233,20 @@
 
     <link name="gripperright">
         <xacro:box2 sizex=".005" sizey=".074" sizez=".02" posx=".014" posy=".022" color="red"/>
+        <inertial>
+            <mass value=".004"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+        </inertial>
+    </link>
+
+    <joint name="motor6link_to_pickuppoint" type="fixed">
+        <parent link="1_motor6link"/>
+        <child link="pickuppoint"/>
+        <origin xyz=".0 .065 .0"/>
+    </joint>
+
+    <link name="pickuppoint">
+<!--        <xacro:box2 sizex=".005" sizey=".005" sizez=".005" posy=".0" color="blue"/>-->
         <inertial>
             <mass value=".004"/>
             <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>

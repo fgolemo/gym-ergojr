@@ -10,6 +10,8 @@ PUSHER_GOAL_Y = [-.1, .05]
 PUSHER_PUCK_X = [-0.07, -0.10]
 PUSHER_PUCK_Y = [0.05, 0.08]
 
+GRIPPER_CUBE_Y = [.1, .25]
+
 PUSHER_PUCK_X_NORM = [
     min(PUSHER_PUCK_X[0], PUSHER_PUCK_X[0]),
     max(PUSHER_PUCK_X[1], PUSHER_PUCK_X[1])
@@ -129,3 +131,45 @@ class Puck(object):
 
         self.target = p.createMultiBody(
             baseVisualShapeIndex=self.obj_visual, basePosition=self.dbo.goal)
+
+
+class Cube(object):
+
+    def __init__(self, robot_id):
+        self.robot_id = robot_id
+        self.cube = None
+        self.dbo = None
+
+        xml_path = get_scene("ergojr-gripper-cube")
+        self.robot_file = URDF(xml_path, force_recompile=True).get_path()
+
+        # # GYM env has to do this
+        # self.hard_reset()
+
+    def add_cube(self, y=None):
+        if y is None:
+            y = np.random.uniform(.1, .25)
+
+        cube_pos = [0, y, 0]
+        cube_rot = p.getQuaternionFromEuler([
+            0, 0, np.deg2rad(np.random.randint(0, 180))
+        ])  # rotated around which axis? # np.deg2rad(90)
+
+        self.cube = p.loadURDF(
+            self.robot_file, cube_pos, cube_rot, useFixedBase=0)
+
+        self.dbo = DistanceBetweenObjects(self.robot_id, 15, self.cube, 0)
+
+    def normalize_cube(self):
+        _, posB = self.dbo.query(True)
+        x = posB[0]
+        y = (posB[1] - GRIPPER_CUBE_Y[0]) / (
+            GRIPPER_CUBE_Y[1] - GRIPPER_CUBE_Y[0])
+        z = posB[2]
+        return np.array([x, y, z])
+
+    def reset(self):
+        if self.cube is not None:
+            p.removeBody(self.cube)
+
+        self.add_cube()

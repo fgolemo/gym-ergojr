@@ -3,13 +3,24 @@
     <xacro:include filename="ergojr-macros.xacro.xml"/>
     <xacro:property name="mass" value=".1"/>
 
-    <link name="2_box">
-        <xacro:box2 sizex=".03" sizey=".03" sizez=".03" color="blue"/>
+    <link name="2_anchor">
         <inertial>
-            <mass value="${mass}"/>
-            <inertia ixx="1" iyy="1" izz="1"/>
+            <mass value="0.001"/>
+            <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
         </inertial>
     </link>
 
+    <joint name="2_anchor_to_cube" type="fixed">
+        <parent link="2_anchor"/>
+        <child link="2_cube"/>
+        <origin xyz="0 0 .015"/>
+    </joint>
 
+    <link name="2_cube">
+        <xacro:box2 sizex=".03" sizey=".03" sizez=".03" color="blue"/>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="1e-2" iyy="1e-2" izz="1e-2"/>
+        </inertial>
+    </link>
 </robot>

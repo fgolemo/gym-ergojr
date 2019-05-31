@@ -466,16 +466,16 @@
   </joint>
   <link name="gripperleft">
     <visual>
-      <origin rpy="0 0 0" xyz="-0.016 0.017 0"/>
+      <origin rpy="0 0 0" xyz="-0.0175 0.017 0"/>
       <geometry>
-        <box size="0.002 0.074 0.02"/>
+        <box size="0.005 0.074 0.02"/>
       </geometry>
       <material name="red"/>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="-0.016 0.017 0"/>
+      <origin rpy="0 0 0" xyz="-0.0175 0.017 0"/>
       <geometry>
-        <box size="0.002 0.074 0.02"/>
+        <box size="0.005 0.074 0.02"/>
       </geometry>
     </collision>
     <inertial>
@@ -504,6 +504,18 @@
         <box size="0.005 0.074 0.02"/>
       </geometry>
     </collision>
+    <inertial>
+      <mass value=".004"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+    </inertial>
+  </link>
+  <joint name="motor6link_to_pickuppoint" type="fixed">
+    <parent link="1_motor6link"/>
+    <child link="pickuppoint"/>
+    <origin xyz=".0 .065 .0"/>
+  </joint>
+  <link name="pickuppoint">
+    <!--        <xacro:box2 sizex=".005" sizey=".005" sizez=".005" posy=".0" color="blue"/>-->
     <inertial>
       <mass value=".004"/>
       <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
