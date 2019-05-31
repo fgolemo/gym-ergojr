@@ -13,6 +13,9 @@
     <material name="red">
         <color rgba="1 0 0 1"/>
     </material>
+    <material name="blue">
+        <color rgba="0 0 1 1"/>
+    </material>
 
     <xacro:macro name="cylinder2" params="length radius color:=white
                                         rotx:=0 roty:=0 rotz:=0

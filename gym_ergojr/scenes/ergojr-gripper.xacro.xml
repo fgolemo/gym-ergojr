@@ -1,0 +1,242 @@
+<?xml version="1.0" ?>
+<robot name="ergojr-gripper" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="ergojr-macros.xacro.xml"/>
+
+    <link name="1_anchor">
+        <inertial>
+            <mass value="1"/>
+            <inertia ixx="1" iyy="1" izz="1"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="1_anchor_to_base" type="fixed">
+        <parent link="1_anchor"/>
+        <child link="1_base"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="1_base">
+        <xacro:cylinder2 length="0.005" radius="0.075" posz=".0025"/>
+        <inertial>
+            <mass value=".038"/>
+            <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="1_base_to_static" type="fixed">
+        <parent link="1_base"/>
+        <child link="1_static_first_link"/>
+        <origin xyz="0 .038 0.005"/>
+    </joint>
+
+    <!--<joint name="base_to_measure" type="fixed">-->
+    <!--<parent link="base"/>-->
+    <!--<child link="ruler"/>-->
+    <!--</joint>-->
+
+    <!--<link name="ruler">-->
+    <!--<xacro:box2 nocoll="1" sizex=".02" sizey=".02" sizez=".17" color="red" posz=".085"/>-->
+    <!--</link>-->
+
+    <link name="1_static_first_link">
+        <xacro:cylinder2 length="0.003" radius="0.0275" posz=".0015"/>
+        <inertial>
+            <mass value="0.011"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="1_motor1_to_static" type="fixed">
+        <parent link="1_static_first_link"/>
+        <child link="1_motor1link"/>
+        <origin xyz="0 -.010 .003"/>
+    </joint>
+
+    <link name="1_motor1link">
+        <xacro:motor posz="0.0135" weird_mass="0"/>
+    </link>
+
+    <joint name="1_motor1joint" type="revolute">
+        <parent link="1_motor1link"/>
+        <child link="1_link1_bottom"/>
+        <origin rpy="0 0 0" xyz="0 .0095 .027"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="0 0 1"/>
+
+
+    </joint>
+
+    <link name="1_link1_bottom">
+        <xacro:box2 sizex=".034" sizey=".02" sizez=".002" posz="0.001"/>
+        <xacro:box2 sizex=".002" sizey=".02" sizez=".0345" posz="0.01725" posx="-0.016"/>
+        <xacro:box2 sizex=".005" sizey=".02" sizez=".0345" posz="0.01725" posx="0.0145"/>
+
+        <inertial>
+            <mass value=".005"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="1_motor2joint" type="revolute">
+        <parent link="1_link1_bottom"/>
+        <child link="1_motor2link"/>
+        <origin xyz="0 0 .024"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="1 0 0"/>
+
+    </joint>
+
+    <link name="1_motor2link">
+        <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.0015" posz="0.0095" weird_mass="0"/>
+    </link>
+
+    <joint name="1_motor2link_to_motor2bridge3" type="fixed">
+        <parent link="1_motor2link"/>
+        <child link="1_motor2bridge3"/>
+        <origin xyz="0 0 .019"/>
+    </joint>
+
+    <link name="1_motor2bridge3">
+        <xacro:box2 sizex=".002" sizey=".02" sizez=".045" posx="-0.016" posz="0.0225"/>
+        <xacro:box2 sizex=".005" sizey=".02" sizez=".045" posx="0.0145" posz="0.0225"/>
+        <inertial>
+            <mass value=".0045"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="1_motor3joint" type="revolute">
+        <parent link="1_motor2bridge3"/>
+        <child link="1_motor3link"/>
+        <origin xyz="0 0 .035"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="1 0 0"/>
+
+    </joint>
+
+    <link name="1_motor3link">
+        <xacro:motor rotx="${pihalf}" rotz="${pihalf}" posx="-.0015" posz="0.0095" weird_mass="0"/>
+    </link>
+
+    <joint name="1_motor3link_to_motor2bridge3" type="fixed">
+        <parent link="1_motor3link"/>
+        <child link="1_motor3bridge4"/>
+        <origin xyz="0 0 .026"/>
+    </joint>
+
+    <link name="1_motor3bridge4">
+        <xacro:box2 sizex=".027" sizey=".02" sizez=".002" posz="0.002" posx="-0.0015"/>
+        <inertial>
+            <mass value=".001"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="1_motor4joint" type="revolute">
+        <parent link="1_motor3bridge4"/>
+        <child link="1_motor4link"/>
+        <origin xyz="0 0 .002"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="1_motor4link">
+        <xacro:motor rotx="${pi}" posy=".0095" posz=".0145" weird_mass="0"/>
+        <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
+    </link>
+
+    <joint name="1_motor4link_to_motor4bridge5" type="fixed">
+        <parent link="1_motor4link"/>
+        <child link="1_motor4bridge5"/>
+        <origin xyz="0 .013 .015"/>
+    </joint>
+
+    <link name="1_motor4bridge5">
+        <xacro:box2 sizex=".002" sizey=".045" sizez=".02" posx="-.016" posy=".0225"/>
+        <xacro:box2 sizex=".003" sizey=".005" sizez=".02" posx="-.0135" posy=".0025"/>
+        <xacro:box2 sizex=".004" sizey=".045" sizez=".02" posx=".014" posy=".0225"/>
+        <inertial>
+            <mass value=".0045"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="1_motor5joint" type="revolute">
+        <parent link="1_motor4bridge5"/>
+        <child link="1_motor5link"/>
+        <origin xyz="0 0.035 0"/>
+        <limit effort="100.0" lower="-${pihalf}" upper="${pihalf}" velocity="0.5"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <link name="1_motor5link">
+        <xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095" weird_mass="0"/>
+    </link>
+
+
+    <joint name="1_motor5link_to_motor5bridge6" type="fixed">
+        <parent link="1_motor5link"/>
+        <child link="1_motor5bridge6"/>
+        <origin xyz=".0 .019 .0"/>
+    </joint>
+
+    <link name="1_motor5bridge6">
+        <xacro:box2 sizex=".002" sizey=".025" sizez=".02" posx="-.016" posy=".0105"/>
+        <xacro:box2 sizex=".004" sizey=".025" sizez=".02" posx=".014" posy=".0105"/>
+        <inertial>
+            <mass value=".0045"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+            <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+        </inertial>
+    </link>
+
+    <joint name="1_motor6joint" type="fixed">
+        <parent link="1_motor5bridge6"/>
+        <child link="1_motor6link"/>
+        <origin xyz="0 0.020 0"/>
+    </joint>
+
+    <link name="1_motor6link">
+        <!--<xacro:box2 sizex=".5" sizey=".002" sizez=".002" color="red"/>-->
+        <xacro:motor rotx="${pi}" roty="${pihalf}" posx="-.0015" posy=".0095" weird_mass="0"/>
+    </link>
+
+
+    <joint name="motor6link_to_gripperleft" type="fixed">
+        <parent link="1_motor6link"/>
+        <child link="gripperleft"/>
+        <origin xyz=".0 .025 .0"/>
+    </joint>
+
+    <link name="gripperleft">
+        <xacro:box2 sizex=".002" sizey=".074" sizez=".02" posx="-.016" posy=".017" color="red"/>
+        <inertial>
+            <mass value=".004"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+        </inertial>
+    </link>
+
+    <joint name="motor6link_to_gripperright" type="revolute">
+        <parent link="1_motor6link"/>
+        <child link="gripperright"/>
+        <origin xyz=".0 .020 .0"/>
+        <limit effort="100.0" lower="-${pihalf*2/3}" upper="${pihalf/4}" velocity="0.5"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="gripperright">
+        <xacro:box2 sizex=".005" sizey=".074" sizez=".02" posx=".014" posy=".022" color="red"/>
+        <inertial>
+            <mass value=".004"/>
+            <inertia ixx="1e-5" iyy="1e-5" izz="1e-5"/>
+        </inertial>
+    </link>
+
+</robot>
