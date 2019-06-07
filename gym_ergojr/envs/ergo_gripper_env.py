@@ -1,6 +1,3 @@
-# import matplotlib
-# print(matplotlib.rcsetup.interactive_bk) # ['GTK3Agg', 'GTK3Cairo', 'MacOSX', 'nbAgg', 'Qt4Agg', 'Qt4Cairo', 'Qt5Agg', 'Qt5Cairo', 'TkAgg', 'TkCairo', 'WebAgg', 'WX', 'WXAgg', 'WXCairo']
-
 import time
 import gym
 import numpy as np
@@ -11,16 +8,13 @@ from gym_ergojr.sim.single_robot import SingleRobot
 from gym_ergojr.utils.pybullet import Cam
 import matplotlib.pyplot as plt
 
-GOAL_REACHED_DISTANCE = -0.007  # distance between robot tip and goal under which the task is considered solved
+GOAL_REACHED_DISTANCE = 0.04  # distance between robot tip and goal under which the task is considered solved
 RESTART_EVERY_N_EPISODES = 5  # for the gripper
 
 
 class ErgoGripperEnv(gym.Env):
 
-    def __init__(self, headless=False, multi_goal=False, goals=3):
-        # self.multigoal = multi_goal # unused
-        # self.n_goals = goals # unused
-
+    def __init__(self, headless=False):
         self.goals_done = 0
         self.is_initialized = False
 
@@ -28,25 +22,36 @@ class ErgoGripperEnv(gym.Env):
             robot_model="ergojr-gripper",
             debug=not headless,
             gripper=True,
-            reset=False)
-        self.cube = None  # after reset
-        self.cam = Cam(pos=[.3, .05, .1], look_at=[0, .07, 0.1])
+            reset=False,
+            frequency=20)
+
+        # Cube the robot must reach, created in reset method
+        self.cube = None
+
+        self.cam = Cam(
+            pos=[0.25, .25, 0.1],
+            look_at=[0.00, .10, 0.1],
+            width=64,
+            height=64,
+            fov=60)
+
         self.plot = None
 
-        self.episodes = 0  # used for resetting the sim every so often
+        # Episode count, used for resetting the PyBullet sim every so often
+        self.episodes = 0
 
         self.metadata = {'render.modes': ['human', 'rgb_array']}
 
         # observation = (img, 6 joints + 6 velocities + 3 cube position)
         self.observation_space = spaces.Tuple([
-            spaces.Box(low=0, high=255, shape=(300, 400, 3), dtype=np.uint8),
+            spaces.Box(low=0, high=255, shape=(64, 64, 3), dtype=np.uint8),
             spaces.Box(
                 low=-1, high=1, shape=(3 + 3 + 2 + 2,), dtype=np.float32)
         ])
 
-        # action = 6 joint angles
+        # 6 joint angles in [-1, 1]
         self.action_space = spaces.Box(
-            low=-1, high=1, shape=(6,), dtype=np.float32)  #
+            low=-1, high=1, shape=(6,), dtype=np.float32)
 
         super().__init__()
 
@@ -54,7 +59,7 @@ class ErgoGripperEnv(gym.Env):
         return [np.random.seed(seed)]
 
     def step(self, action):
-        self.robot.act2(action)
+        self.robot.act2(action, max_vel=1, max_force=0.3)
         self.robot.step()
 
         reward, done, dist = self._getReward()
@@ -101,11 +106,12 @@ class ErgoGripperEnv(gym.Env):
     def _get_obs(self):
         obs = np.hstack([self.robot.observe(), self.cube.normalize_cube()])
         img = self.cam.snap()
+        img = (img * 255).astype(np.uint8)
         return img, obs
 
     def render(self, mode='human', close=False):
-        img = self.cam.snap()
         if mode == "human":
+            img = self.cam.snap()
             if self.plot is None:
                 plt.ion()
                 self.plot_container = plt.imshow(
@@ -116,10 +122,31 @@ class ErgoGripperEnv(gym.Env):
             self.plot.plot([0])
             plt.pause(0.001)
         else:
-            return img
+            return self._get_obs()[0]
 
     def close(self):
         self.robot.close()
 
     def _get_state(self):
         return self.robot.observe()
+
+
+class OnlyImageWrapper(gym.ObservationWrapper):
+
+    def __init__(self, env):
+        super().__init__(env)
+        # only the image part
+        self.observation_space = self.observation_space[0]
+
+    def observation(self, observation):
+        return observation[0]  # only the img
+
+
+if __name__ == '__main__':
+    import gym_ergojr
+    env = OnlyImageWrapper(gym.make("ErgoGripper-Headless-v1"))
+    print(env.observation_space)
+    env.reset()
+    env.render("human")
+    for i in range(100):
+        env.render("human")
