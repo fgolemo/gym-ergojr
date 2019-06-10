@@ -17,11 +17,12 @@ p.resetDebugVisualizerCamera(
     cameraTargetPosition=[0, 0.05, 0])
 
 p.setGravity(0, 0, -10)  # good enough
-frequency = 100  # Hz
+frequency = 20  # Hz
 p.setTimeStep(1 / frequency)
 p.setRealTimeSimulation(0)
 
-planeId = p.loadURDF("plane.urdf")
+robot_file = URDF(get_scene("plane"), force_recompile=True).get_path()
+robot = p.loadURDF(robot_file)
 
 startPos = [0, 0, 0]  # xyz
 startOrientation = p.getQuaternionFromEuler(
@@ -127,7 +128,7 @@ for i in range(frequency * 30):
 
     time.sleep(1. / frequency)
 
-    if i % 120 == 0 or dist < 0.007:
+    if i % 20 == 0 or dist < 0.007:
         p.removeBody(cube)
         cube, dbo = load_cube()
 

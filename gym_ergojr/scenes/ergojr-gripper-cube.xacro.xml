@@ -1,12 +1,13 @@
 <?xml version="1.0" ?>
 <robot name="puck" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <xacro:include filename="ergojr-macros.xacro.xml"/>
-    <xacro:property name="mass" value=".1"/>
+    <xacro:property name="mass" value=".01"/>
+    <xacro:property name="size" value=".03"/>
 
     <link name="2_anchor">
         <inertial>
-            <mass value="0.001"/>
-            <inertia ixx="1e-3" iyy="1e-3" izz="1e-3"/>
+            <mass value="${mass}"/>
+            <xacro:box_inertia m="${mass}" x="${size}" y="${size}" z="${size}"/>
         </inertial>
     </link>
 
@@ -17,10 +18,10 @@
     </joint>
 
     <link name="2_cube">
-        <xacro:box2 sizex=".03" sizey=".03" sizez=".03" color="blue"/>
+        <xacro:box2 sizex="${size}" sizey="${size}" sizez="${size}" color="blue" nocoll="1"/>
         <inertial>
-            <mass value="0.1"/>
-            <inertia ixx="1e-2" iyy="1e-2" izz="1e-2"/>
+            <mass value="${mass}"/>
+            <xacro:box_inertia m="${mass}" x="${size}" y="${size}" z="${size}"/>
         </inertial>
     </link>
 </robot>

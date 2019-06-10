@@ -7,25 +7,26 @@ import numpy as np
 from gym_ergojr import get_scene
 from gym_ergojr.utils.urdf_helper import URDF
 
-
 # Create the bullet physics engine environment
 physicsClient = p.connect(p.GUI)  # or p.DIRECT for non-graphical version
 p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
-p.resetDebugVisualizerCamera(cameraDistance=0.45,
-                             cameraYaw=135,
-                             cameraPitch=-45,
-                             cameraTargetPosition=[0, 0, 0])
-p.setGravity(0, 0, -10) # good enough
+p.resetDebugVisualizerCamera(
+    cameraDistance=0.45,
+    cameraYaw=135,
+    cameraPitch=-45,
+    cameraTargetPosition=[0, 0, 0])
+p.setGravity(0, 0, -10)  # good enough
 frequency = 100  # Hz
 p.setTimeStep(1 / frequency)
 p.setRealTimeSimulation(0)
 
 # This loads the checkerboard background
-planeId = p.loadURDF("plane.urdf")
+planeId = p.loadURDF(URDF(get_scene("plane-big.urdf.xml")).get_path())
 
 # Robot model starting position
 startPos = [0, 0, 0]  # xyz
-startOrientation = p.getQuaternionFromEuler([0, 0, 0])  # rotated around which axis? # np.deg2rad(90)
+startOrientation = p.getQuaternionFromEuler(
+    [0, 0, 0])  # rotated around which axis? # np.deg2rad(90)
 
 # The robot needs to be defined in a URDF model file. But the model file is clunky, so there is a macro language, "XACRO",
 # that can be compiled to URDF but that's easier to read and that contains if/then/else statements, variables, etc.
@@ -74,7 +75,8 @@ for i in range(frequency * 30):
     for i in range(len(motors)):
         pos = (math.pi / 2) * p.readUserDebugParameter(debugParams[i])
         motorPos.append(pos)
-        p.setJointMotorControl2(robot, motors[i], p.POSITION_CONTROL, targetPosition=pos)
+        p.setJointMotorControl2(
+            robot, motors[i], p.POSITION_CONTROL, targetPosition=pos)
 
     p.stepSimulation()
 
@@ -82,7 +84,6 @@ for i in range(frequency * 30):
     time.sleep(1. / frequency)
 
 print(time.time() - start)
-
 
 # Close the Bullet physics server
 p.disconnect()

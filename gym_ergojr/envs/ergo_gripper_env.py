@@ -9,7 +9,7 @@ from gym_ergojr.utils.pybullet import Cam
 import matplotlib.pyplot as plt
 
 GOAL_REACHED_DISTANCE = 0.04  # distance between robot tip and goal under which the task is considered solved
-RESTART_EVERY_N_EPISODES = 5  # for the gripper
+RESTART_EVERY_N_EPISODES = 100  # for the gripper
 
 
 class ErgoGripperEnv(gym.Env):
@@ -144,9 +144,12 @@ class OnlyImageWrapper(gym.ObservationWrapper):
 
 if __name__ == '__main__':
     import gym_ergojr
-    env = OnlyImageWrapper(gym.make("ErgoGripper-Headless-v1"))
+    env = OnlyImageWrapper(gym.make("ErgoGripper-Graphical-v1"))
     print(env.observation_space)
     env.reset()
     env.render("human")
-    for i in range(100):
+    for i in range(1000):
+        env.step(env.action_space.sample())
         env.render("human")
+        if i % 20 == 0:
+            env.reset()

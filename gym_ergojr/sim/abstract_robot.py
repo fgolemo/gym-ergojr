@@ -258,7 +258,7 @@ class AbstractRobot():
         p.setTimeStep(1 / self.frequency)
         p.setRealTimeSimulation(0)
         if not self.heavy:
-            p.loadURDF("plane.urdf")
+            p.loadURDF(URDF(get_scene("plane")).get_path())
             # pass
         else:
             p.loadURDF(URDF(get_scene("plane-big.urdf.xml")).get_path())
@@ -425,7 +425,7 @@ class PusherRobot():
         p.setGravity(0, 0, -10)
         p.setTimeStep(1 / self.frequency)
         p.setRealTimeSimulation(0)
-        p.loadURDF("plane.urdf")
+        p.loadURDF(URDF(get_scene("plane")).get_path())
         self.addModel("ergojr-pusher")
 
 
