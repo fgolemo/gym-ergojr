@@ -135,8 +135,11 @@ class Puck(object):
 
 class Cube(object):
 
-    def __init__(self, robot_id):
+    def __init__(self, robot_id, spawn="linear"):
+        assert spawn in ["linear", "square"]
+
         self.robot_id = robot_id
+        self.spawn = spawn
         self.cube = None
         self.dbo = None
 
@@ -146,11 +149,21 @@ class Cube(object):
         # # GYM env has to do this
         # self.hard_reset()
 
-    def add_cube(self, y=None):
+    def add_cube(self, y=None, x=None):
+
+        if x is None and self.spawn == "linear":
+            x = 0
+
+        if x is None and self.spawn == "square":
+            # shorter Y otherwise out of reach
+            if y is None:
+                y = np.random.uniform(.1, .17)
+            x = np.random.uniform(-.15, .15)
+
         if y is None:
             y = np.random.uniform(.1, .25)
 
-        cube_pos = [0, y, 0]
+        cube_pos = [x, y, 0]
         cube_rot = p.getQuaternionFromEuler([
             0, 0, np.deg2rad(np.random.randint(0, 180))
         ])  # rotated around which axis? # np.deg2rad(90)

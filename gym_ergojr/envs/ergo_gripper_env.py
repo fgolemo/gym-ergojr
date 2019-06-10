@@ -65,7 +65,7 @@ class ErgoGripperEnv(gym.Env):
         return [np.random.seed(seed)]
 
     def step(self, action):
-        self.robot.act2(action, max_vel=.6, max_force=.4)
+        self.robot.act2(action, max_vel=.8, max_force=.8)
 
         for _ in range(FRAME_SKIP):
             self.robot.step()
@@ -92,7 +92,7 @@ class ErgoGripperEnv(gym.Env):
         self.episodes += 1
         if self.episodes >= RESTART_EVERY_N_EPISODES or forced or not self.is_initialized:
             self.robot.hard_reset()  # this always has to go first
-            self.cube = Cube(self.robot.id)
+            self.cube = Cube(self.robot.id, self.cube_spawn)
             self.cube.reset()
             self.episodes = 0
             self.is_initialized = True
@@ -156,7 +156,7 @@ class OnlyImageWrapper(gym.ObservationWrapper):
 
 if __name__ == '__main__':
     import gym_ergojr
-    env = OnlyImageWrapper(gym.make("ErgoGripper-Linear-Graphical-v1"))
+    env = OnlyImageWrapper(gym.make("ErgoGripper-Square-Graphical-v1"))
     print(env.observation_space)
     env.reset()
     env.render("human")
