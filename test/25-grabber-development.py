@@ -17,7 +17,7 @@ p.resetDebugVisualizerCamera(
     cameraTargetPosition=[0, 0.05, 0])
 
 p.setGravity(0, 0, -10)  # good enough
-frequency = 20  # Hz
+frequency = 60  # Hz
 p.setTimeStep(1 / frequency)
 p.setRealTimeSimulation(0)
 

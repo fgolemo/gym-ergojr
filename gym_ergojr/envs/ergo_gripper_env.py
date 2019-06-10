@@ -1,4 +1,6 @@
 import time
+from random import random, sample
+
 import gym
 import numpy as np
 from gym import spaces
@@ -10,11 +12,15 @@ import matplotlib.pyplot as plt
 
 GOAL_REACHED_DISTANCE = 0.04  # distance between robot tip and goal under which the task is considered solved
 RESTART_EVERY_N_EPISODES = 100  # for the gripper
+FRAME_SKIP = 3
 
 
 class ErgoGripperEnv(gym.Env):
 
-    def __init__(self, headless=False):
+    def __init__(self, headless=False, cube_spawn="linear"):
+        assert cube_spawn in ["linear", "square"]
+        self.cube_spawn = cube_spawn
+
         self.goals_done = 0
         self.is_initialized = False
 
@@ -23,7 +29,7 @@ class ErgoGripperEnv(gym.Env):
             debug=not headless,
             gripper=True,
             reset=False,
-            frequency=20)
+            frequency=60)
 
         # Cube the robot must reach, created in reset method
         self.cube = None
@@ -59,8 +65,10 @@ class ErgoGripperEnv(gym.Env):
         return [np.random.seed(seed)]
 
     def step(self, action):
-        self.robot.act2(action, max_vel=1, max_force=0.3)
-        self.robot.step()
+        self.robot.act2(action, max_vel=.6, max_force=.4)
+
+        for _ in range(FRAME_SKIP):
+            self.robot.step()
 
         reward, done, dist = self._getReward()
 
@@ -96,6 +104,10 @@ class ErgoGripperEnv(gym.Env):
 
         qposvel = np.zeros(12, dtype=np.float32)
         qposvel[:6] = qpos
+
+        for _ in range(20):
+            # to stabilize cube at lower framerates
+            self.robot.step()
 
         self.robot.set(qposvel)
         self.robot.act2(qposvel[:6])
@@ -144,12 +156,18 @@ class OnlyImageWrapper(gym.ObservationWrapper):
 
 if __name__ == '__main__':
     import gym_ergojr
-    env = OnlyImageWrapper(gym.make("ErgoGripper-Graphical-v1"))
+    env = OnlyImageWrapper(gym.make("ErgoGripper-Linear-Graphical-v1"))
     print(env.observation_space)
     env.reset()
     env.render("human")
+    actions = [[1, 0, 0, 0, 0, 0], [-1, 0, 0, 0, 0, 0], [0, 1, -1, 0, 1, 0],
+               [0, -1, 1, 0, -1, 0]]
     for i in range(1000):
-        env.step(env.action_space.sample())
+        if i % 50 == 0:
+            action = sample(actions, 1)[0]
+
+        env.step(action)
         env.render("human")
-        if i % 20 == 0:
+
+        if i % 50 == 0:
             env.reset()

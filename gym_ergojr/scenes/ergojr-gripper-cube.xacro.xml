@@ -18,7 +18,7 @@
     </joint>
 
     <link name="2_cube">
-        <xacro:box2 sizex="${size}" sizey="${size}" sizez="${size}" color="blue" nocoll="1"/>
+        <xacro:box2 sizex="${size}" sizey="${size}" sizez="${size}" color="blue"/>
         <inertial>
             <mass value="${mass}"/>
             <xacro:box_inertia m="${mass}" x="${size}" y="${size}" z="${size}"/>

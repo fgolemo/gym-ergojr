@@ -156,7 +156,7 @@ class Cube(object):
         ])  # rotated around which axis? # np.deg2rad(90)
 
         self.cube = p.loadURDF(
-            self.robot_file, cube_pos, cube_rot, useFixedBase=1)
+            self.robot_file, cube_pos, cube_rot, useFixedBase=0)
 
         self.dbo = DistanceBetweenObjects(self.robot_id, 15, self.cube, 0)
 
