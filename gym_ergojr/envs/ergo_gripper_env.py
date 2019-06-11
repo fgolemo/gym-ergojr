@@ -11,7 +11,7 @@ from gym_ergojr.utils.pybullet import Cam
 import matplotlib.pyplot as plt
 
 GOAL_REACHED_DISTANCE = 0.04  # distance between robot tip and goal under which the task is considered solved
-RESTART_EVERY_N_EPISODES = 10  # for the gripper
+RESTART_EVERY_N_EPISODES = 100  # for the gripper
 FRAME_SKIP = 3
 
 
