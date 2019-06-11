@@ -182,7 +182,9 @@ class Cube(object):
         return np.array([x, y, z])
 
     def reset(self):
+        self.cleanup()
+        self.add_cube()
+
+    def cleanup(self):
         if self.cube is not None:
             p.removeBody(self.cube)
-
-        self.add_cube()

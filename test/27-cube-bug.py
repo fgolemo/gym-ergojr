@@ -10,4 +10,4 @@ for i in trange(120):
     env.reset()
 
 env.render('human')
-time.sleep(2)
+time.sleep(3)

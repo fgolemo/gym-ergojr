@@ -11,7 +11,7 @@ from gym_ergojr.utils.pybullet import Cam
 import matplotlib.pyplot as plt
 
 GOAL_REACHED_DISTANCE = 0.04  # distance between robot tip and goal under which the task is considered solved
-RESTART_EVERY_N_EPISODES = 100  # for the gripper
+RESTART_EVERY_N_EPISODES = 10  # for the gripper
 FRAME_SKIP = 3
 
 
@@ -91,7 +91,11 @@ class ErgoGripperEnv(gym.Env):
     def reset(self, forced=False):
         self.episodes += 1
         if self.episodes >= RESTART_EVERY_N_EPISODES or forced or not self.is_initialized:
+            if self.cube is not None:
+                self.cube.cleanup()
+
             self.robot.hard_reset()  # this always has to go first
+
             self.cube = Cube(self.robot.id, self.cube_spawn)
             self.cube.reset()
             self.episodes = 0

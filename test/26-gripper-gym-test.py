@@ -1,7 +1,7 @@
 import gym
 import gym_ergojr
 
-env = gym.make("ErgoGripper-Headless-v1")
+env = gym.make("ErgoGripper-Square-Headless-v1")
 
 for i in range(5):
     env.reset()
