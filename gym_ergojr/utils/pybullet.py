@@ -80,11 +80,15 @@ class Cam(object):
             renderer=p.ER_BULLET_HARDWARE_OPENGL,
             flags=p.ER_NO_SEGMENTATION_MASK)
 
-        rgb = img[2]
-        rgb = np.reshape(rgb, (self.heigt, self.width, 4))
-        rgb = rgb * (1. / 255.)
-        rgb = rgb[:, :, :3]
-        return rgb
+        return getImg(img, self.heigt, self.width)
+
+
+def getImg(img, height, width):
+    rgb = img[2]
+    rgb = np.reshape(rgb, (height, width, 4))
+    rgb = rgb * (1. / 255.)
+    rgb = rgb[:, :, :3]
+    return rgb
 
 
 def sanitizeAction(action, alen):

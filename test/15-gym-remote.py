@@ -5,6 +5,7 @@ import tkinter as tk
 
 
 class Debugger(tk.Frame):
+
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -13,14 +14,15 @@ class Debugger(tk.Frame):
         # env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-Heavy-v1")
         # env = gym.make("ErgoReacher-Graphical-DoubleGoal-v1")
         # env = gym.make("ErgoReacher-Graphical-DoubleGoal-Easy-0.5bl-7000g-v1")
-        self.env = gym.make("ErgoReacher-Graphical-MultiGoal-Halfdisk-v1")
+        self.env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-v1")
         self.obs = self.env.reset()
         self.rew = 0
         self.don = False
 
         self.motors = []
         for i in range(6):
-            m = tk.Scale(self, from_=-1, to=1, orient=tk.HORIZONTAL, resolution=0.1)
+            m = tk.Scale(
+                self, from_=-1, to=1, orient=tk.HORIZONTAL, resolution=0.1)
             m.pack()
             self.motors.append(m)
 
@@ -40,10 +42,7 @@ class Debugger(tk.Frame):
         action = self.getActions()
         for i in range(N):
             self.obs, self.rew, self.don, _ = self.env.step(action)
-        print(
-            np.around(self.obs, 3),
-            np.around(self.rew, 3)
-        )
+        print(np.around(self.obs, 3), np.around(self.rew, 3))
 
     def step1(self):
         self.stepN(1)
@@ -59,10 +58,7 @@ class Debugger(tk.Frame):
 
     def observe(self):
         # print(env.unwrapped._get_obs(), env.unwrapped._getReward())
-        print(
-            np.around(self.obs, 3),
-            np.around(self.rew, 3)
-        )
+        print(np.around(self.obs, 3), np.around(self.rew, 3))
 
     def sett(self):
         action = self.getActions()

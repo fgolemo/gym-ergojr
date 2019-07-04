@@ -9,14 +9,8 @@
   <material name="red">
     <color rgba="1 0 0 1"/>
   </material>
-  <material name="white">
-    <color rgba="1 1 1 1"/>
-  </material>
-  <material name="black">
-    <color rgba="0 0 0 1"/>
-  </material>
-  <material name="red">
-    <color rgba="1 0 0 1"/>
+  <material name="blue">
+    <color rgba="0 0 1 1"/>
   </material>
   <material name="white">
     <color rgba="1 1 1 1"/>
@@ -27,6 +21,9 @@
   <material name="red">
     <color rgba="1 0 0 1"/>
   </material>
+  <material name="blue">
+    <color rgba="0 0 1 1"/>
+  </material>
   <material name="white">
     <color rgba="1 1 1 1"/>
   </material>
@@ -36,7 +33,28 @@
   <material name="red">
     <color rgba="1 0 0 1"/>
   </material>
-  <link name="1_anchor"/>
+  <material name="blue">
+    <color rgba="0 0 1 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="blue">
+    <color rgba="0 0 1 1"/>
+  </material>
+  <link name="1_anchor">
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" iyy="1" izz="1"/>
+      <!--<inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>-->
+    </inertial>
+  </link>
   <joint name="1_anchor_to_base" type="fixed">
     <parent link="1_anchor"/>
     <child link="1_base"/>
