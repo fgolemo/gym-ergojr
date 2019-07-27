@@ -14,7 +14,11 @@ class Debugger(tk.Frame):
         # env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-Heavy-v1")
         # env = gym.make("ErgoReacher-Graphical-DoubleGoal-v1")
         # env = gym.make("ErgoReacher-Graphical-DoubleGoal-Easy-0.5bl-7000g-v1")
-        self.env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-v1")
+        # self.env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-v1")
+        self.env = gym.make("ErgoGripper-Square-JustTouchy-Graphical-v1")
+
+        self.no_actions = 6
+
         self.obs = self.env.reset()
         self.rew = 0
         self.don = False
@@ -36,12 +40,16 @@ class Debugger(tk.Frame):
     def getActions(self):
         action = [m.get() for m in self.motors]
 
-        return [action[1], action[2], action[4], action[5]]
+        if self.no_actions == 4:
+            return [action[1], action[2], action[4], action[5]]
+        return action
 
     def stepN(self, N):
         action = self.getActions()
         for i in range(N):
+            # (_, self.obs), self.rew, self.don, _ = self.env.step(action)
             self.obs, self.rew, self.don, _ = self.env.step(action)
+
         print(np.around(self.obs, 3), np.around(self.rew, 3))
 
     def step1(self):
@@ -62,7 +70,7 @@ class Debugger(tk.Frame):
 
     def sett(self):
         action = self.getActions()
-        self.env.unwrapped._set_state(action + [0] * 4)
+        self.env.unwrapped._set_state(action + [0] * self.no_actions)
 
 
 root = tk.Tk()

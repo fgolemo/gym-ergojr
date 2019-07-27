@@ -4,7 +4,7 @@ from random import random, sample
 import gym
 import numpy as np
 from gym import spaces
-
+import pybullet as p
 from gym_ergojr.sim.objects import Cube
 from gym_ergojr.sim.single_robot import SingleRobot
 from gym_ergojr.utils.pybullet import Cam
@@ -17,9 +17,10 @@ FRAME_SKIP = 3
 
 class ErgoGripperEnv(gym.Env):
 
-    def __init__(self, headless=False, cube_spawn="linear"):
+    def __init__(self, headless=False, cube_spawn="linear", touchy=False):
         assert cube_spawn in ["linear", "square"]
         self.cube_spawn = cube_spawn
+        self.touchy = touchy
 
         self.goals_done = 0
         self.is_initialized = False
@@ -75,14 +76,25 @@ class ErgoGripperEnv(gym.Env):
         obs = self._get_obs()
         return obs, reward, done, {"distance": dist}
 
+    def get_collision(self, bodyB):
+        outA = p.getContactPoints(
+            bodyA=self.robot.id, bodyB=bodyB, linkIndexA=14, linkIndexB=0)
+        outB = p.getContactPoints(
+            bodyA=self.robot.id, bodyB=bodyB, linkIndexA=13, linkIndexB=0)
+        return len(outA) + len(outB)
+
     def _getReward(self):
         done = False
 
         reward = self.cube.dbo.query()
         distance = reward.copy()
 
+        collision = self.get_collision(self.cube.cube)
+
         reward *= -1  # the reward is the inverse distance
-        if distance < GOAL_REACHED_DISTANCE:  # this is a bit arbitrary, but works well
+        if distance < GOAL_REACHED_DISTANCE or (
+                self.touchy and
+                collision > 0):  # this is a bit arbitrary, but works well
             done = True
             reward = 1
 

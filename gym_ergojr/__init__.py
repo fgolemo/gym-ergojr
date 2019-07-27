@@ -344,3 +344,13 @@ for headlessness in ["Graphical", "Headless"]:
             'headless': headlessness_switch,
             'cube_spawn': "square"
         })
+
+    register(
+        id='ErgoGripper-Square-JustTouchy-{}-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoGripperEnv',
+        max_episode_steps=100,
+        kwargs={
+            'headless': headlessness_switch,
+            'cube_spawn': "square",
+            'touchy': True
+        })

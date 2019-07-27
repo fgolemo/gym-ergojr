@@ -92,6 +92,15 @@ cube, dbo = load_cube()
 
 text = None
 
+
+def get_collision(bodyB):
+    outA = p.getContactPoints(
+        bodyA=robot, bodyB=bodyB, linkIndexA=14, linkIndexB=0)
+    outB = p.getContactPoints(
+        bodyA=robot, bodyB=bodyB, linkIndexA=13, linkIndexB=0)
+    return len(outA) + len(outB)
+
+
 start = time.time()
 # Stepping frequency * 30 = run the simulation for 30 seconds
 for i in range(frequency * 30):
@@ -123,6 +132,10 @@ for i in range(frequency * 30):
     else:
         dist_txt = f"YAY! {dist}"
 
+    coll = get_collision(cube)
+
+    if coll > 0:
+        dist_txt = "HIT - " + dist_txt
     text = p.addUserDebugText(
         dist_txt, [0, 0, 0.02], textColorRGB=[1, 1, 0], textSize=2)
 
