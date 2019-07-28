@@ -346,7 +346,7 @@ for headlessness in ["Graphical", "Headless"]:
         })
 
     register(
-        id='ErgoGripper-Square-JustTouchy-{}-v1'.format(headlessness),
+        id='ErgoGripper-Square-JustTouch-{}-v1'.format(headlessness),
         entry_point='gym_ergojr.envs:ErgoGripperEnv',
         max_episode_steps=100,
         kwargs={

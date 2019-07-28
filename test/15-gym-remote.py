@@ -15,7 +15,7 @@ class Debugger(tk.Frame):
         # env = gym.make("ErgoReacher-Graphical-DoubleGoal-v1")
         # env = gym.make("ErgoReacher-Graphical-DoubleGoal-Easy-0.5bl-7000g-v1")
         # self.env = gym.make("ErgoReacher-Graphical-Simple-Halfdisk-v1")
-        self.env = gym.make("ErgoGripper-Square-JustTouchy-Graphical-v1")
+        self.env = gym.make("ErgoGripper-Square-JustTouch-Graphical-v1")
 
         self.no_actions = 6
 
