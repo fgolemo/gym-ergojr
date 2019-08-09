@@ -354,3 +354,16 @@ for headlessness in ["Graphical", "Headless"]:
             'cube_spawn': "square",
             'touchy': True
         })
+    register(
+        id='ErgoReacherAugmented-{}-MultiGoal-Halfdisk-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherAugmentedEnv',
+        max_episode_steps=300,
+        reward_threshold=0,
+        kwargs={
+            'headless': headlessness_switch,
+            'simple': True,
+            'goal_halfsphere': True,
+            'multi_goal': True,
+            'goals': 3
+        }
+        )
