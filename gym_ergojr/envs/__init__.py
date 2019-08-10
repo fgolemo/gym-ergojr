@@ -9,3 +9,4 @@ from gym_ergojr.envs.ergo_reacher_plus2 import ErgoReacherPlus2Env
 
 from gym_ergojr.envs.ergo_pusher_env import ErgoPusherEnv
 from gym_ergojr.envs.ergo_gripper_env import ErgoGripperEnv
+from gym_ergojr.envs.ergo_reacher_augmented import ErgoReacherAugmentedEnv
