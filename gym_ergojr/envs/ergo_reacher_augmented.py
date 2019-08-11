@@ -43,7 +43,7 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
             goals=goals,
             gripper=gripper)
 
-        self.model_path = '/home/sharath/gym-ergojr/gym_ergojr/trained_lstms/ergoreacher-exp1-h128-l3-v01-e5.pth'
+        self.model_path = '../trained_lstms/ergoreacher-exp1-h128-l3-v01-e5.pth'
         if self.is_cuda:
             self.cuda_convert()
         self.load_model()
