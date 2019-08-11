@@ -367,3 +367,12 @@ for headlessness in ["Graphical", "Headless"]:
             'goals': 3
         }
         )
+    register(
+        id='ErgoReacherAugmented-{}-Simple-Halfdisk-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoReacherAugmentedEnv',
+        max_episode_steps=300,
+        reward_threshold=0,
+        kwargs={
+            'headless': headlessness_switch,
+            'simple': True}
+    )
