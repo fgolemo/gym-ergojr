@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import torch
 from gym_ergojr.envs.ergo_reacher_env import ErgoReacherEnv
@@ -7,7 +8,7 @@ from gym_ergojr.models.networks import ReacherNetV1
 class ErgoReacherAugmentedEnv(ErgoReacherEnv):
 
     def __init__(self,
-                 headless=True,
+                 headless=False,
                  simple=False,
                  backlash=False,
                  max_force=1,
@@ -16,7 +17,7 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
                  multi_goal=False,
                  goals=3,
                  gripper=False,
-                 is_cuda=True):
+                 is_cuda=False):
 
         self.hidden_layers = 128
         self.lstm_layers = 3
@@ -27,12 +28,9 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
             n_input_actions=6,
             nodes=self.hidden_layers,
             layers=self.lstm_layers)
-        self.model = self.model.cuda() if self.is_cuda else self.model
         self.modified_obs = torch.zeros(1, 12).float()
         self.modified_actions = torch.zeros(1, 6).float()
-        super(ErgoReacherAugmentedEnv, self).__init__()
-        ErgoReacherEnv.__init__(
-            self,
+        super(ErgoReacherAugmentedEnv, self).__init__(
             headless=headless,
             simple=simple,
             backlash=backlash,
@@ -42,8 +40,7 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
             multi_goal=multi_goal,
             goals=goals,
             gripper=gripper)
-
-        self.model_path = '../trained_lstms/ergoreacher-exp1-h128-l3-v01-e5.pth'
+        self.model_path = os.path.abspath("ergoreacher-exp1-h128-l3-v02-e5.pth")
         if self.is_cuda:
             self.cuda_convert()
         self.load_model()
@@ -54,7 +51,8 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
         self.modified_actions = self.modified_actions.cuda()
 
     def load_model(self):
-        return self.model.load_state_dict(torch.load(self.model_path)) if self.is_cuda else self.model.load_state_dict(torch.load(self.model_path,  map_location='cpu'))
+        return self.model.load_state_dict(torch.load(self.model_path)) \
+            if self.is_cuda else self.model.load_state_dict(torch.load(self.model_path,  map_location='cpu'))
 
     def obs2lstm(self, obs):
         self.modified_obs[:, [1, 2, 4, 5, 7, 8, 10, 11]] = obs[:, :8]
@@ -81,7 +79,8 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
     #     return obs
 
     def convert_to_tensor(self, numpy_array):
-        return torch.FloatTensor(np.expand_dims(numpy_array, 0)).cuda() if self.is_cuda else torch.FloatTensor(np.expand_dims(numpy_array, 0))
+        return torch.FloatTensor(np.expand_dims(numpy_array, 0)).cuda() \
+            if self.is_cuda else torch.FloatTensor(np.expand_dims(numpy_array, 0))
 
     def step(self, action):
         obs = super()._get_obs()
@@ -90,17 +89,12 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
         obs = self.convert_to_tensor(obs)
         action = self.convert_to_tensor(action)
         new_obs = self.convert_to_tensor(new_obs)
-
         obs_diff = self.augment(obs, action, new_obs)
 
         corrected_obs = new_obs[:, :8] + obs_diff[:, [1, 2, 4, 5, 7, 8, 10, 11]]
         new_obs[:, :8] = corrected_obs
-        if self.is_cuda:
-            corrected_obs = corrected_obs.cpu().numpy()
-            new_obs = new_obs.cpu().numpy()
-        else:
-            corrected_obs = corrected_obs.numpy()
-            new_obs = new_obs.numpy()
+        corrected_obs = corrected_obs.cpu().numpy()
+        new_obs = new_obs.cpu().numpy()
         super()._set_state(corrected_obs[:, :8])
         reward, done, info = super()._getReward()
         return new_obs, reward, done, {"distance": info}
@@ -118,15 +112,13 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
 if __name__ == '__main__':
     import gym
     import time
-    env = gym.make("ErgoReacherAugmented-Graphical-Simple-Halfdisk-v1")
-
+    env = gym.make("ErgoReacherAugmented-Headless-Simple-Halfdisk-v1")
     obs = env.reset()
     print(obs)
     done = False
 
     while not done:
-        action = [-1, 1, -1, 1]
+        action = env.action_space.sample()
         obs, rew, done, misc = env.step(action)
-        print(misc)
         time.sleep(.1)
         # quit()
