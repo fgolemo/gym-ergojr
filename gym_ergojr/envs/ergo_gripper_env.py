@@ -17,10 +17,15 @@ FRAME_SKIP = 3
 
 class ErgoGripperEnv(gym.Env):
 
-    def __init__(self, headless=False, cube_spawn="linear", touchy=False):
+    def __init__(self,
+                 headless=False,
+                 cube_spawn="linear",
+                 touchy=False,
+                 double_cam=False):
         assert cube_spawn in ["linear", "square"]
         self.cube_spawn = cube_spawn
         self.touchy = touchy
+        self.double_cam = double_cam
 
         self.goals_done = 0
         self.is_initialized = False
@@ -42,6 +47,14 @@ class ErgoGripperEnv(gym.Env):
             height=64,
             fov=60)
 
+        if self.double_cam:
+            self.cam2 = Cam(
+                pos=[-0.25, .25, 0.2],
+                look_at=[0.00, .10, 0.1],
+                width=64,
+                height=64,
+                fov=60)
+
         self.plot = None
 
         # Episode count, used for resetting the PyBullet sim every so often
@@ -50,8 +63,12 @@ class ErgoGripperEnv(gym.Env):
         self.metadata = {'render.modes': ['human', 'rgb_array']}
 
         # observation = (img, 6 joints + 6 velocities + 3 cube position)
+        obs_width = 64
+        if self.double_cam:
+            obs_width *= 2
         self.observation_space = spaces.Tuple([
-            spaces.Box(low=0, high=255, shape=(64, 64, 3), dtype=np.uint8),
+            spaces.Box(
+                low=0, high=255, shape=(64, obs_width, 3), dtype=np.uint8),
             spaces.Box(
                 low=-1, high=1, shape=(3 + 3 + 2 + 2,), dtype=np.float32)
         ])
@@ -135,11 +152,21 @@ class ErgoGripperEnv(gym.Env):
         obs = np.hstack([self.robot.observe(), self.cube.normalize_cube()])
         img = self.cam.snap()
         img = (img * 255).astype(np.uint8)
+
+        if self.double_cam:
+            img2 = self.cam2.snap()
+            img2 = (img2 * 255).astype(np.uint8)
+            img = np.concatenate((img, img2), axis=1)
+
         return img, obs
 
     def render(self, mode='human', close=False):
         if mode == "human":
             img = self.cam.snap()
+            if self.double_cam:
+                img2 = self.cam2.snap()
+                img = np.concatenate((img, img2), axis=1)
+
             if self.plot is None:
                 plt.ion()
                 self.plot_container = plt.imshow(
@@ -172,7 +199,8 @@ class OnlyImageWrapper(gym.ObservationWrapper):
 
 if __name__ == '__main__':
     import gym_ergojr
-    env = OnlyImageWrapper(gym.make("ErgoGripper-Square-Graphical-v1"))
+    env = OnlyImageWrapper(
+        gym.make("ErgoGripper-Square-JustTouch-DoubleCam-Graphical-v1"))
     print(env.observation_space)
     env.reset()
     env.render("human")

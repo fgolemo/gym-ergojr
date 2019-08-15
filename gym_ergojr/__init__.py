@@ -346,6 +346,17 @@ for headlessness in ["Graphical", "Headless"]:
         })
 
     register(
+        id='ErgoGripper-Square-JustTouch-DoubleCam-{}-v1'.format(headlessness),
+        entry_point='gym_ergojr.envs:ErgoGripperEnv',
+        max_episode_steps=100,
+        kwargs={
+            'headless': headlessness_switch,
+            'cube_spawn': "square",
+            'touchy': True,
+            'double_cam': True
+        })
+
+    register(
         id='ErgoGripper-Square-JustTouch-{}-v1'.format(headlessness),
         entry_point='gym_ergojr.envs:ErgoGripperEnv',
         max_episode_steps=100,
@@ -354,6 +365,7 @@ for headlessness in ["Graphical", "Headless"]:
             'cube_spawn': "square",
             'touchy': True
         })
+
     register(
         id='ErgoReacherAugmented-{}-MultiGoal-Halfdisk-v1'.format(headlessness),
         entry_point='gym_ergojr.envs:ErgoReacherAugmentedEnv',
@@ -365,5 +377,4 @@ for headlessness in ["Graphical", "Headless"]:
             'goal_halfsphere': True,
             'multi_goal': True,
             'goals': 3
-        }
-        )
+        })
