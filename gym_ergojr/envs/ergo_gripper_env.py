@@ -49,8 +49,8 @@ class ErgoGripperEnv(gym.Env):
 
         if self.double_cam:
             self.cam2 = Cam(
-                pos=[-0.25, .25, 0.2],
-                look_at=[0.00, .10, 0.1],
+                pos=[0, .4, 0.2],
+                look_at=[0.00, .20, 0.1],
                 width=64,
                 height=64,
                 fov=60)
@@ -200,7 +200,7 @@ class OnlyImageWrapper(gym.ObservationWrapper):
 if __name__ == '__main__':
     import gym_ergojr
     env = OnlyImageWrapper(
-        gym.make("ErgoGripper-Square-JustTouch-DoubleCam-Graphical-v1"))
+        gym.make("ErgoGripper-Square-Touch-Double-Graphical-v1"))
     print(env.observation_space)
     env.reset()
     env.render("human")
