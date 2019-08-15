@@ -18,7 +18,7 @@ RESET_EVERY = 5  # for the gripper
 class ErgoReacherEnv(gym.Env):
 
   def __init__(self,
-               headless=False,
+               headless=True,
                simple=False,
                backlash=False,
                max_force=1,
@@ -37,7 +37,6 @@ class ErgoReacherEnv(gym.Env):
 
     self.goals_done = 0
     self.is_initialized = False
-
     self.robot = SingleRobot(debug=not headless, backlash=backlash)
     self.ball = Ball()
     self.rhis = RandomPointInHalfSphere(
