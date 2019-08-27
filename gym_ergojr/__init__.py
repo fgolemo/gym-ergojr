@@ -299,7 +299,7 @@ for headlessness in ["Graphical", "Headless"]:
 
     for terminates, name in [(True, ""), (False, "-Long")]:
         register(
-            id=f'ErgoReacher-{headlessness}-MultiGoal-Halfdisk{name}-v1',
+            id=f'ErgoReacher-{headlessness}-MultiGoal-Halfdisk{name}-v2',
             entry_point='gym_ergojr.envs:ErgoReacherEnv',
             max_episode_steps=300,
             reward_threshold=0,

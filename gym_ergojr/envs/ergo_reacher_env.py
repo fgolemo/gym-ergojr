@@ -50,6 +50,8 @@ class ErgoReacherEnv(gym.Env):
             min_dist=0.1,
             halfsphere=goal_halfsphere)
         self.goal = None
+        self.goal_positions = []
+        self.goal_distances = []
         self.dist = DistanceBetweenObjects(
             bodyA=self.robot.id, bodyB=self.ball.id, linkA=13, linkB=1)
         self.episodes = 0  # used for resetting the sim every so often
@@ -118,6 +120,7 @@ class ErgoReacherEnv(gym.Env):
                 done = True
                 reward = 1
         else:
+            dirty = False  # in case we _just_ hit the goal
             if -reward > GOAL_REACHED_DISTANCE:
                 self.goals_done += 1
                 if self.goals_done == self.n_goals:
@@ -128,13 +131,23 @@ class ErgoReacherEnv(gym.Env):
                     self._set_state(
                         robot_state)  # move robot back after ball has movedÒ
                     self.robot.step()
-                    reward = self.dist.query()
+                    dirty = True
 
-            reward = (self.goals_done * DIA + (DIA - reward)) / (
-                self.n_goals * DIA)
-
-            if done:
+            if done or self.goals_done == self.n_goals:
                 reward = 1
+            else:
+                # reward is distance to current target + sum of all other distances divided by total distance
+                if dirty:
+                    # take it off before the reward calc
+                    self.goals_done -= 1
+
+                reward = 1 + (-(reward + sum(
+                    self.goal_distances[:-(self.goals_done + 1)])) /
+                              sum(self.goal_distances))
+                if dirty:
+                    # add it back after the reward cald
+                    self.goals_done += 1
+                    dirty = False
 
         if self.gripper:
             reward *= 10
@@ -153,19 +166,37 @@ class ErgoReacherEnv(gym.Env):
         self.dist.bodyB = self.ball.id
 
     def move_ball(self):
-        if self.simple or self.gripper:
-            self.goal = self.rhis.sampleSimplePoint()
+        if not self.multigoal or len(self.goal_positions) == 0:
+            if self.simple or self.gripper:
+                self.goal = self.rhis.sampleSimplePoint()
+            else:
+                self.goal = self.rhis.samplePoint()
         else:
-            self.goal = self.rhis.samplePoint()
+            self.goal = self.goal_positions.pop()
 
         self.dist.goal = self.goal
         self.ball.changePos(self.goal, 4)
 
-        for _ in range(20):
+        for _ in range(25):
             self.robot.step()  # we need this to move the ball
 
     def reset(self, forced=False):
         self.goals_done = 0
+
+        if self.multigoal:
+            # sample N goals, calculate total reward as distance between them. Add distances to list. Subtract list elements on rew calculation
+            self.goal_distances = []
+            self.goal_positions = []
+            for goal_idx in range(self.n_goals):
+                if self.simple or self.gripper:
+                    point = self.rhis.sampleSimplePoint()
+                else:
+                    point = self.rhis.samplePoint()
+                self.goal_positions.append(point)
+            for goal_idx in range(self.n_goals - 1):
+                dist = np.linalg.norm(self.goal_positions[goal_idx] -
+                                      self.goal_positions[goal_idx + 1])
+                self.goal_distances.append(dist)
 
         self.episodes += 1
         if self.episodes >= self.restart_every_n_episodes:
@@ -194,6 +225,10 @@ class ErgoReacherEnv(gym.Env):
             self.robot.set(np.hstack((qpos, [0] * 6)))
             self.robot.act2(np.hstack((qpos)))
             self.robot.step()
+
+        # add starting distance
+        if self.multigoal:
+            self.goal_distances.append(self.dist.query())
 
         self.is_initialized = True
 
