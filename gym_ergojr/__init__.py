@@ -297,18 +297,20 @@ for headlessness in ["Graphical", "Headless"]:
         },
     )
 
-    register(
-        id='ErgoReacher-{}-MultiGoal-Halfdisk-v1'.format(headlessness),
-        entry_point='gym_ergojr.envs:ErgoReacherEnv',
-        max_episode_steps=300,
-        reward_threshold=0,
-        kwargs={
-            'headless': headlessness_switch,
-            'simple': True,
-            'goal_halfsphere': True,
-            'multi_goal': True,
-            'goals': 3
-        })
+    for terminates, name in [(True, ""), (False, "-Long")]:
+        register(
+            id=f'ErgoReacher-{headlessness}-MultiGoal-Halfdisk{name}-v1',
+            entry_point='gym_ergojr.envs:ErgoReacherEnv',
+            max_episode_steps=300,
+            reward_threshold=0,
+            kwargs={
+                'headless': headlessness_switch,
+                'simple': True,
+                'goal_halfsphere': True,
+                'multi_goal': True,
+                'goals': 3,
+                'terminates': terminates
+            })
 
     register(
         id='ErgoReacher-{}-Gripper-MobileGoal-v1'.format(headlessness),
