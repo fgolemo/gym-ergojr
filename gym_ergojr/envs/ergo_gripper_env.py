@@ -11,7 +11,7 @@ from gym_ergojr.utils.pybullet import Cam
 import matplotlib.pyplot as plt
 
 GOAL_REACHED_DISTANCE = 0.04  # distance between robot tip and goal under which the task is considered solved
-RESTART_EVERY_N_EPISODES = 100  # for the gripper
+RESTART_EVERY_N_EPISODES = np.inf  # for the gripper
 FRAME_SKIP = 3
 
 
@@ -41,16 +41,16 @@ class ErgoGripperEnv(gym.Env):
         self.cube = None
 
         self.cam = Cam(
-            pos=[0.25, .25, 0.1],
-            look_at=[0.00, .10, 0.1],
+            pos=[0, .45, 0.15],
+            look_at=[0.00, .00, 0.05],
             width=64,
             height=64,
             fov=60)
 
         if self.double_cam:
             self.cam2 = Cam(
-                pos=[0, .4, 0.2],
-                look_at=[0.00, .20, 0.1],
+                pos=[-0.30, .15, 0.15],
+                look_at=[0.00, .15, 0.05],
                 width=64,
                 height=64,
                 fov=60)

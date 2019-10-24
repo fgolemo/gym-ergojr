@@ -158,7 +158,7 @@ class Cube(object):
             # shorter Y otherwise out of reach
             if y is None:
                 y = np.random.uniform(.1, .17)
-            x = np.random.uniform(-.15, .15)
+            x = np.random.uniform(-.12, .12)
 
         if y is None:
             y = np.random.uniform(.1, .25)
