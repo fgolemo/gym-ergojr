@@ -16,6 +16,7 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
                  goal_halfsphere=False,
                  multi_goal=False,
                  goals=3,
+                 terminates=True,
                  gripper=False,
                  is_cuda=False):
 
@@ -39,8 +40,9 @@ class ErgoReacherAugmentedEnv(ErgoReacherEnv):
             goal_halfsphere=goal_halfsphere,
             multi_goal=multi_goal,
             goals=goals,
+            terminates=terminates,
             gripper=gripper)
-        self.model_path = os.path.abspath("ergoreacher-exp1-h128-l3-v02-e5.pth")
+        self.model_path = os.path.abspath("ergoreacher-exp1-h128-l3-v01-e5.pth")
         if self.is_cuda:
             self.cuda_convert()
         self.load_model()

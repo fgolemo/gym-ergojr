@@ -389,3 +389,17 @@ for headlessness in ["Graphical", "Headless"]:
             'headless': headlessness_switch,
             'simple': True
         })
+    for terminates, name in [(True, ""), (False, "-Long")]:
+        register(
+            id=f'ErgoReacherAugmented-{headlessness}-MultiGoal-Halfdisk{name}-v2',
+            entry_point='gym_ergojr.envs:ErgoReacherAugmentedEnv',
+            max_episode_steps=300,
+            reward_threshold=0,
+            kwargs={
+                'headless': headlessness_switch,
+                'simple': True,
+                'goal_halfsphere': True,
+                'multi_goal': True,
+                'goals': 3,
+                'terminates': terminates
+            })
